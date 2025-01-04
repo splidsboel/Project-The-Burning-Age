@@ -1,0 +1,224 @@
+package entity;
+
+import static tools.Constants.Directions.*;
+import static tools.Constants.PlayerConstants.*;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import main.GamePanel;
+import tools.Constants.PlayerConstants;
+
+public class Player extends Entity {
+    Graphics2D g2;
+    GamePanel gp;
+    BufferedImage[][] animations;
+    private int aniTick, aniIndex, aniSpeed = 18; // 90 fps / 2 animationer
+    private int playerAction = IDLE;
+    private boolean up, right, left, down, left_up, left_down, right_up, right_down;
+    private boolean moving = false;
+
+
+
+
+    public int cameraX = 0;
+    public int cameraY = 0;
+    public int screenX; 
+    public int screenY; 
+
+
+    //BOOLEANS
+    public boolean playerMoved = false;
+
+    public Player(GamePanel gp) {
+        super(gp);
+        this.gp = gp;
+
+        setDefaultValues();
+
+        importPlayerImage();
+        loadAnimations();
+
+    }
+
+    public void setDefaultValues() {
+        worldX = gp.tileSize * 23;
+        worldY = gp.tileSize * 25;
+        defaultSpeed = 3;
+        speed = defaultSpeed;
+
+    }
+
+    public void update() {
+        
+    }
+
+    public void render(Graphics2D g2) {  
+        updateCameraOnPlayer();
+        updateAnimationTick();
+        setAnimation();
+        updatePosition();
+        
+        g2.drawImage(animations[aniIndex][playerAction], screenX, screenY, (int)(32*2.5),(int)(32*2.5), null);
+    }
+
+    public void importPlayerImage() {
+        img = importImg("/res/images/player/orc/Orc.png");
+    }
+
+    public void loadAnimations() {
+        animations = new BufferedImage[2][5];
+
+        for (int i = 0; i < animations.length; i++) {
+            for (int j = 0; j < animations[i].length; j++) {
+                animations[i][j] = img.getSubimage(i*32, j*32, 32, 32);
+            }
+        }
+    }
+
+    public void setAnimation() {
+        if (moving) {
+            if (down) {
+                playerAction = RUNNING_DOWN;
+            }
+            if (right) {
+                playerAction = RUNNING_RIGHT;
+            }
+            if (left) {
+                playerAction = RUNNING_LEFT;
+            }
+            
+        } else {
+            playerAction = IDLE;
+        }
+    } 
+
+    public void updatePosition() {
+        moving = false;
+        boolean horizontalMove = left ^ right; // XOR: true if either is true, but not both
+        boolean verticalMove = up ^ down;
+        boolean diagonalMove = horizontalMove && verticalMove;
+        float effectiveSpeed = diagonalMove ? speed / (float) Math.sqrt(2) : speed;
+    
+        // Update position
+        if (up && !down) {
+            worldY -= effectiveSpeed;
+            moving = true;
+        } else if (down && !up) {
+            worldY += effectiveSpeed;
+            moving = true;
+        }
+        if (left && !right) {
+            worldX -= effectiveSpeed;
+            moving = true;
+        } else if (right && !left) {
+            worldX += effectiveSpeed;
+            moving = true;
+        }
+
+        if (moving) {
+            // Stay in map bounds
+            worldX = Math.max(0, Math.min(worldX, gp.maxWorldCol * gp.tileSize - gp.tileSize));
+            worldY = Math.max(0, Math.min(worldY, gp.maxWorldRow * gp.tileSize - gp.tileSize));
+        }
+    }
+    
+
+
+    public void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= PlayerConstants.GetSpriteAmount(playerAction)) {
+                aniIndex = 0;
+            }
+        }
+    }
+
+    public void updateCameraOnPlayer() {
+        // Center the camera on the player
+        cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;
+        cameraY = worldY - gp.screenHeight / 2 + gp.tileSize / 2;
+        screenX = worldX - cameraX;
+        screenY = worldY - cameraY;
+        
+        if (moving) {
+            // Center the camera on the player
+            cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;
+            cameraY = worldY - gp.screenHeight / 2 + gp.tileSize / 2;
+    
+            cameraX = Math.max(0, Math.min(cameraX, gp.maxWorldCol * gp.tileSize - gp.screenWidth));
+            cameraY = Math.max(0, Math.min(cameraY, gp.maxWorldRow * gp.tileSize - gp.screenHeight));
+    
+            screenX = worldX - cameraX;
+            screenY = worldY - cameraY;
+        }
+    }
+
+    public void playerLookDirection() {
+        // if (mouseH.mouseX < screenX) {
+        //     playerAction = RIGHT;
+        // }
+        // if (mouseH.mouseX >= screenX) {
+        //     playerAction = LEFT;
+        // }
+    }
+
+    //GETTERS
+    public boolean isUp() {
+        return up;
+    }
+    public boolean isRight() {
+        return right;
+    }
+    public boolean isLeft() {
+        return left;
+    }
+    public boolean isDown() {
+        return down;
+    }
+    public boolean isLeft_up() {
+        return left_up;
+    }
+    public boolean isLeft_down() {
+        return left_down;
+    }
+    public boolean isRight_up() {
+        return right_up;
+    }
+    public boolean isRight_down() {
+        return right_down;
+    }
+    
+    //SETTERS
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+    public void setLeft_up(boolean left_up) {
+        this.left_up = left_up;
+    }
+    public void setLeft_down(boolean left_down) {
+        this.left_down = left_down;
+    }
+    public void setRight_up(boolean right_up) {
+        this.right_up = right_up;
+    }
+    public void setRight_down(boolean right_down) {
+        this.right_down = right_down;
+    }
+
+    
+    //
+    
+    
+}
