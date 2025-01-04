@@ -44,7 +44,7 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 25;
-        defaultSpeed = 3;
+        defaultSpeed = 2;
         speed = defaultSpeed;
 
     }
@@ -78,14 +78,17 @@ public class Player extends Entity {
 
     public void setAnimation() {
         if (moving) {
+            if (up) {
+                playerAction = RUNNING_UP;
+            }
             if (down) {
                 playerAction = RUNNING_DOWN;
             }
-            if (right) {
-                playerAction = RUNNING_RIGHT;
-            }
             if (left) {
                 playerAction = RUNNING_LEFT;
+            }
+            if (right) {
+                playerAction = RUNNING_RIGHT;
             }
             
         } else {
@@ -137,12 +140,6 @@ public class Player extends Entity {
     }
 
     public void updateCameraOnPlayer() {
-        // Center the camera on the player
-        cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;
-        cameraY = worldY - gp.screenHeight / 2 + gp.tileSize / 2;
-        screenX = worldX - cameraX;
-        screenY = worldY - cameraY;
-        
         if (moving) {
             // Center the camera on the player
             cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;

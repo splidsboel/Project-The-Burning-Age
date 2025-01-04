@@ -10,9 +10,6 @@ public class Constants {
             public static final int b_height_default = 16;
             public static final int b_width = (int) (b_width_default * 4);
             public static final int b_height = (int) (b_height_default * 4);
-
-
-
         }
     }
 
@@ -29,10 +26,12 @@ public class Constants {
 
 
     public static class PlayerConstants {
-        public static final int IDLE = 0;
-        public static final int RUNNING_DOWN = 4;
-        public static final int RUNNING_LEFT = 3;
-        public static final int RUNNING_RIGHT = 2;
+        public static final int RUNNING_UP = 0;
+        public static final int RUNNING_DOWN = 1;
+        public static final int RUNNING_LEFT = 2;
+        public static final int RUNNING_RIGHT = 3;
+        public static final int IDLE = 4;
+    
 
 
 
@@ -40,10 +39,9 @@ public class Constants {
             switch (playerAction) {
                 case IDLE:
                     return 0;
+                case RUNNING_UP:
                 case RUNNING_DOWN:
-                    return 2;
                 case RUNNING_LEFT:
-                    return 2;
                 case RUNNING_RIGHT:
                     return 2;
                 default:

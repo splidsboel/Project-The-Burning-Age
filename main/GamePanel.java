@@ -116,7 +116,11 @@ public class GamePanel extends JPanel implements Runnable {
     
     //SETUP GAME AND START GAME THREAD METHODS
     public void setupGame() {
-
+        // Center the camera on the player
+        getPlaying().getPlayer().cameraX = getPlaying().getPlayer().worldX - screenWidth / 2 + tileSize / 2;
+        getPlaying().getPlayer().cameraY = getPlaying().getPlayer().worldY - screenHeight / 2 + tileSize / 2;
+        getPlaying().getPlayer().screenX = getPlaying().getPlayer().worldX - getPlaying().getPlayer().cameraX;
+        getPlaying().getPlayer().screenY = getPlaying().getPlayer().worldY - getPlaying().getPlayer().cameraY;
         //SET START OBJECTS
         tileM.loadMap("/res/maps/world01.txt");
                
