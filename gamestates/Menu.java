@@ -1,6 +1,8 @@
 package gamestates;
 
 
+import static tools.Constants.UI.Images.img_width;
+
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -30,7 +32,7 @@ public class Menu extends State implements Statemethods {
     }
 
     public void loadImages() {
-        img = new MenuImage(gp.screenWidth / 2 + 30, (int)(GamePanel.scale));
+        img = new MenuImage(gp.screenWidth / 2 + 40, (int)(GamePanel.scale));
     }
 
     @Override
@@ -54,7 +56,9 @@ public class Menu extends State implements Statemethods {
     public void updateAnimationTick() {
         if (aniActive) {
             aniTick++;
-            if (aniTick >= aniSpeed) {
+            int decreasedSpeed = 0;
+            if (aniTick >= aniSpeed + decreasedSpeed) {
+                decreasedSpeed += 1000;
                 aniTick = 0;
                 aniIndex++;
                 if (aniIndex >= 2) {
