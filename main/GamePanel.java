@@ -59,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
         initializeClasses();
 
         //GAME WINDOW
-        this.setPreferredSize(new Dimension(localScreenWidth,localScreenWidth));
+        this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setDoubleBuffered(true);
     
         //MOUSE AND KEY LISTENER
