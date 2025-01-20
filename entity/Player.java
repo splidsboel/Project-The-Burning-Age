@@ -14,7 +14,7 @@ public class Player extends Entity {
     GamePanel gp;
     BufferedImage[][] animations;
     private int aniTick, aniIndex, aniSpeed = 20; // 90 fps / 2 animationer
-    private int playerAction = IDLE;
+    private int playerAction = RUNNING_LEFT;
     private boolean up, right, left, down, left_up, left_down, right_up, right_down;
     private boolean moving = false;
 
@@ -40,9 +40,9 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 25;
-        defaultSpeed = 5;
+        worldX = gp.tileSize * 12;
+        worldY = gp.tileSize * 13;
+        defaultSpeed = 4;
         speed = defaultSpeed;
 
     }
@@ -60,9 +60,6 @@ public class Player extends Entity {
         drawPlayerImage(g2);
     }
 
-    public void dash() {
-        worldX += 25;
-    }
 
     public void drawPlayerImage(Graphics2D g2){
         if (moving) {
@@ -73,11 +70,11 @@ public class Player extends Entity {
     }
 
     public void importPlayerImage() {
-        img = importImg("/res/images/player/orc/Orc.png");
+        img = importImg("/res/images/player/orc/orc.png");
     }
 
     public void loadAnimations() {
-        animations = new BufferedImage[2][5];
+        animations = new BufferedImage[3][4];
 
         for (int i = 0; i < animations.length; i++) {
             for (int j = 0; j < animations[i].length; j++) {
@@ -105,6 +102,10 @@ public class Player extends Entity {
         //     playerAction = IDLE;
         // }
     } 
+
+    public void dash() {
+
+    }
 
     public void updatePosition() {
         moving = false;
@@ -144,7 +145,7 @@ public class Player extends Entity {
             aniTick = 0;
             aniIndex++;
             if (aniIndex >= PlayerConstants.GetSpriteAmount(playerAction)) {
-                aniIndex = 0;
+                aniIndex = 1;
             }
         }
     }

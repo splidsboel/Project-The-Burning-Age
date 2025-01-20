@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -45,15 +46,17 @@ public class GamePanel extends JPanel implements Runnable {
     public final int localScreenHeight = Main.window.getHeight();
 
     protected final int FPS = 90;
+    protected int currentFPS;
     protected final int UPS = 120;
+    protected int currentUPS;
     public int frames;
     public int updates;
     BufferedImage screen;
     Graphics2D g2;
 
     //WORLD SETTINGS
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
+    public final int maxWorldCol = 25;
+    public final int maxWorldRow = 25;
     
     public GamePanel() {
         initializeClasses();
@@ -78,8 +81,9 @@ public class GamePanel extends JPanel implements Runnable {
         //SYSTEMS
         keyH = new KeyHandler(this);
         mouseH = new MouseHandler(this);
+        uTool = new UtilityTool(this);
         tileM = new TileManager(this);
-        uTool = new UtilityTool();
+        
     }
 
     public void update() {
@@ -121,6 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
         getPlaying().getPlayer().cameraY = getPlaying().getPlayer().worldY - screenHeight / 2 + tileSize / 2;
         getPlaying().getPlayer().screenX = getPlaying().getPlayer().worldX - getPlaying().getPlayer().cameraX;
         getPlaying().getPlayer().screenY = getPlaying().getPlayer().worldY - getPlaying().getPlayer().cameraY;
+        
         //SET START OBJECTS
         tileM.loadMap("/res/maps/world01.txt");
                
@@ -172,6 +177,8 @@ public class GamePanel extends JPanel implements Runnable {
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
+                currentFPS = frames;
+                currentUPS = updates;
                 //System.out.println("FPS: " + frames + " UPS: "+ updates);
                 frames = 0;
                 updates = 0;
@@ -187,6 +194,20 @@ public class GamePanel extends JPanel implements Runnable {
         // }
     }
 
+    public void debugText(Graphics2D g2) {
+        g2.setColor(Color.white);
+        int x = 10;
+        int y = 400;
+        int lineHeight = 20;
+        g2.drawString("WorldX: " + getPlaying().getPlayer().worldX, x, y); y += lineHeight;
+        g2.drawString("WorldY: " + getPlaying().getPlayer().worldY, x, y); y += lineHeight;
+        g2.drawString("Col: " + (getPlaying().getPlayer().worldX)/tileSize, x, y); y += lineHeight;
+        g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
+        g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
+        g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
+    }
+
+
     //GETTERS 
     public Playing getPlaying() {
         return playing;
@@ -194,5 +215,4 @@ public class GamePanel extends JPanel implements Runnable {
     public Menu getMenu() {
         return menu;
     }
-
 }

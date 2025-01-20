@@ -17,6 +17,10 @@ public class UtilityTool {
     GamePanel gp;
     Graphics2D g2;
 
+    public UtilityTool(GamePanel gp) {
+        this.gp = gp;
+    }
+
 
     public static BufferedImage importImg(String filepath) {
         BufferedImage img = null;
@@ -46,18 +50,7 @@ public class UtilityTool {
 
 
     //HELPER
-    public void debugText(Graphics2D g2) {
-            g2.setColor(Color.white);
-            int x = 10;
-            int y = 400;
-            int lineHeight = 20;
-            g2.drawString("WorldX: " + gp.getPlaying().getPlayer().worldX, x, y); y += lineHeight;
-            g2.drawString("WorldY: " + gp.getPlaying().getPlayer().worldY, x, y); y += lineHeight;
-            g2.drawString("Col: " + (gp.getPlaying().getPlayer().worldX)/gp.tileSize, x, y); y += lineHeight;
-            g2.drawString("Row: " + (gp.getPlaying().getPlayer().worldY)/gp.tileSize, x, y); y += lineHeight;
-            g2.drawString("FPS: " + gp.frames,x,y); y += lineHeight;
-        }
-    
+
     
     //HELPER METHODS
     public int getXForCenteredText(String text, Graphics2D g2) {
@@ -83,21 +76,6 @@ public class UtilityTool {
         g2.setColor(hovered ? hoverColor : color);
         g2.drawString(text, x, y);
     }
-
-        public BufferedImage setup(String imagePath, int width, int height) {
-        UtilityTool uTool = new UtilityTool();
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(getClass().getResourceAsStream(imagePath+".png"));
-            image = uTool.scaleImage(image, width, height);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-
 
     //GETTERS
 

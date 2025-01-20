@@ -33,22 +33,22 @@ public class Constants {
 
 
     public static class PlayerConstants {
-        public static final int RUNNING_UP = 0;
-        public static final int RUNNING_DOWN = 1;
+        public static final int RUNNING_UP = 1;
+        public static final int RUNNING_DOWN = 0;
         public static final int RUNNING_LEFT = 2;
         public static final int RUNNING_RIGHT = 3;
-        public static final int IDLE = 4;
+        // public static final int IDLE = 4;
     
 
         public static int GetSpriteAmount(int playerAction) {
             switch (playerAction) {
-                case IDLE:
-                    return 0;
+                // case IDLE:
+                //      return 0;
                 case RUNNING_UP:
                 case RUNNING_DOWN:
                 case RUNNING_LEFT:
                 case RUNNING_RIGHT:
-                    return 2;
+                    return 3;
                 default:
                     return 0;
             }

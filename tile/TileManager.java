@@ -2,54 +2,47 @@ package tile;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.imageio.ImageIO;
 
 import entity.Player;
 import main.GamePanel;
+import tools.UtilityTool;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
-import tools.UtilityTool;
+
 
 public class TileManager extends Tile {
     GamePanel gp;
     Player player;
+    BufferedImage img;
+    BufferedImage[] tileImages;
+
     public Tile[] tile;
     public int mapTileNum[][];
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        tile = new Tile[50];
+        tile = new Tile[10 + 15];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
-        getTileImage();
+
+        importTileImage("/res/aseprites/map/baseLayer.png");
+        loadTileImages(15,0);
         
     }
 
-    public void loadMap(String filepath) {
-        try {
-            InputStream is = getClass().getResourceAsStream(filepath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+    public void importTileImage(String filepath) {
+        img = UtilityTool.importImg(filepath);
+    }
 
-            int col = 0;
-            int row = 0;
+    public void loadTileImages(int tilesLength, int rows) {
+        UtilityTool uTool = new UtilityTool(gp);
+        tileImages = new BufferedImage[tilesLength];
 
-            while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
-                String line = br.readLine();
-
-                while (col < gp.maxWorldCol) {
-                    String numbers[] = line.split(" ");
-                    int num = Integer.parseInt(numbers[col]);
-                    mapTileNum[col][row] = num;
-                    col++;
-                }
-                if (col == gp.maxWorldCol) {
-                    col = 0;
-                    row++;
-                }
-            }
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (int i = 0; i < tileImages.length; i++) {
+            tileImages[i] = img.getSubimage(i*32, rows*32, 32, 32);
+            tile[10 + i] = new Tile();
+            tile[10 + i].image = uTool.scaleImage(tileImages[i],gp.tileSize,gp.tileSize);
         }
     }
 
@@ -81,52 +74,32 @@ public class TileManager extends Tile {
             }
         }
     }
-    
- 
-    //HELPER METHODS
-    public void setup(int index, String imageName) {
-        UtilityTool tool = new UtilityTool();
+
+    public void loadMap(String filepath) {
         try {
-            tile[index] = new Tile();
-            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/res/images/tiles/" + imageName + ".png"));
-            tile[index].image = tool.scaleImage(tile[index].image,gp.tileSize,gp.tileSize);
+            InputStream is = getClass().getResourceAsStream(filepath);
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            int col = 0;
+            int row = 0;
+
+            while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
+                String line = br.readLine();
+
+                while (col < gp.maxWorldCol) {
+                    String numbers[] = line.split(" ");
+                    int num = Integer.parseInt(numbers[col]);
+                    mapTileNum[col][row] = num;
+                    col++;
+                }
+                if (col == gp.maxWorldCol) {
+                    col = 0;
+                    row++;
+                }
+            }
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public void getTileImage() {
-        setup(0, "Durotar_dirt_01");
-        setup(1, "Durotar_dirt_01");
-        setup(2, "Durotar_dirt_01");
-        setup(3, "Durotar_dirt_01");
-        setup(4, "Durotar_dirt_01");
-        setup(5, "Durotar_dirt_01");
-        setup(6, "Durotar_dirt_01");
-        setup(7, "Durotar_dirt_01");
-        setup(8, "Durotar_dirt_01");
-        setup(9, "Durotar_dirt_01");
-        
-        setup(10, "Durotar_dirt_01");
-        setup(11, "Durotar_dirt_02");
-        setup(12, "Durotar_dirt_03");
-        setup(13, "Durotar_dirt_04");
-        setup(14, "Durotar_dirt_stone_01");
-        setup(15, "Durotar_dirt_stone_02");
-        setup(16, "Durotar_dirt_stone_03");
-        setup(17, "Durotar_dirt_road_01");
-        setup(18, "Durotar_dirt_road_02");
-        setup(19, "Durotar_dirt_road_03");
-        setup(20, "Durotar_dirt_road_04");
-        setup(23, "Durotar_dirt_road_05");
-        setup(24, "Durotar_dirt_road_corner_01");
-        setup(25, "Durotar_dirt_road_corner_02");
-        setup(26, "Durotar_dirt_road_corner_03");
-        setup(27, "Durotar_dirt_road_corner_04");
-        setup(28, "Durotar_dirt_road_widecorner_topleft");
-        setup(29, "Durotar_dirt_road_widecorner_bottomleft");
-        setup(30, "Durotar_dirt_road_widecorner_topright");
-        setup(31, "Durotar_dirt_road_widecorner_bottomright");
-    }
-
 }

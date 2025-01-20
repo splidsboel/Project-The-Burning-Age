@@ -13,6 +13,9 @@ public class Playing extends State implements Statemethods{
     MouseHandler mouseH;
     public Entity entity;
     public Player player;
+
+    //Keys
+    public boolean p_pressed = false;
     
     Graphics2D g2;
 
@@ -38,6 +41,10 @@ public class Playing extends State implements Statemethods{
     public void draw(Graphics2D g2) {
         gp.tileM.draw(g2);
         player.render(g2);
+
+        if (p_pressed) {
+            gp.debugText(g2);
+        }
     }
 
     @Override
@@ -104,7 +111,8 @@ public class Playing extends State implements Statemethods{
                 Gamestate.state = Gamestate.MENU;
                 break;
             case KeyEvent.VK_P:
-                gp.uTool.debugText(g2);
+                p_pressed = true;
+                break;
         }
     }
 

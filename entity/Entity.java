@@ -75,7 +75,7 @@ public class Entity {
 
 
     public BufferedImage setup(String imagePath, int width, int height) {
-        UtilityTool uTool = new UtilityTool();
+        UtilityTool uTool = new UtilityTool(gp);
         BufferedImage image = null;
         try {
             image = ImageIO.read(getClass().getResourceAsStream(imagePath+".png"));
