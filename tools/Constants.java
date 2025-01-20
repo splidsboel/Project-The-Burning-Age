@@ -40,8 +40,6 @@ public class Constants {
         public static final int IDLE = 4;
     
 
-
-
         public static int GetSpriteAmount(int playerAction) {
             switch (playerAction) {
                 case IDLE:
@@ -55,6 +53,5 @@ public class Constants {
                     return 0;
             }
         }
-
     }
 }

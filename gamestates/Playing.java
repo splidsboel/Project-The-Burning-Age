@@ -80,6 +80,7 @@ public class Playing extends State implements Statemethods{
                 case KeyEvent.VK_S -> gp.getPlaying().getPlayer().setDown(true);
                 case KeyEvent.VK_A -> gp.getPlaying().getPlayer().setLeft(true);
                 case KeyEvent.VK_D -> gp.getPlaying().getPlayer().setRight(true);
+                case KeyEvent.VK_SPACE -> gp.getPlaying().getPlayer().dash();
             }
     }
 

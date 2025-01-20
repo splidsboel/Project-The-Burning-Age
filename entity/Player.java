@@ -19,8 +19,6 @@ public class Player extends Entity {
     private boolean moving = false;
 
 
-
-
     public int cameraX = 0;
     public int cameraY = 0;
     public int screenX; 
@@ -44,7 +42,7 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 25;
-        defaultSpeed = 2;
+        defaultSpeed = 5;
         speed = defaultSpeed;
 
     }
@@ -59,7 +57,19 @@ public class Player extends Entity {
         setAnimation();
         updatePosition();
         
-        g2.drawImage(animations[aniIndex][playerAction], screenX, screenY, (int)(32*2.5),(int)(32*2.5), null);
+        drawPlayerImage(g2);
+    }
+
+    public void dash() {
+        worldX += 25;
+    }
+
+    public void drawPlayerImage(Graphics2D g2){
+        if (moving) {
+            g2.drawImage(animations[aniIndex][playerAction], screenX, screenY, (int)(32*2.5),(int)(32*2.5), null);   
+        } else {
+            g2.drawImage(animations[0][playerAction], screenX, screenY, (int)(32*2.5),(int)(32*2.5), null);   
+        }
     }
 
     public void importPlayerImage() {
@@ -91,9 +101,9 @@ public class Player extends Entity {
                 playerAction = RUNNING_RIGHT;
             }
             
-        } else {
-            playerAction = IDLE;
-        }
+         } //else {
+        //     playerAction = IDLE;
+        // }
     } 
 
     public void updatePosition() {
