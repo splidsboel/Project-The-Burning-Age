@@ -1,6 +1,5 @@
 package entity;
 
-import static tools.Constants.Directions.*;
 import static tools.Constants.PlayerConstants.*;
 
 import java.awt.Graphics2D;

@@ -1,7 +1,5 @@
 package tools;
 
-import main.GamePanel;
-
 public class Constants {
 
     public static class UI {

@@ -7,7 +7,6 @@ import java.awt.event.KeyListener;
 import entity.Player;
 import gamestates.Gamestate;
 import main.GamePanel;
-import tools.Constants.Directions.*;
 
 public class KeyHandler implements KeyListener {
     GamePanel gp;
