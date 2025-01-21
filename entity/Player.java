@@ -19,10 +19,10 @@ public class Player extends Entity {
     private boolean moving = false;
 
 
-    public int cameraX = 0;
-    public int cameraY = 0;
-    public int screenX; 
-    public int screenY; 
+    public double cameraX = 0;
+    public double cameraY = 0;
+    public double screenX; 
+    public double screenY; 
 
 
     //BOOLEANS
@@ -63,9 +63,9 @@ public class Player extends Entity {
 
     public void drawPlayerImage(Graphics2D g2){
         if (moving) {
-            g2.drawImage(animations[aniIndex][playerAction], screenX, screenY, (int)(32*2.5),(int)(32*2.5), null);   
+            g2.drawImage(animations[aniIndex][playerAction],(int)screenX,(int)screenY, (int)gp.tileSize,(int)gp.tileSize, null);   
         } else {
-            g2.drawImage(animations[0][playerAction], screenX, screenY, (int)(32*2.5),(int)(32*2.5), null);   
+            g2.drawImage(animations[0][playerAction],(int)screenX,(int)screenY, (int)gp.tileSize,(int)gp.tileSize, null);   
         }
     }
 
@@ -112,7 +112,7 @@ public class Player extends Entity {
         boolean horizontalMove = left ^ right; // XOR: true if either is true, but not both
         boolean verticalMove = up ^ down;
         boolean diagonalMove = horizontalMove && verticalMove;
-        float effectiveSpeed = diagonalMove ? speed / (float) Math.sqrt(2) : speed;
+        float effectiveSpeed = diagonalMove ? (int)speed / (float) Math.sqrt(2) : (int)speed;
     
         // Update position
         if (up && !down) {
@@ -150,18 +150,16 @@ public class Player extends Entity {
         }
     }
 
-    public void updateCameraOnPlayer() {
-        if (moving) {
-            // Center the camera on the player
-            cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;
-            cameraY = worldY - gp.screenHeight / 2 + gp.tileSize / 2;
+    public void updateCameraOnPlayer() {    
+        // Center the camera on the player
+        cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;
+        cameraY = worldY - gp.screenHeight / 2 + gp.tileSize / 2;
     
-            cameraX = Math.max(0, Math.min(cameraX, gp.maxWorldCol * gp.tileSize - gp.screenWidth));
-            cameraY = Math.max(0, Math.min(cameraY, gp.maxWorldRow * gp.tileSize - gp.screenHeight));
+        cameraX = Math.max(0, Math.min(cameraX, gp.maxWorldCol * gp.tileSize - gp.screenWidth));
+        cameraY = Math.max(0, Math.min(cameraY, gp.maxWorldRow * gp.tileSize - gp.screenHeight));
     
-            screenX = worldX - cameraX;
-            screenY = worldY - cameraY;
-        }
+        screenX = worldX - cameraX;
+        screenY = worldY - cameraY;
     }
 
     public void playerLookDirection() {

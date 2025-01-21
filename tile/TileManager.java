@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 public class TileManager extends Tile {
     GamePanel gp;
     Player player;
+    UtilityTool uTool;
     BufferedImage img;
     BufferedImage[] tileImages;
 
@@ -23,11 +24,13 @@ public class TileManager extends Tile {
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
+        uTool = new UtilityTool(gp);
         tile = new Tile[10 + 15];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         importTileImage("/res/aseprites/map/baseLayer.png");
-        loadTileImages(15,0);
+        loadSubImages(15,0);
+        loadTileImages();
         
     }
 
@@ -35,14 +38,18 @@ public class TileManager extends Tile {
         img = UtilityTool.importImg(filepath);
     }
 
-    public void loadTileImages(int tilesLength, int rows) {
-        UtilityTool uTool = new UtilityTool(gp);
+    public void loadSubImages(int tilesLength, int rows) {
         tileImages = new BufferedImage[tilesLength];
 
         for (int i = 0; i < tileImages.length; i++) {
             tileImages[i] = img.getSubimage(i*32, rows*32, 32, 32);
+        }
+    }
+
+    public void loadTileImages() {
+        for (int i = 0; i < tileImages.length; i++) {
             tile[10 + i] = new Tile();
-            tile[10 + i].image = uTool.scaleImage(tileImages[i],gp.tileSize,gp.tileSize);
+            tile[10 + i].image = uTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
         }
     }
 
@@ -54,16 +61,16 @@ public class TileManager extends Tile {
             int tileNum = mapTileNum[worldCol][worldRow];
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;
-            int screenX = worldX - gp.playing.player.cameraX;
-            int screenY = worldY - gp.playing.player.cameraY;
+            double screenX = worldX - gp.playing.player.cameraX;
+            double screenY = worldY - gp.playing.player.cameraY;
     
             // Only draw tiles visible on the screen
             if (worldX + gp.tileSize > gp.playing.player.cameraX && 
                 worldX - gp.tileSize < gp.playing.player.cameraX + gp.screenWidth && 
                 worldY + gp.tileSize > gp.playing.player.cameraY && 
                 worldY - gp.tileSize < gp.playing.player.cameraY + gp.screenHeight) {
-                
-                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+    
+                g2.drawImage(tile[tileNum].image, (int)screenX, (int)screenY, null);
             }
     
             worldCol++;

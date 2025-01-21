@@ -3,14 +3,13 @@ package gamestates;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import entity.Entity;
 import entity.Player;
-import input.MouseHandler;
 import main.GamePanel;
 
 public class Playing extends State implements Statemethods{
-    MouseHandler mouseH;
     public Entity entity;
     public Player player;
 
@@ -66,6 +65,18 @@ public class Playing extends State implements Statemethods{
     public void mouseMoved(MouseEvent e) {
 
     }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        
+        if (e.getWheelRotation() < 0) {
+            gp.zoomInOut(5);
+            
+        } else if(e.getWheelRotation() > 0){
+            gp.zoomInOut(-5);
+        }
+    }
+
 
     @Override
     public void keyPressed(KeyEvent e) {

@@ -37,13 +37,13 @@ public class GamePanel extends JPanel implements Runnable {
     //SCREEN SETTINGS
     public static final int originalTileSize = 32;
     public static final double scale = 2.5;
-    public final int tileSize = (int)(originalTileSize * scale); // 80x80 tile
+    public int tileSize = (int)(originalTileSize * scale); // 80x80 tile
     public final int maxScreenCol = 24;
     public final double maxScreenRow = 13.5; // 16:9
-    public final int screenWidth = tileSize * maxScreenCol; // 1920 pixels
+    public final int screenWidth = (int)tileSize * maxScreenCol; // 1920 pixels
     public final int screenHeight = (int)(tileSize * maxScreenRow); // 1080 pixels
-    public final int localScreenWidth = Main.window.getWidth();
-    public final int localScreenHeight = Main.window.getHeight();
+    public int currentZoom = 0;
+
 
     protected final int FPS = 90;
     protected int currentFPS;
@@ -57,6 +57,9 @@ public class GamePanel extends JPanel implements Runnable {
     //WORLD SETTINGS
     public final int maxWorldCol = 25;
     public final int maxWorldRow = 25;
+    public final int worldWidth = maxWorldCol * tileSize;
+    public final int worldHeight = maxWorldRow * tileSize;
+
     
     public GamePanel() {
         initializeClasses();
@@ -81,6 +84,8 @@ public class GamePanel extends JPanel implements Runnable {
         //SYSTEMS
         keyH = new KeyHandler(this);
         mouseH = new MouseHandler(this);
+        this.addMouseWheelListener(mouseH);
+
         uTool = new UtilityTool(this);
         tileM = new TileManager(this);
         
@@ -192,6 +197,30 @@ public class GamePanel extends JPanel implements Runnable {
         // if (Gamestate.state == Gamestate.PLAYING) {
         //     playing.getPlayer().resetDirectionBooleans();
         // }
+    }
+
+    public void zoomInOut(int zoomChange) { 
+        if (currentZoom + zoomChange > 50 || currentZoom + zoomChange < 0) return;
+            currentZoom += zoomChange;
+
+            int oldWorldWidth = tileSize * maxWorldCol;
+            tileSize += zoomChange;
+            int newWorldWidth = tileSize * maxWorldCol;
+            double multiplier = (double)newWorldWidth/oldWorldWidth;
+
+            //Update speed
+            double newSpeed = getPlaying().getPlayer().speed * multiplier;
+            getPlaying().getPlayer().speed = newSpeed;
+
+            //Update position
+            double newPlayerWorldX = getPlaying().getPlayer().worldX * multiplier;
+            double newPlayerWorldY = getPlaying().getPlayer().worldY * multiplier;    
+            getPlaying().getPlayer().worldX = newPlayerWorldX;
+            getPlaying().getPlayer().worldY = newPlayerWorldY;
+        
+            //Redraw tiles, scale
+            tileM.loadTileImages();
+
     }
 
     public void debugText(Graphics2D g2) {

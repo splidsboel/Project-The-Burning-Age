@@ -3,11 +3,13 @@ package input;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import gamestates.Gamestate;
 import main.GamePanel;
 
-public class MouseHandler implements MouseListener, MouseMotionListener {
+public class MouseHandler implements MouseListener, MouseMotionListener, MouseWheelListener {
     GamePanel gp;
     public int mouseX;
     public int mouseY;
@@ -91,5 +93,19 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
 
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        switch (Gamestate.state) {
+            case PLAYING:
+                gp.getPlaying().mouseWheelMoved(e);
+                break;
+            case MENU:
+                gp.getMenu().mouseWheelMoved(e);
+                break;
+            default:
+                break;
+        }
     }
 }

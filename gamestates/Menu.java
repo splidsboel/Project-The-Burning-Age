@@ -3,6 +3,7 @@ package gamestates;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import main.GamePanel;
 import main.UI.MenuButton;
@@ -67,10 +68,6 @@ public class Menu extends State implements Statemethods {
     
 
 
-
-
-
-
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -117,6 +114,11 @@ public class Menu extends State implements Statemethods {
     }
 
     @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+
+    }
+
+    @Override
     public void keyPressed(KeyEvent e) {
    
     }
@@ -133,5 +135,7 @@ public class Menu extends State implements Statemethods {
             mb.resetBools();
         }
     }
+
+
     
 }

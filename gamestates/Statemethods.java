@@ -3,6 +3,7 @@ package gamestates;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 public interface Statemethods {
     public void update();
@@ -16,6 +17,8 @@ public interface Statemethods {
     public void mouseReleased(MouseEvent e);
 
     public void mouseMoved(MouseEvent e);
+
+    public void mouseWheelMoved(MouseWheelEvent e);
 
     public void keyPressed(KeyEvent e);
 

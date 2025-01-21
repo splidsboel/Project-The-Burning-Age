@@ -17,7 +17,7 @@ public class Entity {
 
 
     //STATE
-    public int worldX, worldY;
+    public double worldX, worldY;
     public String direction = "down";
     public int spriteNum = 1;
 
@@ -37,7 +37,7 @@ public class Entity {
     //CHARACTER STATUS
     public String name;
     public int defaultSpeed;
-    public int speed;
+    public double speed;
     public int maxLife;
     public int life;
     public int rage;
