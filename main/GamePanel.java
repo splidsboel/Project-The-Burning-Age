@@ -200,7 +200,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void zoomInOut(int zoomChange) { 
-        if (currentZoom + zoomChange > 50 || currentZoom + zoomChange < 0) return;
+        if (currentZoom + zoomChange > 100 || currentZoom + zoomChange < 0) return;
             currentZoom += zoomChange;
 
             int oldWorldWidth = tileSize * maxWorldCol;
@@ -217,8 +217,10 @@ public class GamePanel extends JPanel implements Runnable {
             double newPlayerWorldY = getPlaying().getPlayer().worldY * multiplier;    
             getPlaying().getPlayer().worldX = newPlayerWorldX;
             getPlaying().getPlayer().worldY = newPlayerWorldY;
-        
-            //Redraw tiles, scale
+
+            
+            //Update cameraX and cameraY pos, rescale images
+            getPlaying().getPlayer().updateCameraOnPlayer();
             tileM.loadTileImages();
 
     }
@@ -228,8 +230,12 @@ public class GamePanel extends JPanel implements Runnable {
         int x = 10;
         int y = 400;
         int lineHeight = 20;
-        g2.drawString("WorldX: " + getPlaying().getPlayer().worldX, x, y); y += lineHeight;
-        g2.drawString("WorldY: " + getPlaying().getPlayer().worldY, x, y); y += lineHeight;
+        g2.drawString("worldX: " + getPlaying().getPlayer().worldX, x, y); y += lineHeight;
+        g2.drawString("worldY: " + getPlaying().getPlayer().worldY, x, y); y += lineHeight;
+        g2.drawString("screenX: " + getPlaying().getPlayer().screenX, x, y); y += lineHeight;
+        g2.drawString("screenY: " + getPlaying().getPlayer().screenY, x, y); y += lineHeight;
+        g2.drawString("cameraX: " + getPlaying().getPlayer().cameraX, x, y); y += lineHeight;
+        g2.drawString("cameraY: " + getPlaying().getPlayer().cameraY, x, y); y += lineHeight;
         g2.drawString("Col: " + (getPlaying().getPlayer().worldX)/tileSize, x, y); y += lineHeight;
         g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
         g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;

@@ -38,8 +38,10 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void draw(Graphics2D g2) {
+        
         gp.tileM.draw(g2);
         player.render(g2);
+        
 
         if (p_pressed) {
             gp.debugText(g2);

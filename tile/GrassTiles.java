@@ -15,7 +15,7 @@ public class GrassTiles extends TileManager {
         tile = new Tile[10 + 16];
 
         importTileImage("/res/aseprites/map/grassLayer.png");
-        loadTileImages(0, 0);
+        
     }
 
 
