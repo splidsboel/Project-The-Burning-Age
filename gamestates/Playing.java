@@ -1,5 +1,9 @@
 package gamestates;
 
+import static tools.Constants.PlayerConstants.RUNNING_LEFT;
+import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
+import static tools.Constants.PlayerConstants.RUNNING_UP;
+
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -65,7 +69,12 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        if (e.getX() < getPlayer().screenX + (gp.tileSize/2)) {
+            getPlayer().playerAction = RUNNING_LEFT;
+        }
+        if (e.getX() > getPlayer().screenX + (gp.tileSize/2)) {
+            getPlayer().playerAction = RUNNING_RIGHT;
+        }
     }
 
     @Override

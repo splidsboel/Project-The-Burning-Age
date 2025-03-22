@@ -1,10 +1,7 @@
 package gamestates;
 
-import static tools.Constants.UI.Buttons.b_width_default;
-import static tools.Constants.UI.dragonImages.img_height;
-import static tools.Constants.UI.dragonImages.img_height_default;
 import static tools.Constants.UI.dragonImages.img_width;
-import static tools.Constants.UI.dragonImages.img_width_default;
+
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;

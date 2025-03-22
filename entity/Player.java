@@ -12,8 +12,8 @@ public class Player extends Entity {
     Graphics2D g2;
     GamePanel gp;
     BufferedImage[][] animations;
-    private int aniTick, aniIndex, aniSpeed = 20; // 90 fps / 2 animationer
-    private int playerAction = RUNNING_LEFT;
+    private int aniTick, aniIndex, aniSpeed = 12; // 90 fps / 2 animationer
+    public int playerAction = RUNNING_LEFT;
     private boolean up, right, left, down, left_up, left_down, right_up, right_down;
     private boolean moving = false;
 
