@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -33,17 +32,17 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM;
     public UtilityTool uTool;
 
-
     //SCREEN SETTINGS
-    public static final int originalTileSize = 32;
-    public static final double scale = 2.5;
-    public int tileSize = (int)(originalTileSize * scale); // 80x80 tile
-    public final int maxScreenCol = 24;
-    public final double maxScreenRow = 13.5; // 16:9
-    public final int screenWidth = (int)tileSize * maxScreenCol; // 1920 pixels
-    public final int screenHeight = (int)(tileSize * maxScreenRow); // 1080 pixels
+    public static final int originalTileSize = 32;  
+    public int scale;  // Scale factor for rendering
+    public int tileSize = originalTileSize;
+    public int virtualWidth = 24 * originalTileSize; //768
+    public int virtualHeight = (int)15 * originalTileSize; //432. amount of tile-pixels on screen. 16:9
+    public int detectedScreenWidth;
+    public int detectedScreenHeight;
+    public int screenWidth; // display resolution
+    public int screenHeight; 
     public int currentZoom = 0;
-
 
     protected final int FPS = 90;
     protected int currentFPS;
@@ -55,24 +54,46 @@ public class GamePanel extends JPanel implements Runnable {
     Graphics2D g2;
 
     //WORLD SETTINGS
-    public final int maxWorldCol = 25;
-    public final int maxWorldRow = 25;
-    public final int worldWidth = maxWorldCol * tileSize;
-    public final int worldHeight = maxWorldRow * tileSize;
+    public int maxWorldCol = 25;
+    public int maxWorldRow = 25;
 
     
     public GamePanel() {
+        
+
+        // Detect actual screen size
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        detectedScreenWidth = gd.getDisplayMode().getWidth();
+        detectedScreenHeight = gd.getDisplayMode().getHeight();
+        screenWidth = detectedScreenWidth;
+        screenHeight = detectedScreenHeight;
+    
+
+        float scaleX = detectedScreenWidth/(float)virtualWidth;
+        float scaleY = detectedScreenHeight/(float)virtualHeight;
+        scale =(int) Math.min(scaleX,scaleY);
+
+
+        tileSize = tileSize * scale;
+
+
+        System.out.println(scale);
+        System.out.println(tileSize);
+        System.out.println("DETECTED:"+detectedScreenWidth + " * " + detectedScreenHeight);
+        System.out.println("RESOLUTION:"+screenWidth + " * " + screenHeight);
+        
+
+
         initializeClasses();
 
-        //GAME WINDOW
-        this.setPreferredSize(new Dimension(screenWidth,screenHeight));
-        this.setDoubleBuffered(true);
-    
         //MOUSE AND KEY LISTENER
         this.addMouseListener(mouseH);
         this.addMouseMotionListener(mouseH);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+
+        
 
     } 
 
@@ -109,6 +130,17 @@ public class GamePanel extends JPanel implements Runnable {
         switch (Gamestate.state) {
             case PLAYING: 
                 playing.draw(g2);
+                System.out.println("worldX: " + getPlaying().getPlayer().worldX);
+                System.out.println("worldY: " + getPlaying().getPlayer().worldY); 
+                System.out.println("screenX: " + getPlaying().getPlayer().screenX); 
+                System.out.println("screenY: " + getPlaying().getPlayer().screenY);
+                System.out.println("cameraX: " + getPlaying().getPlayer().cameraX); 
+                System.out.println("cameraY: " + getPlaying().getPlayer().cameraY); 
+                System.out.println("Col: " + (getPlaying().getPlayer().worldX)/tileSize);
+                System.out.println("Row: " + (getPlaying().getPlayer().worldY)/tileSize);
+                System.out.println("FPS: " + currentFPS);
+                System.out.println("UPS: " + currentUPS);
+                System.out.println("Actual GamePanel size: " + getWidth() + "x" + getHeight());
                 break;
             case MENU:
                 menu.draw(g2);
@@ -125,24 +157,17 @@ public class GamePanel extends JPanel implements Runnable {
     
     //SETUP GAME AND START GAME THREAD METHODS
     public void setupGame() {
-        // Center the camera on the player
-        getPlaying().getPlayer().cameraX = getPlaying().getPlayer().worldX - screenWidth / 2 + tileSize / 2;
-        getPlaying().getPlayer().cameraY = getPlaying().getPlayer().worldY - screenHeight / 2 + tileSize / 2;
-        getPlaying().getPlayer().screenX = getPlaying().getPlayer().worldX - getPlaying().getPlayer().cameraX;
-        getPlaying().getPlayer().screenY = getPlaying().getPlayer().worldY - getPlaying().getPlayer().cameraY;
         
         //SET START OBJECTS
         tileM.loadMap("/res/maps/world01.txt");
                
         //DRAW
         screen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
-            g2 = (Graphics2D) screen.getGraphics();
+        g2 = (Graphics2D) screen.getGraphics();
         
-    
-        //SET FULLSCREEN
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        gd.setFullScreenWindow(Main.window);
+
+        getPlaying().getPlayer().updateCameraOnPlayer();
+ 
     }   
 
     public void startGameThread() {
@@ -236,6 +261,10 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("screenY: " + getPlaying().getPlayer().screenY, x, y); y += lineHeight;
         g2.drawString("cameraX: " + getPlaying().getPlayer().cameraX, x, y); y += lineHeight;
         g2.drawString("cameraY: " + getPlaying().getPlayer().cameraY, x, y); y += lineHeight;
+        g2.drawString("mouseX: " + mouseH.mouseX, x, y); y += lineHeight;
+        g2.drawString("mouseY: " + mouseH.mouseY, x, y); y += lineHeight;
+        g2.drawString("scale: " + scale, x, y); y += lineHeight;
+        g2.drawString("resolution: " + screenWidth + "x" + screenHeight, x, y); y += lineHeight;
         g2.drawString("Col: " + (getPlaying().getPlayer().worldX)/tileSize, x, y); y += lineHeight;
         g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
         g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
@@ -249,5 +278,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
     public Menu getMenu() {
         return menu;
+    }
+
+    public double getScale() {
+        return scale;
     }
 }

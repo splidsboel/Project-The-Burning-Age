@@ -10,11 +10,11 @@ public class Constants {
             public static final int b_height = (int) (b_height_default * 4);
         }
 
-        public static class Images {
+        public static class dragonImages {
             public static final int img_width_default = 128;
             public static final int img_height_default = 120;
-            public static final int img_width = (int)(img_width_default * 7);
-            public static final int img_height = (int)(img_height_default * 7);
+            public static final int img_width = (int)(img_width_default);
+            public static final int img_height = (int)(img_height_default);
         }
     }
 

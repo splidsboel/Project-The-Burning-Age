@@ -1,5 +1,11 @@
 package gamestates;
 
+import static tools.Constants.UI.Buttons.b_width_default;
+import static tools.Constants.UI.dragonImages.img_height;
+import static tools.Constants.UI.dragonImages.img_height_default;
+import static tools.Constants.UI.dragonImages.img_width;
+import static tools.Constants.UI.dragonImages.img_width_default;
+
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -24,13 +30,13 @@ public class Menu extends State implements Statemethods {
     }
 
     public void loadButtons() {
-        buttons[0] = new MenuButton(gp.screenWidth / 2, (int)(300*GamePanel.scale), 0, Gamestate.PLAYING);
-        buttons[1] = new MenuButton(gp.screenWidth / 2, (int)(330*GamePanel.scale), 1, Gamestate.OPTIONS);
-        buttons[2] = new MenuButton(gp.screenWidth / 2, (int)(375*GamePanel.scale), 2, Gamestate.QUIT);
+        buttons[0] = new MenuButton(((gp.screenWidth / 2)/2), 180*gp.scale, 0, Gamestate.PLAYING);
+        buttons[1] = new MenuButton(((gp.screenWidth / 2)/2),205*gp.scale , 1, Gamestate.OPTIONS);
+        buttons[2] = new MenuButton(((gp.screenWidth / 2)/2),230*gp.scale , 2, Gamestate.QUIT);
     }
 
     public void loadImages() {
-        img = new MenuImage(gp.screenWidth / 2 + 40, (int)(GamePanel.scale));
+        img = new MenuImage(((gp.screenWidth/2)/2) - ((img_width * gp.scale) / 2) - 30,0);
     }
 
     @Override
@@ -43,7 +49,7 @@ public class Menu extends State implements Statemethods {
     @Override
     public void draw(Graphics2D g2) {
         updateAnimationTick();
-        img.draw(g2, aniIndex);
+        img.draw(g2, aniIndex, gp.scale +1);
         
         for (MenuButton mb : buttons) {
             mb.draw(g2);

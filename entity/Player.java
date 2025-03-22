@@ -36,14 +36,15 @@ public class Player extends Entity {
         importPlayerImage();
         loadAnimations();
 
+        
+
     }
 
     public void setDefaultValues() {
         worldX = gp.tileSize * 12;
         worldY = gp.tileSize * 13;
-        defaultSpeed = 4;
+        defaultSpeed = 2 * gp.scale;
         speed = defaultSpeed;
-
     }
 
     public void update() {
@@ -131,12 +132,10 @@ public class Player extends Entity {
 
         if (moving) {
             // Stay in map bounds
-            worldX = Math.max(0, Math.min(worldX, gp.maxWorldCol * gp.tileSize - gp.tileSize));
-            worldY = Math.max(0, Math.min(worldY, gp.maxWorldRow * gp.tileSize - gp.tileSize));
+            worldX = Math.max(0, Math.min(worldX, (gp.maxWorldCol * gp.tileSize) - gp.tileSize));
+            worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
         }
     }
-    
-
 
     public void updateAnimationTick() {
         aniTick++;
@@ -149,17 +148,30 @@ public class Player extends Entity {
         }
     }
 
-    public void updateCameraOnPlayer() {    
-        // Center the camera on the player
-        cameraX = worldX - gp.screenWidth / 2 + gp.tileSize / 2;
-        cameraY = worldY - gp.screenHeight / 2 + gp.tileSize / 2;
+    public void updateCameraOnPlayer() {
+        // Get screen dimensions from GamePanel
+        int screenWidth = gp.screenWidth / 2;
+        int screenHeight = gp.screenHeight / 2;
     
-        cameraX = Math.max(0, Math.min(cameraX, gp.maxWorldCol * gp.tileSize - gp.screenWidth));
-        cameraY = Math.max(0, Math.min(cameraY, gp.maxWorldRow * gp.tileSize - gp.screenHeight));
+        // Center the camera on the player:
+        // Adjust by half the tile size so that the player sprite is centered.
+        cameraX = (worldX - screenWidth / 2 + gp.tileSize / 2);
+        cameraY = (worldY - screenHeight / 2 + gp.tileSize / 2);
     
+        // Calculate the total world dimensions in pixels:
+        double worldPixelWidth = gp.maxWorldCol * gp.tileSize;
+        double worldPixelHeight = gp.maxWorldRow * gp.tileSize;
+    
+        // Clamp the camera so it doesn't go past the world edges:
+        cameraX = Math.max(0, Math.min(cameraX, worldPixelWidth - screenWidth));
+        cameraY = Math.max(0, Math.min(cameraY, worldPixelHeight - screenHeight));
+    
+        // Update the player's screen position (the position on the display where the player should be drawn)
         screenX = worldX - cameraX;
         screenY = worldY - cameraY;
     }
+    
+    
 
     public void playerLookDirection() {
         // if (mouseH.mouseX < screenX) {
