@@ -16,6 +16,7 @@ import input.KeyHandler;
 import input.MouseHandler;
 import tile.TileManager;
 import tools.UtilityTool;
+import world.DecorManager;
 
 public class GamePanel extends JPanel implements Runnable {
     //THREAD
@@ -30,14 +31,15 @@ public class GamePanel extends JPanel implements Runnable {
     public KeyHandler keyH; 
     public MouseHandler mouseH;
     public TileManager tileM;
+    public DecorManager decorM;
     public UtilityTool uTool;
 
     //SCREEN SETTINGS
     public static final int originalTileSize = 32;  
     public int scale;  // Scale factor for rendering
     public int tileSize = originalTileSize;
-    public int virtualWidth = 24 * originalTileSize; //768
-    public int virtualHeight = (int)15 * originalTileSize; //432. amount of tile-pixels on screen. 16:9
+    public int virtualWidth = 28 * originalTileSize; //768
+    public int virtualHeight = 17 * originalTileSize; //432. amount of tile-pixels on screen. 16:0
     public int detectedScreenWidth;
     public int detectedScreenHeight;
     public int screenWidth; // display resolution
@@ -109,6 +111,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         uTool = new UtilityTool(this);
         tileM = new TileManager(this);
+        decorM = new DecorManager();
         
     }
 

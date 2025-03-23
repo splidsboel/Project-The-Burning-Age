@@ -12,10 +12,13 @@ import java.awt.event.MouseWheelEvent;
 import entity.Entity;
 import entity.Player;
 import main.GamePanel;
+import world.DecorLoader;
+import world.DecorManager;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
     public Player player;
+    public DecorManager decorM;
 
     //Keys
     public boolean p_pressed = false;
@@ -32,18 +35,23 @@ public class Playing extends State implements Statemethods{
         //ENTITIES AND OBJECTS
         entity = new Entity(gp);
         player = new Player(gp);
+        decorM = new DecorManager();
+
+        //WORLD
+        DecorLoader.loadExampleDecor(decorM, gp);
     }
 
 
     @Override
     public void update() {
         player.update();
+        decorM.update();
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        
         gp.tileM.draw(g2);
+        decorM.draw(g2, player.cameraX, player.cameraY);
         player.render(g2);
         
 
