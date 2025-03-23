@@ -15,7 +15,7 @@ import main.UI.MenuImage;
 public class Menu extends State implements Statemethods {
     private MenuButton[] buttons = new MenuButton[3];
     private MenuImage img;
-    private int aniTick = 0, aniSpeed = 80, aniIndex;
+    private int aniTick = 0, aniSpeed =60, aniIndex;
     boolean aniActive = true;
 
 
@@ -46,6 +46,7 @@ public class Menu extends State implements Statemethods {
     @Override
     public void draw(Graphics2D g2) {
         updateAnimationTick();
+
         img.draw(g2, aniIndex, gp.scale +1);
         
         for (MenuButton mb : buttons) {

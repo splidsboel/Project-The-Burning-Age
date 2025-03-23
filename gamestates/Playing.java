@@ -2,7 +2,7 @@ package gamestates;
 
 import static tools.Constants.PlayerConstants.RUNNING_LEFT;
 import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
-import static tools.Constants.PlayerConstants.RUNNING_UP;
+
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;

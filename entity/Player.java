@@ -104,7 +104,7 @@ public class Player extends Entity {
     } 
 
     public void dash() {
-
+        
     }
 
     public void updatePosition() {
