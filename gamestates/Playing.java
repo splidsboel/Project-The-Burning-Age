@@ -12,7 +12,7 @@ import java.awt.event.MouseWheelEvent;
 import entity.Entity;
 import entity.Player;
 import main.GamePanel;
-import world.DecorLoader;
+import world.TiledMapLoader;
 import world.DecorManager;
 
 public class Playing extends State implements Statemethods{
@@ -38,7 +38,7 @@ public class Playing extends State implements Statemethods{
         decorM = new DecorManager();
 
         //WORLD
-        DecorLoader.loadExampleDecor(decorM, gp);
+        TiledMapLoader.loadExampleDecor(decorM, gp);
     }
 
 

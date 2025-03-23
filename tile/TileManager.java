@@ -49,7 +49,7 @@ public class TileManager extends Tile {
     public void loadTileImages() {
         for (int i = 0; i < tileImages.length; i++) {
             tile[10 + i] = new Tile();
-            tile[10 + i].image = uTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
+            tile[10 + i].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
         }
     }
 

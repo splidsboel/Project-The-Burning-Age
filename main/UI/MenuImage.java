@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import tools.UtilityTool;
-import main.GamePanel;
 
 public class MenuImage {
     private int x, y;
@@ -31,7 +30,7 @@ public class MenuImage {
     }
 
     public void draw(Graphics2D g2, int aniIndex, int scale) {
-        g2.drawImage(imgs[aniIndex],x, y, img_width * scale, img_height * scale, null);
+        g2.drawImage(imgs[aniIndex],x - xOffsetCenter, y, img_width, img_height, null);
     }
 
 }

@@ -16,6 +16,7 @@ import input.KeyHandler;
 import input.MouseHandler;
 import tile.TileManager;
 import tools.UtilityTool;
+import world.TiledMapLoader;
 import world.DecorManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -56,8 +57,8 @@ public class GamePanel extends JPanel implements Runnable {
     Graphics2D g2;
 
     //WORLD SETTINGS
-    public int maxWorldCol = 25;
-    public int maxWorldRow = 25;
+    public int maxWorldCol = 50;
+    public int maxWorldRow = 50;
 
     
     public GamePanel() {
@@ -267,6 +268,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("mouseX: " + mouseH.mouseX, x, y); y += lineHeight;
         g2.drawString("mouseY: " + mouseH.mouseY, x, y); y += lineHeight;
         g2.drawString("scale: " + scale, x, y); y += lineHeight;
+        g2.drawString("tilesize: " + tileSize, x, y); y += lineHeight;
         g2.drawString("resolution: " + screenWidth + "x" + screenHeight, x, y); y += lineHeight;
         g2.drawString("Col: " + (getPlaying().getPlayer().worldX)/tileSize, x, y); y += lineHeight;
         g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;

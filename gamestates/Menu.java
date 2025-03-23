@@ -33,7 +33,7 @@ public class Menu extends State implements Statemethods {
     }
 
     public void loadImages() {
-        img = new MenuImage(((gp.screenWidth/2)/2) - ((img_width * gp.scale) / 2),0);
+        img = new MenuImage(((gp.screenWidth/2)/2),0);
     }
 
     @Override
