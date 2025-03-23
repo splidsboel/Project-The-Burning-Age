@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import tools.UtilityTool;
+import main.GamePanel;
 
 public class MenuImage {
     private int x, y;

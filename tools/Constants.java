@@ -6,8 +6,8 @@ public class Constants {
         public static class Buttons {
             public static final int b_width_default = 33;
             public static final int b_height_default = 16;
-            public static final int b_width = (int) (b_width_default * 4);
-            public static final int b_height = (int) (b_height_default * 4);
+            public static final int b_width = (int) (b_width_default);
+            public static final int b_height = (int) (b_height_default);
         }
 
         public static class dragonImages {
