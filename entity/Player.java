@@ -149,16 +149,6 @@ public class Player extends Entity {
     }
 
     public void updateCameraOnPlayer() {
-        // Get screen dimensions from GamePanel
-        // if (gp.detectedScreenWidth > 2000) {
-        //     gp.screenWidth = gp.screenWidth  ;
-        //     gp.screenHeight = gp.screenHeight / 2;
-        // } else {
-        //     gp.screenWidth = gp.screenWidth ;
-        //     gp.screenHeight = gp.screenHeight;
-        // }
-        
-
         // Center the camera on the player:
         // Adjust by half the tile size so that the player sprite is centered.
         cameraX = (worldX - gp.screenWidth / 2 + gp.tileSize / 2);
