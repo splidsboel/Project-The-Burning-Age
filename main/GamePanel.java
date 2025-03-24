@@ -77,7 +77,7 @@ public class GamePanel extends JPanel implements Runnable {
         scale = Math.min(scaleX,scaleY);
 
         
-        tileSize = tileSize * scale;
+        tileSize =(int)(tileSize * scale);
 
         System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", virtualWidth " +virtualWidth + ", virtualHeight " +virtualHeight);
 

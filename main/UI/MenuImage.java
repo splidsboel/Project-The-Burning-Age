@@ -29,7 +29,7 @@ public class MenuImage {
         }
     }
 
-    public void draw(Graphics2D g2, int aniIndex, int scale) {
+    public void draw(Graphics2D g2, int aniIndex, float scale) {
         g2.drawImage(imgs[aniIndex],x - xOffsetCenter, y, img_width, img_height, null);
     }
 

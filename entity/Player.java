@@ -41,9 +41,9 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        worldX = gp.tileSize * 12;
+        worldX = gp.tileSize * 20;
         worldY = gp.tileSize * 13;
-        defaultSpeed = 2 * gp.scale;
+        defaultSpeed =(int) (2 * gp.scale);
         speed = defaultSpeed;
     }
 
@@ -149,10 +149,18 @@ public class Player extends Entity {
     }
 
     public void updateCameraOnPlayer() {
+        int screenWidth;
+        int screenHeight;
         // Get screen dimensions from GamePanel
-        int screenWidth = gp.screenWidth / 2;
-        int screenHeight = gp.screenHeight / 2;
-    
+        if (gp.detectedScreenWidth > 2000) {
+            screenWidth = gp.screenWidth / 2 ;
+            screenHeight = gp.screenHeight / 2;
+        } else {
+            screenWidth = gp.screenWidth ;
+            screenHeight = gp.screenHeight;
+        }
+        
+
         // Center the camera on the player:
         // Adjust by half the tile size so that the player sprite is centered.
         cameraX = (worldX - screenWidth / 2 + gp.tileSize / 2);

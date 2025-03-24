@@ -24,9 +24,9 @@ public class Menu extends State implements Statemethods {
     }
 
     public void loadButtons() {
-        buttons[0] = new MenuButton(((gp.screenWidth / 2)/2), 240*gp.scale, 0, Gamestate.PLAYING);
-        buttons[1] = new MenuButton(((gp.screenWidth / 2)/2),275*gp.scale , 1, Gamestate.OPTIONS);
-        buttons[2] = new MenuButton(((gp.screenWidth / 2)/2),310*gp.scale , 2, Gamestate.QUIT);
+        buttons[0] = new MenuButton(((gp.screenWidth / 2)/2),(int) (240*gp.scale), 0, Gamestate.PLAYING);
+        buttons[1] = new MenuButton(((gp.screenWidth / 2)/2),(int) (275*gp.scale) , 1, Gamestate.OPTIONS);
+        buttons[2] = new MenuButton(((gp.screenWidth / 2)/2),(int) (310*gp.scale) , 2, Gamestate.QUIT);
     }
 
     public void loadImages() {
