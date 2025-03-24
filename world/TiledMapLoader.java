@@ -46,7 +46,7 @@ public class TiledMapLoader {
                     y *= gp.scale;
 
                     
-                    System.out.println("TileMapLoader. " + "object: " + name + " coordinate: " + x + "," + y + ". count:"+counter++);
+                    // System.out.println("TileMapLoader. " + "object: " + name + " coordinate: " + x + "," + y + ". count:"+counter++);
 
                     switch (objName.toLowerCase()) {
                         case "grass" -> {

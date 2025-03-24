@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     //SCREEN SETTINGS
     public static final int originalTileSize = 32;  
-    public int scale;  // Scale factor for rendering
+    public float scale;  // Scale factor for rendering
     public int tileSize = originalTileSize;
     public int virtualWidth = 28 * originalTileSize; //768
     public int virtualHeight = 17 * originalTileSize; //432. amount of tile-pixels on screen. 16:0
@@ -74,10 +74,12 @@ public class GamePanel extends JPanel implements Runnable {
 
         float scaleX = detectedScreenWidth/(float)virtualWidth;
         float scaleY = detectedScreenHeight/(float)virtualHeight;
-        scale =(int) Math.min(scaleX,scaleY);
+        scale = Math.min(scaleX,scaleY);
 
-
+        
         tileSize = tileSize * scale;
+
+        System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", virtualWidth " +virtualWidth + ", virtualHeight " +virtualHeight);
 
 
 
