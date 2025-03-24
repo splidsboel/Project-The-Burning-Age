@@ -149,30 +149,28 @@ public class Player extends Entity {
     }
 
     public void updateCameraOnPlayer() {
-        int screenWidth;
-        int screenHeight;
         // Get screen dimensions from GamePanel
         if (gp.detectedScreenWidth > 2000) {
-            screenWidth = gp.screenWidth / 2 ;
-            screenHeight = gp.screenHeight / 2;
+            gp.screenWidth = gp.screenWidth / 2 ;
+            gp.screenHeight = gp.screenHeight / 2;
         } else {
-            screenWidth = gp.screenWidth ;
-            screenHeight = gp.screenHeight;
+            gp.screenWidth = gp.screenWidth ;
+            gp.screenHeight = gp.screenHeight;
         }
         
 
         // Center the camera on the player:
         // Adjust by half the tile size so that the player sprite is centered.
-        cameraX = (worldX - screenWidth / 2 + gp.tileSize / 2);
-        cameraY = (worldY - screenHeight / 2 + gp.tileSize / 2);
+        cameraX = (worldX - gp.screenWidth / 2 + gp.tileSize / 2);
+        cameraY = (worldY - gp.screenHeight / 2 + gp.tileSize / 2);
     
         // Calculate the total world dimensions in pixels:
         double worldPixelWidth = gp.maxWorldCol * gp.tileSize;
         double worldPixelHeight = gp.maxWorldRow * gp.tileSize;
     
         // Clamp the camera so it doesn't go past the world edges:
-        cameraX = Math.max(0, Math.min(cameraX, worldPixelWidth - screenWidth));
-        cameraY = Math.max(0, Math.min(cameraY, worldPixelHeight - screenHeight));
+        cameraX = Math.max(0, Math.min(cameraX, worldPixelWidth - gp.screenWidth));
+        cameraY = Math.max(0, Math.min(cameraY, worldPixelHeight - gp.screenHeight));
     
         // Update the player's screen position (the position on the display where the player should be drawn)
         screenX = worldX - cameraX;
