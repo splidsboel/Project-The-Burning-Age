@@ -61,34 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     
     public GamePanel() {
-        
-
-        // Detect actual screen size
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        detectedScreenWidth = gd.getDisplayMode().getWidth();
-        detectedScreenHeight = gd.getDisplayMode().getHeight();
-
-        if (detectedScreenWidth > 2000) {
-            screenWidth = detectedScreenWidth / 2;
-            screenHeight = detectedScreenHeight / 2;
-        } else {
-            screenWidth = detectedScreenWidth ;
-            screenHeight = detectedScreenHeight;
-        }
-
-        float scaleX = screenWidth/(float)virtualWidth;
-        float scaleY = screenHeight/(float)virtualHeight;
-        scale = Math.min(scaleX,scaleY);
-
-        tileSize =(int)(tileSize * scale);
-
-
-
-        System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedScreenWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", screenWidth " +screenWidth + ", screenHeight " +screenHeight);
-
-
-
+        deviceScaleDetection();
         initializeClasses();
 
         //MOUSE AND KEY LISTENER
@@ -96,9 +69,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.addMouseMotionListener(mouseH);
         this.addKeyListener(keyH);
         this.setFocusable(true);
-
-        
-
     } 
 
     public void initializeClasses() {
@@ -147,6 +117,29 @@ public class GamePanel extends JPanel implements Runnable {
         g.drawImage(screen, 0, 0, screenWidth, screenHeight,null);
         g.dispose();
     }
+    
+    public void deviceScaleDetection() {
+        // Detect actual screen size
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        detectedScreenWidth = gd.getDisplayMode().getWidth();
+        detectedScreenHeight = gd.getDisplayMode().getHeight();
+        if (detectedScreenWidth > 2000) {
+            screenWidth = detectedScreenWidth / 2;
+            screenHeight = detectedScreenHeight / 2;
+        } else {
+            screenWidth = detectedScreenWidth ;
+            screenHeight = detectedScreenHeight;
+        }
+
+        float scaleX = screenWidth/(float)virtualWidth;
+        float scaleY = screenHeight/(float)virtualHeight;
+        scale = Math.min(scaleX,scaleY);
+        tileSize =(int)(tileSize * scale);
+
+        System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedScreenWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", screenWidth " +screenWidth + ", screenHeight " +screenHeight);
+    }
+
 
     
     //SETUP GAME AND START GAME THREAD METHODS
@@ -225,6 +218,7 @@ public class GamePanel extends JPanel implements Runnable {
             tileSize += zoomChange;
             int newWorldWidth = tileSize * maxWorldCol;
             double multiplier = (double)newWorldWidth/oldWorldWidth;
+            
 
             //Update speed
             double newSpeed = getPlaying().getPlayer().speed * multiplier;
