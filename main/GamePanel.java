@@ -16,7 +16,6 @@ import input.KeyHandler;
 import input.MouseHandler;
 import tile.TileManager;
 import tools.UtilityTool;
-import world.TiledMapLoader;
 import world.DecorManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -81,12 +80,6 @@ public class GamePanel extends JPanel implements Runnable {
         tileSize = tileSize * scale;
 
 
-        System.out.println(scale);
-        System.out.println(tileSize);
-        System.out.println("DETECTED:"+detectedScreenWidth + " * " + detectedScreenHeight);
-        System.out.println("RESOLUTION:"+screenWidth + " * " + screenHeight);
-        
-
 
         initializeClasses();
 
@@ -134,17 +127,6 @@ public class GamePanel extends JPanel implements Runnable {
         switch (Gamestate.state) {
             case PLAYING: 
                 playing.draw(g2);
-                System.out.println("worldX: " + getPlaying().getPlayer().worldX);
-                System.out.println("worldY: " + getPlaying().getPlayer().worldY); 
-                System.out.println("screenX: " + getPlaying().getPlayer().screenX); 
-                System.out.println("screenY: " + getPlaying().getPlayer().screenY);
-                System.out.println("cameraX: " + getPlaying().getPlayer().cameraX); 
-                System.out.println("cameraY: " + getPlaying().getPlayer().cameraY); 
-                System.out.println("Col: " + (getPlaying().getPlayer().worldX)/tileSize);
-                System.out.println("Row: " + (getPlaying().getPlayer().worldY)/tileSize);
-                System.out.println("FPS: " + currentFPS);
-                System.out.println("UPS: " + currentUPS);
-                System.out.println("Actual GamePanel size: " + getWidth() + "x" + getHeight());
                 break;
             case MENU:
                 menu.draw(g2);
@@ -161,7 +143,6 @@ public class GamePanel extends JPanel implements Runnable {
     
     //SETUP GAME AND START GAME THREAD METHODS
     public void setupGame() {
-        
         //SET START OBJECTS
         tileM.loadMap("/res/maps/world01.txt");
                
@@ -251,7 +232,6 @@ public class GamePanel extends JPanel implements Runnable {
             //Update cameraX and cameraY pos, rescale images
             getPlaying().getPlayer().updateCameraOnPlayer();
             tileM.loadTileImages();
-
     }
 
     public void debugText(Graphics2D g2) {

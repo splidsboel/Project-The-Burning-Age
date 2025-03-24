@@ -8,11 +8,14 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 
 import entity.Entity;
 import entity.Player;
 import main.GamePanel;
+import tools.UtilityTool;
 import world.TiledMapLoader;
+import world.decoration.Grass;
 import world.DecorManager;
 
 public class Playing extends State implements Statemethods{
@@ -35,17 +38,22 @@ public class Playing extends State implements Statemethods{
         //ENTITIES AND OBJECTS
         entity = new Entity(gp);
         player = new Player(gp);
-        decorM = new DecorManager();
+        Grass.grassFrames = new BufferedImage[] {
+            UtilityTool.scaleImage(UtilityTool.importImg("/res/world/grass/grass01.png"), gp.tileSize, gp.tileSize)
+            , UtilityTool.scaleImage(UtilityTool.importImg("/res/world/grass/grass02.png"), gp.tileSize, gp.tileSize)
+        };
 
-        //WORLD
-        TiledMapLoader.loadExampleDecor(decorM, gp);
+        decorM = new DecorManager();
+        TiledMapLoader.loadDecorFromTiled("/res/world/world.tmj", decorM, Grass.grassFrames, gp);
+
     }
 
 
     @Override
     public void update() {
-        player.update();
         decorM.update();
+        player.update();
+        
     }
 
     @Override

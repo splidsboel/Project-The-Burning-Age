@@ -1,8 +1,5 @@
 package gamestates;
 
-import static tools.Constants.UI.dragonImages.img_width;
-
-
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;

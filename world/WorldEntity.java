@@ -8,7 +8,7 @@ public class WorldEntity {
     protected BufferedImage[] frames;
     protected int frameIndex = 0;
     protected int aniTick = 0;
-    protected int aniSpeed = 150;
+    protected int aniSpeed;
 
     public boolean animated = false;
     public boolean visible = true;
