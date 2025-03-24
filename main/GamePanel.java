@@ -38,8 +38,8 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int originalTileSize = 32;  
     public float scale;  // Scale factor for rendering
     public int tileSize = originalTileSize;
-    public int virtualWidth = 28 * originalTileSize; //768
-    public int virtualHeight = 17 * originalTileSize; //432. amount of tile-pixels on screen. 16:0
+    public int virtualWidth = 24 * originalTileSize; //768
+    public int virtualHeight = 13 * originalTileSize; //432. amount of tile-pixels on screen. 16:0
     public int detectedScreenWidth;
     public int detectedScreenHeight;
     public int screenWidth; // display resolution
@@ -68,18 +68,24 @@ public class GamePanel extends JPanel implements Runnable {
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         detectedScreenWidth = gd.getDisplayMode().getWidth();
         detectedScreenHeight = gd.getDisplayMode().getHeight();
-        screenWidth = detectedScreenWidth;
-        screenHeight = detectedScreenHeight;
-    
 
-        float scaleX = detectedScreenWidth/(float)virtualWidth;
-        float scaleY = detectedScreenHeight/(float)virtualHeight;
+        if (detectedScreenWidth > 2000) {
+            screenWidth = detectedScreenWidth / 2;
+            screenHeight = detectedScreenHeight / 2;
+        } else {
+            screenWidth = detectedScreenWidth ;
+            screenHeight = detectedScreenHeight;
+        }
+
+        float scaleX = screenWidth/(float)virtualWidth;
+        float scaleY = screenHeight/(float)virtualHeight;
         scale = Math.min(scaleX,scaleY);
 
-        
         tileSize =(int)(tileSize * scale);
 
-        System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", virtualWidth " +virtualWidth + ", virtualHeight " +virtualHeight);
+
+
+        System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedScreenWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", screenWidth " +screenWidth + ", screenHeight " +screenHeight);
 
 
 
@@ -237,7 +243,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void debugText(Graphics2D g2) {
-        g2.setColor(Color.white);
+        g2.setColor(Color.black);
         int x = 10;
         int y = 400;
         int lineHeight = 20;
