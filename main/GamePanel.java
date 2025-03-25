@@ -157,13 +157,9 @@ public class GamePanel extends JPanel implements Runnable {
     
     //SETUP GAME AND START GAME THREAD METHODS
     public void setupGame() {
-      
         //DRAW
         screen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) screen.getGraphics();
-        
-        getPlaying().getPlayer().updateCameraOnPlayer();
- 
     }   
 
     public void startGameThread() {
@@ -233,7 +229,6 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
         g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
         g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
-
         
     }
 
@@ -285,16 +280,21 @@ public class GamePanel extends JPanel implements Runnable {
         player.worldY *= multiplier;
     
         player.updateCameraOnPlayer();
-        tileM.loadTileImages();
-    
-        DecorAssetLoader.clearCache();
-        reloadDecor(); // decor gets placed with new tileSize
+        
+        reloadWorld(); // world and decor gets placed with new tileSize
     }
 
-    public void reloadDecor() {
+    public void reloadWorld() {
+        //Rebuild tiles
+        tileM.loadTileImages();
+        world.TiledMapLoader.loadTileLayer("/res/images/world/world.tmj", tileM);
+        getPlaying().tileM = tileM;
+        
         //Rebuild decor
+        DecorAssetLoader.clearCache();
         decorM = new world.DecorManager(); 
         world.TiledMapLoader.loadDecorFromTiled("/res/images/world/world.tmj", decorM, null, this);
         getPlaying().decorM = decorM; // update Playing's reference
+        
     }
 }

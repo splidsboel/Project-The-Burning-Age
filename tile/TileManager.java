@@ -4,7 +4,6 @@ import entity.Player;
 import main.GamePanel;
 import tools.UtilityTool;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 

@@ -35,7 +35,7 @@ public class TiledMapLoader {
                 // Step 4: Parse decor objects
                 JsonArray objects = layer.getAsJsonArray("objects");
 
-                int counter = 0;
+                //int counter = 0; 
                 for (JsonElement objElement : objects) {
                     JsonObject obj = objElement.getAsJsonObject();
                     
