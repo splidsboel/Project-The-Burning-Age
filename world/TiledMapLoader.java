@@ -1,6 +1,7 @@
 package world;
 
 import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 
 import main.GamePanel;
 import tile.TileManager;
@@ -42,15 +43,17 @@ public class TiledMapLoader {
                     double x = obj.get("x").getAsDouble();
                     double y = obj.get("y").getAsDouble();
 
-                    x *= gp.scale;
-                    y *= gp.scale;
+
+                    x = x / GamePanel.originalTileSize * gp.tileSize;
+                    y = y / GamePanel.originalTileSize * gp.tileSize;
+
 
                     
-                    // System.out.println("TileMapLoader. " + "object: " + name + " coordinate: " + x + "," + y + ". count:"+counter++);
+                    //System.out.println("TileMapLoader. " + "object: " + name + " coordinate: " + x + "," + y + ". count:"+counter++);
 
-                    switch (objName.toLowerCase()) {
+                    switch (objName.toLowerCase()) {  // <----- Det er her det sker!
                         case "grass" -> {
-                            decoM.add(new Grass(x, y, grassFrames));
+                            decoM.add(new Grass(x, y, gp));
                         }
                         default -> System.out.println("Unhandled decor type: " + objName);
                     }
@@ -68,7 +71,13 @@ public class TiledMapLoader {
         InputStreamReader reader = new InputStreamReader(
             TiledMapLoader.class.getResourceAsStream(path)
         );
-        JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+        JsonReader jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(true);
+        JsonObject root = JsonParser.parseReader(jsonReader).getAsJsonObject();
+        JsonArray tilesets = root.getAsJsonArray("tilesets");
+        int firstgid = tilesets.get(0).getAsJsonObject().get("firstgid").getAsInt(); // should be 1 now
+        
+
 
         JsonArray layers = root.getAsJsonArray("layers");
 
@@ -81,38 +90,38 @@ public class TiledMapLoader {
             if (!"tilelayer".equals(type)) continue;
             if (!"groundLayer".equalsIgnoreCase(name)) continue;
 
+
             int width = layer.get("width").getAsInt();
             int height = layer.get("height").getAsInt();
             JsonArray data = layer.getAsJsonArray("data");
 
-            int[][] map = tileManager.mapTileNum;
+            int[][] map = tileManager.mapTileNum; // <------- Det er her det sker!
 
             //System.out.println("Loading tile layer '" + name + "' (" + width + " x " + height + ")");
 
             int index = 0;
             for (int row = 0; row < height; row++) {
-                for (int col = 0; col < width; col++) {
+                for (int col = 0; col < width; col++) { 
                     int tileID = data.get(index).getAsInt();
-
+                    int adjustedID = tileID - firstgid;
+      
                     if (tileID > 0) {
-                        // Tiled starts tile IDs at 1, tile[] starts at 10
-                        map[col][row] = tileID + 9;
+                        map[col][row] = adjustedID;
                     } else {
                         map[col][row] = 0;
                     }
-
                     index++;
                 }
             }
 
+
+            
             break; // we're done after this layer
         }
 
-    } catch (Exception e) {
-        System.err.println("Error loading tile layer from TMJ:");
-        e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error loading tile layer from TMJ:");
+            e.printStackTrace();
+        }
     }
-}
-
-
 }

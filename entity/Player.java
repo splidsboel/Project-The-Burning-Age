@@ -39,7 +39,7 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        worldX = gp.tileSize * 20;
+        worldX = gp.tileSize * 13;
         worldY = gp.tileSize * 13;
         defaultSpeed =(int) (1.2 * gp.scale);
         speed = defaultSpeed;
@@ -68,7 +68,7 @@ public class Player extends Entity {
     }
 
     public void importPlayerImage() {
-        img = importImg("/res/images/player/orc/orc.png");
+        img = importImg("/res/images/world/player/orc/orc.png");
     }
 
     public void loadAnimations() {

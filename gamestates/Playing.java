@@ -8,12 +8,11 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.image.BufferedImage;
 
 import entity.Entity;
 import entity.Player;
 import main.GamePanel;
-import tools.UtilityTool;
+import tile.TileManager;
 import world.TiledMapLoader;
 import world.decoration.Grass;
 import world.DecorManager;
@@ -22,6 +21,7 @@ public class Playing extends State implements Statemethods{
     public Entity entity;
     public Player player;
     public DecorManager decorM;
+    public TileManager tileM;
 
     //Keys
     public boolean p_pressed = false;
@@ -38,14 +38,13 @@ public class Playing extends State implements Statemethods{
         //ENTITIES AND OBJECTS
         entity = new Entity(gp);
         player = new Player(gp);
-        Grass.grassFrames = new BufferedImage[] {
-            UtilityTool.scaleImage(UtilityTool.importImg("/res/world/grass/grass01.png"), gp.tileSize, gp.tileSize)
-            , UtilityTool.scaleImage(UtilityTool.importImg("/res/world/grass/grass02.png"), gp.tileSize, gp.tileSize)
-        };
-
         decorM = new DecorManager();
-        TiledMapLoader.loadDecorFromTiled("/res/world/world.tmj", decorM, Grass.grassFrames, gp);
+        tileM = new TileManager(gp);
+        
 
+        TiledMapLoader.loadTileLayer("/res/images/world/world.tmj", tileM);
+        TiledMapLoader.loadDecorFromTiled("/res/images/world/world.tmj", decorM, Grass.grassFrames, gp);
+        
     }
 
 
@@ -58,7 +57,7 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void draw(Graphics2D g2) {
-        gp.tileM.draw(g2);
+        tileM.draw(g2);
         decorM.draw(g2, player.cameraX, player.cameraY);
         player.render(g2);
         
@@ -97,10 +96,10 @@ public class Playing extends State implements Statemethods{
     public void mouseWheelMoved(MouseWheelEvent e) {
         
         if (e.getWheelRotation() < 0) {
-            gp.zoomInOut(5);
+            gp.zoomInOut(10);
             
         } else if(e.getWheelRotation() > 0){
-            gp.zoomInOut(-5);
+            gp.zoomInOut(-10);
         }
     }
 

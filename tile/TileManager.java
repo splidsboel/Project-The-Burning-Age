@@ -1,12 +1,10 @@
 package tile;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import entity.Player;
 import main.GamePanel;
 import tools.UtilityTool;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -25,11 +23,12 @@ public class TileManager extends Tile {
     public TileManager(GamePanel gp) {
         this.gp = gp;
         uTool = new UtilityTool(gp);
-        tile = new Tile[10 + 15];
+        tile = new Tile[24];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
-        importTileImage("/res/aseprites/map/baseLayer.png");
-        loadSubImages(15,0);
+        
+        importTileImage("/res/images/world/ground/desert.png");
+        loadSubImages(24,0);
         loadTileImages();
         
     }
@@ -48,9 +47,9 @@ public class TileManager extends Tile {
 
     public void loadTileImages() {
         for (int i = 0; i < tileImages.length; i++) {
-            tile[10 + i] = new Tile();
-            tile[10 + i].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
-        }
+            tile[i] = new Tile();
+            tile[i].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
+        }      
     }
 
     public void draw(Graphics2D g2) {
@@ -71,6 +70,11 @@ public class TileManager extends Tile {
                 worldY - gp.tileSize < gp.playing.player.cameraY + gp.screenHeight) {
     
                 g2.drawImage(tile[tileNum].image, (int)screenX, (int)screenY, null);
+                
+
+                //DEBUG directly on tiles
+                // g2.setColor(Color.WHITE);
+                // g2.drawString(String.valueOf(tileNum), (int)screenX, (int)screenY);
             }
     
             worldCol++;
@@ -82,31 +86,5 @@ public class TileManager extends Tile {
         }
     }
 
-    public void loadMap(String filepath) {
-        try {
-            InputStream is = getClass().getResourceAsStream(filepath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            int col = 0;
-            int row = 0;
-
-            while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
-                String line = br.readLine();
-
-                while (col < gp.maxWorldCol) {
-                    String numbers[] = line.split(" ");
-                    int num = Integer.parseInt(numbers[col]);
-                    mapTileNum[col][row] = num;
-                    col++;
-                }
-                if (col == gp.maxWorldCol) {
-                    col = 0;
-                    row++;
-                }
-            }
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
 }

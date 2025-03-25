@@ -1,5 +1,5 @@
 package world.actor;
 
-public class AbstractActor {
+public class Actor {
     
 }
