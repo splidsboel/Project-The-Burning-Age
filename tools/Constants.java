@@ -2,22 +2,6 @@ package tools;
 
 public class Constants {
 
-    public static class UI {
-        public static class Buttons {
-            public static final int b_width_default = 33;
-            public static final int b_height_default = 16;
-            public static final int b_width = (int) (b_width_default);
-            public static final int b_height = (int) (b_height_default);
-        }
-
-        public static class dragonImages {
-            public static final int img_width_default = 128;
-            public static final int img_height_default = 120;
-            public static final int img_width = (int)(img_width_default);
-            public static final int img_height = (int)(img_height_default);
-        }
-    }
-
     public static class Directions {
         public static final int UP = 0;
         public static final int DOWN = 1;

@@ -1,23 +1,29 @@
 package main.UI;
 
-import static tools.Constants.UI.Buttons.*;
-
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import gamestates.Gamestate;
+import main.GamePanel;
 import tools.UtilityTool;
 
 public class MenuButton {
+    GamePanel gp;
+
+    public static final int b_width_default = 33;
+    public static final int b_height_default = 16;
+    public static final int b_width = (int) (b_width_default);
+    public static final int b_height = (int) (b_height_default);
+
     private int x, y, rowIndex, index;
-    private int xOffsetCenter = b_width / 2;
     private Gamestate state;
     private BufferedImage[] imgs;
     private boolean mouseOver, mousePressed, mouseReleased;
     private Rectangle bounds;
 
-    public MenuButton (int x, int y, int rowIndex, Gamestate state) {
+    public MenuButton (int x, int y, int rowIndex, Gamestate state, GamePanel gp) {
+        this.gp = gp;
         this.x = x;
         this.y = y;
         this.rowIndex = rowIndex;
@@ -27,9 +33,10 @@ public class MenuButton {
     }
 
     public void initializeBounds() {
-        bounds = new Rectangle(x - xOffsetCenter, y, b_width, b_height);
+        int xOffsetCenter = (int)(b_width * gp.scale) / 2;
+        bounds = new Rectangle(x - xOffsetCenter, y, (int)(b_width * gp.scale), (int)(b_height * gp.scale));
     }
-        
+
     private void loadImgs() {
         imgs = new BufferedImage[3];
         BufferedImage temp = UtilityTool.importImg("/res/images/UI/buttons/menu_buttons.png");
@@ -52,9 +59,9 @@ public class MenuButton {
     }
     
     public void draw(Graphics2D g2) {
-        g2.drawImage(imgs[index], x - xOffsetCenter, y, b_width, b_height, null);
+        int xOffsetCenter = (int)(b_width * gp.scale) / 2;
+        g2.drawImage(imgs[index], x - xOffsetCenter, y, (int)(b_width * gp.getScale()),(int)(b_height * gp.getScale()), null);
     }
-
 
     //GETTERS AND SETTERS
     public boolean isMouseOver() {

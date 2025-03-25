@@ -89,6 +89,7 @@ public class TiledMapLoader {
 
             if (!"tilelayer".equals(type)) continue;
             if (!"groundLayer".equalsIgnoreCase(name)) continue;
+            
 
 
             int width = layer.get("width").getAsInt();

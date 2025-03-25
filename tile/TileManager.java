@@ -14,7 +14,7 @@ public class TileManager extends Tile {
     Player player;
     UtilityTool uTool;
     BufferedImage img;
-    BufferedImage[] tileImages;
+    BufferedImage[] tileImages = new BufferedImage[38];
 
     public Tile[] tile;
     public int mapTileNum[][];
@@ -22,12 +22,16 @@ public class TileManager extends Tile {
     public TileManager(GamePanel gp) {
         this.gp = gp;
         uTool = new UtilityTool(gp);
-        tile = new Tile[24];
+        tile = new Tile[24+14];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 
         
         importTileImage("/res/images/world/ground/desert.png");
         loadSubImages(24,0);
+
+        importTileImage("/res/images/world/ground/water.png");
+        loadWaterSubImages(14, 0);
+
         loadTileImages();
         
     }
@@ -37,9 +41,8 @@ public class TileManager extends Tile {
     }
 
     public void loadSubImages(int tilesLength, int rows) {
-        tileImages = new BufferedImage[tilesLength];
-
-        for (int i = 0; i < tileImages.length; i++) {
+        
+        for (int i = 0; i < tilesLength; i++) {
             tileImages[i] = img.getSubimage(i*32, rows*32, 32, 32);
         }
     }
@@ -48,6 +51,22 @@ public class TileManager extends Tile {
         for (int i = 0; i < tileImages.length; i++) {
             tile[i] = new Tile();
             tile[i].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
+        }      
+    }
+
+
+
+
+    public void loadWaterSubImages(int tilesLength, int rows) {
+        for (int i = 0; i < tilesLength; i++) {
+            tileImages[i+24] = img.getSubimage(i*32, rows*32, 32, 32);
+        }
+    }
+
+    public void loadWaterTileImages() {
+        for (int i = 0; i < tileImages.length; i++) {
+            tile[i+24] = new Tile();
+            tile[i+24].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
         }      
     }
 

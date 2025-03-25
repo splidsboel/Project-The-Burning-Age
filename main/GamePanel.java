@@ -250,7 +250,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void zoomInOut(int zoomChange) {
         int newTileSize = tileSize + zoomChange;
     
-        if (newTileSize < initialTileSize || newTileSize > 128) return; // clamp
+        if (newTileSize < initialTileSize || newTileSize > 250) return; // clamp
     
         targetTileSize = newTileSize;
         zoomAnimating = true;

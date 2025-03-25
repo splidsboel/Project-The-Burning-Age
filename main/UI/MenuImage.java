@@ -1,23 +1,23 @@
 package main.UI;
 
-import static tools.Constants.UI.dragonImages.*;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import tools.UtilityTool;
 
 public class MenuImage {
+    public static final int img_width_default = 128;
+    public static final int img_height_default = 120;
+    public static final int img_width = (int)(img_width_default);
+    public static final int img_height = (int)(img_height_default);
     private int x, y;
-    private int xOffsetCenter = img_width / 2;
     private BufferedImage[] imgs;
 
-
+    
     public MenuImage(int x, int y) {
         this.x = x;
         this.y = y;
         loadImgs();
-
     }
 
 
@@ -30,7 +30,7 @@ public class MenuImage {
     }
 
     public void draw(Graphics2D g2, int aniIndex, float scale) {
-        g2.drawImage(imgs[aniIndex],x - xOffsetCenter, y, img_width, img_height, null);
+        int xOffsetCenter = (int)(img_width * scale) / 2;
+        g2.drawImage(imgs[aniIndex],x - xOffsetCenter, y, (int)(img_width * scale), (int)(img_height * scale), null);
     }
-
 }

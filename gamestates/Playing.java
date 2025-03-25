@@ -50,8 +50,9 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void update() {
-        decorM.update();
         player.update();
+        decorM.update();
+        
         
     }
 
