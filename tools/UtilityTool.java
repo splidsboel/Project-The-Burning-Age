@@ -48,9 +48,6 @@ public class UtilityTool {
         return scaledImage;
     }
 
-
-    //HELPER
-
     
     //HELPER METHODS
     public int getXForCenteredText(String text, Graphics2D g2) {
