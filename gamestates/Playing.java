@@ -13,7 +13,7 @@ import entity.Entity;
 import entity.Player;
 import main.GamePanel;
 import tile.TileManager;
-import world.TiledMapLoader;
+import tile.TiledMapLoader;
 import world.decoration.Grass;
 import world.DecorManager;
 
@@ -47,7 +47,6 @@ public class Playing extends State implements Statemethods{
         
     }
 
-
     @Override
     public void update() {
         player.update();
@@ -61,7 +60,6 @@ public class Playing extends State implements Statemethods{
         tileM.draw(g2);
         decorM.draw(g2, player.cameraX, player.cameraY);
         player.render(g2);
-        
 
         if (p_pressed) {
             gp.debugText(g2);

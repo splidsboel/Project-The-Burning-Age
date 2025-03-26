@@ -25,8 +25,8 @@ public class DecorAssetLoader {
 
                 for (int frame = 0; frame < frameCount; frame++) {
                     BufferedImage frameImg = sheet.getSubimage(
-                        frame * GamePanel.originalTileSize, 0,
-                        GamePanel.originalTileSize, GamePanel.originalTileSize
+                        frame * gp.originalTileSize, 0,
+                        gp.originalTileSize, gp.originalTileSize
                     );
                     allFrames.add(UtilityTool.scaleImage(frameImg, gp.tileSize, gp.tileSize));
                 }

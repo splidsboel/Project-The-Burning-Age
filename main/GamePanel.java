@@ -41,7 +41,7 @@ public class GamePanel extends JPanel implements Runnable {
     public UtilityTool uTool;
 
     //SCREEN SETTINGS
-    public static final int originalTileSize = 32;  
+    public final int originalTileSize = 32;  
     public float scale;  // Scale factor for rendering
     public int tileSize = originalTileSize;
     public int initialTileSize;
@@ -286,14 +286,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void reloadWorld() {
         //Rebuild tiles
-        tileM.loadTileImages();
-        world.TiledMapLoader.loadTileLayer("/res/images/world/world.tmj", tileM);
+        tile.TiledMapLoader.loadTileLayer("/res/images/world/world.tmj", tileM);
         getPlaying().tileM = tileM;
         
         //Rebuild decor
         DecorAssetLoader.clearCache();
         decorM = new world.DecorManager(); 
-        world.TiledMapLoader.loadDecorFromTiled("/res/images/world/world.tmj", decorM, null, this);
+        tile.TiledMapLoader.loadDecorFromTiled("/res/images/world/world.tmj", decorM, null, this);
         getPlaying().decorM = decorM; // update Playing's reference
         
     }

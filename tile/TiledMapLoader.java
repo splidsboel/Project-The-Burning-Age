@@ -1,10 +1,10 @@
-package world;
+package tile;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 import main.GamePanel;
-import tile.TileManager;
+import world.DecorManager;
 import world.decoration.Grass;
 
 import java.awt.image.BufferedImage;
@@ -44,8 +44,8 @@ public class TiledMapLoader {
                     double y = obj.get("y").getAsDouble();
 
 
-                    x = x / GamePanel.originalTileSize * gp.tileSize;
-                    y = y / GamePanel.originalTileSize * gp.tileSize;
+                    x = x / gp.originalTileSize * gp.tileSize;
+                    y = y / gp.originalTileSize * gp.tileSize;
 
 
                     
@@ -65,64 +65,50 @@ public class TiledMapLoader {
             e.printStackTrace();
         }
     }
-
+    
     public static void loadTileLayer(String path, TileManager tileManager) {
-    try {
-        InputStreamReader reader = new InputStreamReader(
-            TiledMapLoader.class.getResourceAsStream(path)
-        );
-        JsonReader jsonReader = new JsonReader(reader);
-        jsonReader.setLenient(true);
-        JsonObject root = JsonParser.parseReader(jsonReader).getAsJsonObject();
-        JsonArray tilesets = root.getAsJsonArray("tilesets");
-        int firstgid = tilesets.get(0).getAsJsonObject().get("firstgid").getAsInt(); // should be 1 now
-        
-
-
-        JsonArray layers = root.getAsJsonArray("layers");
-
-        for (JsonElement layerElement : layers) {
-            JsonObject layer = layerElement.getAsJsonObject();
-
-            String type = layer.get("type").getAsString();
-            String name = layer.get("name").getAsString();
-
-            if (!"tilelayer".equals(type)) continue;
-            if (!"groundLayer".equalsIgnoreCase(name)) continue;
-            
-
-
-            int width = layer.get("width").getAsInt();
-            int height = layer.get("height").getAsInt();
-            JsonArray data = layer.getAsJsonArray("data");
-
-            int[][] map = tileManager.mapTileNum; // <------- Det er her det sker!
-
-            //System.out.println("Loading tile layer '" + name + "' (" + width + " x " + height + ")");
-
-            int index = 0;
-            for (int row = 0; row < height; row++) {
-                for (int col = 0; col < width; col++) { 
-                    int tileID = data.get(index).getAsInt();
-                    int adjustedID = tileID - firstgid;
-      
-                    if (tileID > 0) {
-                        map[col][row] = adjustedID;
-                    } else {
-                        map[col][row] = 0;
+        try {
+            InputStreamReader reader = new InputStreamReader(
+                TiledMapLoader.class.getResourceAsStream(path)
+            );
+            JsonReader jsonReader = new JsonReader(reader);
+            jsonReader.setLenient(true);
+            JsonObject root = JsonParser.parseReader(jsonReader).getAsJsonObject();
+    
+            // Get tile layer data
+            JsonArray layers = root.getAsJsonArray("layers");
+            for (JsonElement layerElement : layers) {
+                JsonObject layer = layerElement.getAsJsonObject();
+    
+                String type = layer.get("type").getAsString();
+                String name = layer.get("name").getAsString();
+    
+                if (!"tilelayer".equals(type)) continue;
+                if (!"groundLayer".equalsIgnoreCase(name)) continue;
+    
+                int width = layer.get("width").getAsInt();
+                int height = layer.get("height").getAsInt();
+                JsonArray data = layer.getAsJsonArray("data");
+    
+                int index = 0;
+                for (int row = 0; row < height; row++) {
+                    for (int col = 0; col < width; col++) {
+                        int globalTileId = data.get(index).getAsInt();
+                        if (globalTileId > 0) {
+                            Tile tile = TilesetFactory.createTile(globalTileId);
+                            tileManager.setTile(col, row, tile);
+                        }
+                        index++;
                     }
-                    index++;
                 }
+    
+                break; // Only parse the first matching tilelayer
             }
-
-
-            
-            break; // we're done after this layer
-        }
-
+    
         } catch (Exception e) {
             System.err.println("Error loading tile layer from TMJ:");
             e.printStackTrace();
         }
     }
+    
 }

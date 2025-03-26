@@ -1,108 +1,69 @@
+
 package tile;
 
-import entity.Player;
-import main.GamePanel;
-import tools.UtilityTool;
-
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import main.GamePanel;
+import tile.tiles.DesertTile;
+import tile.tiles.WaterTile;
+import tools.UtilityTool;
 
-
-public class TileManager extends Tile {
+public class TileManager {
     GamePanel gp;
-    Player player;
-    UtilityTool uTool;
-    BufferedImage img;
-    BufferedImage[] tileImages = new BufferedImage[38];
-
-    public Tile[] tile;
-    public int mapTileNum[][];
+    public Tile[][] tileMap;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
-        uTool = new UtilityTool(gp);
-        tile = new Tile[24+14];
-        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
-
-        
-        importTileImage("/res/images/world/ground/desert.png");
-        loadSubImages(24,0);
-
-        importTileImage("/res/images/world/ground/water.png");
-        loadWaterSubImages(14, 0);
-
-        loadTileImages();
-        
+        tileMap = new Tile[gp.maxWorldCol][gp.maxWorldRow];
+        registerTilesets();
     }
 
-    public void importTileImage(String filepath) {
-        img = UtilityTool.importImg(filepath);
+    public void registerTilesets() {
+        BufferedImage desertSheet = UtilityTool.importImg("/res/images/world/ground/desert.png");
+        BufferedImage waterSheet = UtilityTool.importImg("/res/images/world/ground/water.png");
+
+        Tileset desertSet = new Tileset(DesertTile.class, desertSheet, gp.originalTileSize);
+        Tileset waterSet = new Tileset(WaterTile.class, waterSheet, gp.originalTileSize);
+
+
+        TilesetFactory.registerTileset(1, desertSet);
+        TilesetFactory.registerTileset(29, waterSet);
     }
 
-    public void loadSubImages(int tilesLength, int rows) {
-        
-        for (int i = 0; i < tilesLength; i++) {
-            tileImages[i] = img.getSubimage(i*32, rows*32, 32, 32);
-        }
-    }
-
-    public void loadTileImages() {
-        for (int i = 0; i < tileImages.length; i++) {
-            tile[i] = new Tile();
-            tile[i].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
-        }      
-    }
-
-
-
-
-    public void loadWaterSubImages(int tilesLength, int rows) {
-        for (int i = 0; i < tilesLength; i++) {
-            tileImages[i+24] = img.getSubimage(i*32, rows*32, 32, 32);
-        }
-    }
-
-    public void loadWaterTileImages() {
-        for (int i = 0; i < tileImages.length; i++) {
-            tile[i+24] = new Tile();
-            tile[i+24].image = UtilityTool.scaleImage(tileImages[i], gp.tileSize, gp.tileSize);
-        }      
+    public void setTile(int col, int row, Tile tile) {
+        tileMap[col][row] = tile;
     }
 
     public void draw(Graphics2D g2) {
-        int worldCol = 0;
-        int worldRow = 0;
-    
-        while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-            int tileNum = mapTileNum[worldCol][worldRow];
-            int worldX = worldCol * gp.tileSize;
-            int worldY = worldRow * gp.tileSize;
-            double screenX = worldX - gp.playing.player.cameraX;
-            double screenY = worldY - gp.playing.player.cameraY;
-    
-            // Only draw tiles visible on the screen
-            if (worldX + gp.tileSize > gp.playing.player.cameraX && 
-                worldX - gp.tileSize < gp.playing.player.cameraX + gp.screenWidth && 
-                worldY + gp.tileSize > gp.playing.player.cameraY && 
-                worldY - gp.tileSize < gp.playing.player.cameraY + gp.screenHeight) {
-    
-                g2.drawImage(tile[tileNum].image, (int)screenX, (int)screenY, null);
-                
+        for (int row = 0; row < gp.maxWorldRow; row++) {
+            for (int col = 0; col < gp.maxWorldCol; col++) {
+                Tile tile = tileMap[col][row];
+                if (tile == null) continue;
 
-                //DEBUG directly on tiles
-                // g2.setColor(Color.WHITE);
-                // g2.drawString(String.valueOf(tileNum), (int)screenX, (int)screenY);
-            }
-    
-            worldCol++;
-    
-            if (worldCol == gp.maxWorldCol) {
-                worldCol = 0;
-                worldRow++;
+                int worldX = col * gp.tileSize;
+                int worldY = row * gp.tileSize;
+                double screenX = worldX - gp.playing.player.cameraX;
+                double screenY = worldY - gp.playing.player.cameraY;
+
+                if (worldX + gp.tileSize > gp.playing.player.cameraX &&
+                    worldX - gp.tileSize < gp.playing.player.cameraX + gp.screenWidth &&
+                    worldY + gp.tileSize > gp.playing.player.cameraY &&
+                    worldY - gp.tileSize < gp.playing.player.cameraY + gp.screenHeight) {
+
+                    g2.drawImage(tile.getImage(), (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
+                    
+                    //DEBUG directly on tiles
+                    // g2.setColor(Color.BLACK);
+                    // g2.drawString(String.valueOf(tile), (int)screenX, (int)screenY);
+                }
             }
         }
     }
-
-    
 }
+
+
+
+
+       
