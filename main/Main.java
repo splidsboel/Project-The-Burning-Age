@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 public class Main {
     public static JFrame window;
     public static void main(String[] args) {
+        System.out.println("Game starting...");
+
         //JFRAME
         window = new JFrame();
         window.setTitle("The Burning Age");
