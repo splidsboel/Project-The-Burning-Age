@@ -42,8 +42,8 @@ public class Playing extends State implements Statemethods{
         tileM = new TileManager(gp);
         
 
-        TiledMapLoader.loadTileLayer("/res/images/world/world.tmj", tileM);
-        TiledMapLoader.loadDecorFromTiled("/res/images/world/world.tmj", decorM, Grass.grassFrames, gp);
+        TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
+        TiledMapLoader.loadDecorFromTiled("images/world/world.tmj", decorM, Grass.grassFrames, gp);
         
     }
 

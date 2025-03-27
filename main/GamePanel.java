@@ -289,13 +289,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void reloadWorld() {
         //Rebuild tiles
-        tile.TiledMapLoader.loadTileLayer("/res/images/world/world.tmj", tileM);
+        tile.TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
         getPlaying().tileM = tileM;
         
         //Rebuild decor
         DecorAssetLoader.clearCache();
         decorM = new world.DecorManager(); 
-        tile.TiledMapLoader.loadDecorFromTiled("/res/images/world/world.tmj", decorM, null, this);
+        tile.TiledMapLoader.loadDecorFromTiled("images/world/world.tmj", decorM, null, this);
         getPlaying().decorM = decorM; // update Playing's reference
         
     }

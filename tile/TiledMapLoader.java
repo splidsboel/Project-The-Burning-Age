@@ -8,6 +8,10 @@ import world.DecorManager;
 import world.decoration.Grass;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class TiledMapLoader {
@@ -16,9 +20,25 @@ public class TiledMapLoader {
     public static void loadDecorFromTiled(String path, DecorManager decoM, BufferedImage[] grassFrames, GamePanel gp) {
         try {
             // Step 1: Load and parse JSON
-            InputStreamReader reader = new InputStreamReader(TiledMapLoader.class.getResourceAsStream(path));
-            JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+            InputStream is = TiledMapLoader.class.getClassLoader().getResourceAsStream(path);
 
+            if (is == null) {
+                System.out.println("TMJ file not found in JAR, checking filesystem: " + path);
+                File file = new File("res/" + path);
+                if (file.exists()) {
+                    try {
+                        is = new FileInputStream(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    throw new IOException("Error: TMJ file not found -> " + file.getAbsolutePath());
+                }
+            }
+
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(is));
+            JsonObject root = JsonParser.parseReader(jsonReader).getAsJsonObject();
+           
             // Step 2: Get layers array
             JsonArray layers = root.getAsJsonArray("layers");
 
@@ -68,12 +88,25 @@ public class TiledMapLoader {
     
     public static void loadTileLayer(String path, TileManager tileManager) {
         try {
-            InputStreamReader reader = new InputStreamReader(
-                TiledMapLoader.class.getResourceAsStream(path)
-            );
-            JsonReader jsonReader = new JsonReader(reader);
-            jsonReader.setLenient(true);
+            InputStream is = TiledMapLoader.class.getClassLoader().getResourceAsStream(path);
+
+            if (is == null) {
+                System.out.println("TMJ file not found in JAR, checking filesystem: " + path);
+                File file = new File("res/" + path);
+                if (file.exists()) {
+                    try {
+                        is = new FileInputStream(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    throw new IOException("Error: TMJ file not found -> " + file.getAbsolutePath());
+                }
+            }
+
+            JsonReader jsonReader = new JsonReader(new InputStreamReader(is));
             JsonObject root = JsonParser.parseReader(jsonReader).getAsJsonObject();
+
     
             // Get tile layer data
             JsonArray layers = root.getAsJsonArray("layers");
