@@ -1,6 +1,4 @@
 package main;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 
 import javax.swing.JFrame;
 
@@ -13,19 +11,15 @@ public class Main {
         window = new JFrame();
         window.setTitle("The Burning Age");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setUndecorated(true);
- 
-        //GAMEPANEL
-        GamePanel gamePanel = new GamePanel();
-        window.add(gamePanel);
-
+        
         //GAME WINDOW
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
         window.setSize(1280, 720);
         window.setLocationRelativeTo(null); // Center the window
         window.setVisible(true);
         
+        //GAMEPANEL
+        GamePanel gamePanel = new GamePanel();
+        window.add(gamePanel);
 
         //SETUP GAME AND START GAME THREAD
         gamePanel.setupGame();
