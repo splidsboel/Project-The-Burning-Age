@@ -138,6 +138,7 @@ public class GamePanel extends JPanel implements Runnable {
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         detectedScreenWidth = gd.getDisplayMode().getWidth();
         detectedScreenHeight = gd.getDisplayMode().getHeight();
+
         if (detectedScreenWidth > 2000) {
             screenWidth = detectedScreenWidth / 2;
             screenHeight = detectedScreenHeight / 2;
@@ -145,6 +146,8 @@ public class GamePanel extends JPanel implements Runnable {
             screenWidth = detectedScreenWidth ;
             screenHeight = detectedScreenHeight;
         }
+
+
 
         float scaleX = screenWidth/(float)virtualWidth;
         float scaleY = screenHeight/(float)virtualHeight;
