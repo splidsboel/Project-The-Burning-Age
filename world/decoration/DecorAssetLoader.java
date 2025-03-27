@@ -20,7 +20,7 @@ public class DecorAssetLoader {
             List<BufferedImage> allFrames = new ArrayList<>();
 
             for (int i = 1; i <= variantCount; i++) {
-                String path = String.format("/res/images/world/decor/grass/grass01.png", i);
+                String path = String.format("images/world/decor/grass/grass01.png", i);
                 BufferedImage sheet = UtilityTool.importImg(path);
 
                 for (int frame = 0; frame < frameCount; frame++) {

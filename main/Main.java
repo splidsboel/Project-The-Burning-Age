@@ -18,10 +18,8 @@ public class Main {
 
         //GAMEPANEL
         GamePanel gamePanel = new GamePanel();
-        
         window.add(gamePanel);
         
-    
         //GAME WINDOW
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();

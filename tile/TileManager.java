@@ -21,8 +21,8 @@ public class TileManager {
     }
 
     public void registerTilesets() {
-        BufferedImage desertSheet = UtilityTool.importImg("/res/images/world/ground/desert.png");
-        BufferedImage waterSheet = UtilityTool.importImg("/res/images/world/ground/water.png");
+        BufferedImage desertSheet = UtilityTool.importImg("images/world/ground/desert.png");
+        BufferedImage waterSheet = UtilityTool.importImg("images/world/ground/water.png");
 
         Tileset desertSet = new Tileset(DesertTile.class, desertSheet, gp.originalTileSize);
         Tileset waterSet = new Tileset(WaterTile.class, waterSheet, gp.originalTileSize);

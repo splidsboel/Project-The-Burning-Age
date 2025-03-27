@@ -3,6 +3,7 @@ package entity;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -56,28 +57,47 @@ public class Entity {
     //HELPER METHODS
 
     public BufferedImage importImg(String filepath) {
-        InputStream is = getClass().getResourceAsStream(filepath);
-        try {
-            img = ImageIO.read(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        BufferedImage img = null;
+
+        // First, try loading as a resource from inside the JAR
+        InputStream is = getClass().getClassLoader().getResourceAsStream(filepath);
+        
+        if (is != null) {
             try {
-                is.close();
-            } catch (Exception e) {
+                img = ImageIO.read(is);
+            } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } 
+        // If running in VS Code (file not found in JAR), try loading from the filesystem
+        else {
+            File file = new File("res/" + filepath);  // Adjust path based on your structure
+            if (file.exists()) {
+                try {
+                    img = ImageIO.read(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("Error: Image file not found -> " + file.getAbsolutePath());
             }
         }
+
         return img;
     }
-
 
 
 
     public BufferedImage setup(String imagePath, int width, int height) {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(getClass().getResourceAsStream(imagePath+".png"));
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(imagePath+".png"));
             image = UtilityTool.scaleImage(image, width, height);
 
         } catch (Exception e) {

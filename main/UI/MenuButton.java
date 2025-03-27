@@ -39,7 +39,7 @@ public class MenuButton {
 
     private void loadImgs() {
         imgs = new BufferedImage[3];
-        BufferedImage temp = UtilityTool.importImg("/res/images/UI/buttons/menu_buttons.png");
+        BufferedImage temp = UtilityTool.importImg("images/UI/buttons/menu_buttons.png");
         for (int i = 0; i < imgs.length; i++) {
             imgs[i] = temp.getSubimage(i * b_width_default, rowIndex * b_height_default, b_width_default, b_height_default);
         }

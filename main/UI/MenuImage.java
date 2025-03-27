@@ -23,7 +23,7 @@ public class MenuImage {
 
     private void loadImgs() {   
         imgs = new BufferedImage[3];
-        BufferedImage temp = UtilityTool.importImg("/res/images/UI/logo/dragon_logo.png");
+        BufferedImage temp = UtilityTool.importImg("images/UI/logo/dragon_logo.png");
         for (int i = 0; i < imgs.length; i++) {
             imgs[i] = temp.getSubimage(i * img_width_default, 0, img_width_default, img_height_default);
         }

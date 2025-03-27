@@ -68,7 +68,7 @@ public class Player extends Entity {
     }
 
     public void importPlayerImage() {
-        img = importImg("/res/images/world/player/orc/orc.png");
+        img = importImg("images/world/player/orc/orc.png");
     }
 
     public void loadAnimations() {

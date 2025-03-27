@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,18 +25,37 @@ public class UtilityTool {
 
     public static BufferedImage importImg(String filepath) {
         BufferedImage img = null;
-        InputStream is = UtilityTool.class.getResourceAsStream(filepath);
-        try {
-            img = ImageIO.read(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+
+        // Try loading as a resource from inside the JAR
+        InputStream is = UtilityTool.class.getClassLoader().getResourceAsStream(filepath);
+        
+        if (is != null) {
             try {
-                is.close();
-            } catch (Exception e) {
+                img = ImageIO.read(is);
+            } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } 
+        // If running in VS Code or outside the JAR, try loading from the filesystem
+        else {
+            File file = new File("res/" + filepath);  // Adjust path based on your structure
+            if (file.exists()) {
+                try {
+                    img = ImageIO.read(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("Error: Image file not found -> " + file.getAbsolutePath());
             }
         }
+
         return img;
     }
 
