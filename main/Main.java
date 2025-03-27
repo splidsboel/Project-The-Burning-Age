@@ -22,9 +22,10 @@ public class Main {
         //GAME WINDOW
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
-        gd.setFullScreenWindow(window);
-        gamePanel.setDoubleBuffered(true);
+        window.setSize(1280, 720);
+        window.setLocationRelativeTo(null); // Center the window
         window.setVisible(true);
+        
 
         //SETUP GAME AND START GAME THREAD
         gamePanel.setupGame();
