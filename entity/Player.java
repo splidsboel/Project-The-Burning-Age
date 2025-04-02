@@ -12,7 +12,7 @@ public class Player extends Entity {
     Graphics2D g2;
     GamePanel gp;
     BufferedImage[][] animations;
-    private int aniTick, aniIndex, aniSpeed = 20; // 90 fps / 2 animationer
+    private int aniTick, aniIndex, aniSpeed = 10; // 90 fps / 2 animationer
     public int playerAction = RUNNING_LEFT;
     private boolean up, right, left, down, left_up, left_down, right_up, right_down;
     private boolean moving = false;
@@ -41,7 +41,7 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 13;
         worldY = gp.tileSize * 15;
-        defaultSpeed =(int) (1.2 * gp.scale);
+        defaultSpeed =(int) (2 * gp.scale);
         speed = defaultSpeed;
     }
 
