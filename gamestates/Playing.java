@@ -8,11 +8,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import main.GamePanel;
 import tile.TileManager;
-import tile.TiledMapLoader;
 import static tools.Constants.PlayerConstants.RUNNING_LEFT;
 import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
 import world.DecorManager;
-import world.decoration.*;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
@@ -32,31 +30,26 @@ public class Playing extends State implements Statemethods{
     }
 
     public void initializeClasses() {
+
         //ENTITIES AND OBJECTS
         entity = new Entity(gp);
         player = new Player(gp);
-        decorM = new DecorManager();
-        tileM = new TileManager(gp);
-        
+        tileM = gp.tileM;
+        decorM = gp.decorM;
 
-        TiledMapLoader.loadTileLayer("images/world/world01.tmj", tileM);
-        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Grass.grassFrames, gp);
-        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Tree.treeFrames, gp);
-        
     }
 
     @Override
     public void update() {
         player.update();
-        decorM.update();
-        
+        gp.decorM.update();
         
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        tileM.draw(g2);
-        decorM.draw(g2, player.cameraX, player.cameraY);
+        gp.tileM.draw(g2);
+        gp.decorM.draw(g2, player.cameraX, player.cameraY);
         player.render(g2);
 
         if (p_pressed) {

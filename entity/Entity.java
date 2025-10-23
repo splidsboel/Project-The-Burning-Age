@@ -2,13 +2,12 @@ package entity;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.imageio.ImageIO;
-
 import main.GamePanel;
 import tools.UtilityTool;
 
@@ -19,8 +18,12 @@ public class Entity {
 
     //STATE
     public double worldX, worldY;
-    public String direction = "down";
     public int spriteNum = 1;
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
+    public boolean moving = false;
+    public boolean up, right, left, down, left_up, left_down, right_up, right_down;
+    
 
     //COUNTER
     public int spriteCounter = 0;

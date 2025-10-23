@@ -1,10 +1,8 @@
 
 package tile;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import main.GamePanel;
 import tile.tiles.DesertTile;
 import tile.tiles.WaterTile;
@@ -26,7 +24,6 @@ public class TileManager {
 
         Tileset desertSet = new Tileset(DesertTile.class, desertSheet, gp.originalTileSize);
         Tileset waterSet = new Tileset(WaterTile.class, waterSheet, gp.originalTileSize);
-
 
         TilesetFactory.registerTileset(1, desertSet);
         TilesetFactory.registerTileset(29, waterSet);
@@ -55,8 +52,9 @@ public class TileManager {
                     g2.drawImage(tile.getImage(), (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
                     
                     //DEBUG directly on tiles
-                    // g2.setColor(Color.BLACK);
-                    // g2.drawString(String.valueOf(tile), (int)screenX, (int)screenY);
+                //     g2.setColor(Color.BLACK);
+                //     g2.drawString("Row:"+String.valueOf(row), (int)screenX+ gp.originalTileSize/2, (int)screenY);
+                //     g2.drawString("Col:"+String.valueOf(col), (int)screenX+ gp.originalTileSize/2, (int)screenY-10);
                 }
             }
         }

@@ -1,21 +1,17 @@
 package entity;
 
-import static tools.Constants.PlayerConstants.*;
-
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
 import main.GamePanel;
 import tools.Constants.PlayerConstants;
+import static tools.Constants.PlayerConstants.*;
 
 public class Player extends Entity {
-    Graphics2D g2;
     GamePanel gp;
     BufferedImage[][] animations;
     private int aniTick, aniIndex, aniSpeed = 10; // 90 fps / 2 animationer
     public int playerAction = RUNNING_LEFT;
-    private boolean up, right, left, down, left_up, left_down, right_up, right_down;
-    private boolean moving = false;
 
 
     public double cameraX = 0;
@@ -23,16 +19,12 @@ public class Player extends Entity {
     public double screenX; 
     public double screenY; 
 
-
-    //BOOLEANS
-    public boolean playerMoved = false;
-
     public Player(GamePanel gp) {
         super(gp);
         this.gp = gp;
+        
 
         setDefaultValues();
-
         importPlayerImage();
         loadAnimations();
 
@@ -46,21 +38,27 @@ public class Player extends Entity {
     }
 
     public void update() {
-        
-    }
-
-    public void render(Graphics2D g2) {  
         updateCameraOnPlayer();
         updateAnimationTick();
         setAnimation();
         updatePosition();
-        
+
+
+
+    }
+
+    public void render(Graphics2D g2) {  
         drawPlayerImage(g2);
+
+        
+        // DEBUG: show solidArea
+        //g2.setColor(Color.GREEN);
+        //g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
     }
 
 
     public void drawPlayerImage(Graphics2D g2){
-        if (moving) {
+        if (this.moving) {
             g2.drawImage(animations[aniIndex][playerAction],(int)screenX,(int)screenY, (int)gp.tileSize,(int)gp.tileSize, null);   
         } else {
             g2.drawImage(animations[0][playerAction],(int)screenX,(int)screenY, (int)gp.tileSize,(int)gp.tileSize, null);   
@@ -80,6 +78,8 @@ public class Player extends Entity {
             }
         }
     }
+
+
 
     public void setAnimation() {
         if (moving) {
@@ -106,33 +106,39 @@ public class Player extends Entity {
     }
 
     public void updatePosition() {
+        setSolidArea();
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
         moving = false;
         boolean horizontalMove = left ^ right; // XOR: true if either is true, but not both
         boolean verticalMove = up ^ down;
         boolean diagonalMove = horizontalMove && verticalMove;
         float effectiveSpeed = diagonalMove ? (int)speed / (float) Math.sqrt(2) : (int)speed;
     
-        // Update position
-        if (up && !down) {
-            worldY -= effectiveSpeed;
-            moving = true;
-        } else if (down && !up) {
-            worldY += effectiveSpeed;
-            moving = true;
-        }
-        if (left && !right) {
-            worldX -= effectiveSpeed;
-            moving = true;
-        } else if (right && !left) {
-            worldX += effectiveSpeed;
-            moving = true;
+        if (!collisionOn) {
+            // Update position
+            if (up && !down) {
+                worldY -= effectiveSpeed;
+                moving = true;
+            } else if (down && !up) {
+                worldY += effectiveSpeed;
+                moving = true;
+            }
+            if (left && !right) {
+                worldX -= effectiveSpeed;
+                moving = true;
+            } else if (right && !left) {
+                worldX += effectiveSpeed;
+                moving = true;
+            }
+
+            if (moving) {
+                // Stay in map bounds
+                worldX = Math.max(0, Math.min(worldX, (gp.maxWorldCol * gp.tileSize) - gp.tileSize));
+                worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
+            }
         }
 
-        if (moving) {
-            // Stay in map bounds
-            worldX = Math.max(0, Math.min(worldX, (gp.maxWorldCol * gp.tileSize) - gp.tileSize));
-            worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
-        }
     }
 
     public void updateAnimationTick() {
@@ -164,7 +170,14 @@ public class Player extends Entity {
         screenX = worldX - cameraX;
         screenY = worldY - cameraY;
     }
-    
+
+    public void setSolidArea() {
+        solidArea = new Rectangle((int)(gp.tileSize*0.34),(int)(gp.tileSize*0.85),(int)(gp.tileSize*0.28),(int)(gp.tileSize*0.11)); 
+        // solidArea.x = 11;
+        // solidArea.y = 23;
+        // solidArea.width = 9;
+        // solidArea.height = 7;
+    }
     
 
     public void playerLookDirection() {

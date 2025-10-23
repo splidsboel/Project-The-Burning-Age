@@ -7,7 +7,7 @@ import tile.Tile;
 
 public class WaterTile extends Tile {
     public WaterTile(BufferedImage image) {
-        super(image, false);
+        super(image, true);
     }
 }
 

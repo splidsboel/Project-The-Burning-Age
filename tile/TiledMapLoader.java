@@ -131,7 +131,7 @@ public class TiledMapLoader {
                         if (globalTileId > 0) {
                             Tile tile = TilesetFactory.createTile(globalTileId);
                             tileManager.setTile(col, row, tile);
-                        }
+                        } 
                         index++;
                     }
                 }

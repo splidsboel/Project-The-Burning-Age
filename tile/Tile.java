@@ -3,19 +3,19 @@ package tile;
 import java.awt.image.BufferedImage;
 
 public abstract class Tile {
-    protected BufferedImage image;
-    protected boolean walkable;
+    public BufferedImage image;
+    public boolean collision;
 
-    public Tile(BufferedImage image, boolean walkable) {
+    public Tile(BufferedImage image, boolean collision) {
         this.image = image;
-        this.walkable = walkable;
+        this.collision = collision;
     }
 
     public BufferedImage getImage() {
         return image;
     }
 
-    public boolean isWalkable() {
-        return walkable;
+    public boolean hasCollision() {
+        return collision;
     }
 }

@@ -14,9 +14,12 @@ import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import tile.TileManager;
+import tile.TiledMapLoader;
 import tools.UtilityTool;
 import world.DecorManager;
 import world.decoration.DecorAssetLoader;
+import world.decoration.Grass;
+import world.decoration.Tree;
 
 public class GamePanel extends JPanel implements Runnable {
     //THREAD
@@ -37,6 +40,7 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM;
     public DecorManager decorM;
     public UtilityTool uTool;
+    public CollisionChecker cChecker;
 
     //SCREEN SETTINGS
     public final int originalTileSize = 32;  
@@ -59,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
     public int frames;
     public int updates;
     BufferedImage screen;
-    Graphics2D g2;
+    public Graphics2D g2;
 
     //WORLD SETTINGS
     public int maxWorldCol = 25;
@@ -89,19 +93,26 @@ public class GamePanel extends JPanel implements Runnable {
         uTool = new UtilityTool(this);
         tileM = new TileManager(this);
         decorM = new DecorManager();
+        cChecker = new CollisionChecker(this);
+
+        //WORLD FRAMES
+        TiledMapLoader.loadTileLayer("images/world/world01.tmj", tileM);
+        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Grass.grassFrames, this);
+        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Tree.treeFrames, this);
+        
         
     }
 
     public void update() {
 
-        //GRAPHICS
-        if (zoomAnimating) {
-            animateZoomStep();
-        }
-          
         switch (Gamestate.state) {
             case PLAYING: 
                 playing.update();
+                
+                //GRAPHICS
+                if (zoomAnimating) {
+                    animateZoomStep();
+                }
                 break;
             case MENU:
                 menu.update();
@@ -187,15 +198,16 @@ public class GamePanel extends JPanel implements Runnable {
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
 
-            if (deltaU >= 1) {
-                update();
-                updates++;
-                deltaU--;
-            }
             if (deltaF >= 1) {
                 render();
                 frames++;
                 deltaF--;
+            }
+
+            if (deltaU >= 1) {
+                update();
+                updates++;
+                deltaU--;
             }
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
@@ -221,6 +233,13 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("screenY: " + getPlaying().getPlayer().screenY, x, y); y += lineHeight;
         g2.drawString("cameraX: " + getPlaying().getPlayer().cameraX, x, y); y += lineHeight;
         g2.drawString("cameraY: " + getPlaying().getPlayer().cameraY, x, y); y += lineHeight;
+
+        g2.drawString("entityLeftCol: " + cChecker.entityLeftCol, x, y); y += lineHeight;
+        g2.drawString("entityRightCol: " + cChecker.entityRightCol, x, y); y += lineHeight;
+        g2.drawString("entityTopRow: " + cChecker.entityTopRow, x, y); y += lineHeight;
+        g2.drawString("entityButtomRow: " + cChecker.entityButtomRow, x, y); y += lineHeight;
+
+
         g2.drawString("mouseX: " + mouseH.mouseX, x, y); y += lineHeight;
         g2.drawString("mouseY: " + mouseH.mouseY, x, y); y += lineHeight;
         g2.drawString("scale: " + scale, x, y); y += lineHeight;
@@ -230,6 +249,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
         g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
         g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
+
         
     }
 
