@@ -138,7 +138,6 @@ public class Player extends Entity {
                 worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
             }
         }
-
     }
 
     public void updateAnimationTick() {

@@ -28,30 +28,11 @@ public class Entity {
     //COUNTER
     public int spriteCounter = 0;
 
-    //TYPE
-    public int type;
-    public final int type_player = 0;
-
-    //CHARACTER CLASS
-    public int cClass;
-    public final int cClass_warrior = 0;
-    public final int cClass_hunter = 0;
-    public final int cClass_mage = 0;
-
     //CHARACTER STATUS
     public String name;
     public int defaultSpeed;
     public double speed;
-    public int maxLife;
-    public int life;
-    public int rage;
-    public int maxRage;
-    public int maxMana;
-    public int mana; 
-    public int level;
-    public int attack;
-    public int defense;
-    public int strength;
+
 
     public Entity(GamePanel gp) {
         this.gp = gp;
