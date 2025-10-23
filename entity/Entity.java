@@ -23,6 +23,7 @@ public class Entity {
     public boolean collisionOn = false;
     public boolean moving = false;
     public boolean up, right, left, down, left_up, left_down, right_up, right_down;
+    public boolean collisionUp, collisionDown, collisionLeft, collisionRight;
     
 
     //COUNTER
