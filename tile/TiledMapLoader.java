@@ -5,7 +5,7 @@ import com.google.gson.stream.JsonReader;
 
 import main.GamePanel;
 import world.DecorManager;
-import world.decoration.Grass;
+import world.decoration.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 public class TiledMapLoader {
 
 
-    public static void loadDecorFromTiled(String path, DecorManager decoM, BufferedImage[] grassFrames, GamePanel gp) {
+    public static void loadDecorFromTiled(String path, DecorManager decoM, BufferedImage[] frames, GamePanel gp) {
         try {
             // Step 1: Load and parse JSON
             InputStream is = TiledMapLoader.class.getClassLoader().getResourceAsStream(path);
@@ -63,17 +63,18 @@ public class TiledMapLoader {
                     double x = obj.get("x").getAsDouble();
                     double y = obj.get("y").getAsDouble();
 
-
                     x = x / gp.originalTileSize * gp.tileSize;
-                    y = y / gp.originalTileSize * gp.tileSize;
-
-
+                    y = y / gp.originalTileSize * gp.tileSize; 
                     
                     //System.out.println("TileMapLoader. " + "object: " + name + " coordinate: " + x + "," + y + ". count:"+counter++);
 
                     switch (objName.toLowerCase()) {  // <----- Det er her det sker!
                         case "grass" -> {
                             decoM.add(new Grass(x, y, gp));
+                        }
+                        case "tree" -> {
+                            y = y - 64 / gp.originalTileSize * gp.tileSize; //y er rettet da sprite er 64x64
+                            decoM.add(new Tree(x, y, gp));
                         }
                         default -> System.out.println("Unhandled decor type: " + objName);
                     }

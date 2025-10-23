@@ -1,20 +1,18 @@
 package main;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JPanel;
-
 import entity.Player;
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
 import input.KeyHandler;
 import input.MouseHandler;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.image.BufferedImage;
+import javax.swing.JPanel;
 import tile.TileManager;
 import tools.UtilityTool;
 import world.DecorManager;
@@ -289,13 +287,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void reloadWorld() {
         //Rebuild tiles
-        tile.TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
+        tile.TiledMapLoader.loadTileLayer("images/world/world01.tmj", tileM);
         getPlaying().tileM = tileM;
         
         //Rebuild decor
         DecorAssetLoader.clearCache();
         decorM = new world.DecorManager(); 
-        tile.TiledMapLoader.loadDecorFromTiled("images/world/world.tmj", decorM, null, this);
+        tile.TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, null, this);
         getPlaying().decorM = decorM; // update Playing's reference
         
     }

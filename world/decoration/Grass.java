@@ -9,7 +9,7 @@ public class Grass extends Decor {
     public static BufferedImage[] grassFrames;
     public Grass(double x, double y, GamePanel gp) {
         super(x, y, DecorAssetLoader.getGrassFrames(gp), true);
-        this.aniSpeed = 100;
+        this.aniSpeed = 70;
     }
 }
 

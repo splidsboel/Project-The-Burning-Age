@@ -1,8 +1,8 @@
 // tile/WaterTile.java
 package tile.tiles;
 
-import tile.Tile;
 import java.awt.image.BufferedImage;
+import tile.Tile;
 
 
 public class WaterTile extends Tile {

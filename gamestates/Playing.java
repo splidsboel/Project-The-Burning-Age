@@ -1,21 +1,18 @@
 package gamestates;
 
-import static tools.Constants.PlayerConstants.RUNNING_LEFT;
-import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
-
-
+import entity.Entity;
+import entity.Player;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
-import entity.Entity;
-import entity.Player;
 import main.GamePanel;
 import tile.TileManager;
 import tile.TiledMapLoader;
-import world.decoration.Grass;
+import static tools.Constants.PlayerConstants.RUNNING_LEFT;
+import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
 import world.DecorManager;
+import world.decoration.*;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
@@ -42,8 +39,9 @@ public class Playing extends State implements Statemethods{
         tileM = new TileManager(gp);
         
 
-        TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
-        TiledMapLoader.loadDecorFromTiled("images/world/world.tmj", decorM, Grass.grassFrames, gp);
+        TiledMapLoader.loadTileLayer("images/world/world01.tmj", tileM);
+        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Grass.grassFrames, gp);
+        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Tree.treeFrames, gp);
         
     }
 
