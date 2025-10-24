@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DecorManager {
-    private List<WorldEntity> decorList = new ArrayList<>();
+    public List<WorldEntity> decorList = new ArrayList<>();
     private List<Rectangle> decorSolidAreaList = new ArrayList<>();
 
     public void add(WorldEntity entity) {

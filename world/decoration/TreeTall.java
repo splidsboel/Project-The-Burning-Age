@@ -8,16 +8,18 @@ import world.WorldEntity;
 
 public class TreeTall extends WorldEntity {
     GamePanel gp;
+    public int scale;
 
-    public TreeTall(double x, double y, GamePanel gp) {
-        super(x, y, DecorAssetLoader.getAssetFrames(gp, 2, "images/world/decor/trees/tree02.png"), true);
+    public TreeTall(double x, double y, GamePanel gp, int aniSpeed) {
+        super(gp, x, y, DecorAssetLoader.getAssetFrames(gp, 2, "images/world/decor/trees/tree02.png"), true);
         this.gp = gp;
-        this.aniSpeed = 150;
+        this.aniSpeed = aniSpeed;
+        scale = 2;
         setSolidArea();
     }
 
     public void setSolidArea() {
-        solidArea = new Rectangle((int)(x+(gp.tileSize*2)*0.41),(int)(y+(gp.tileSize*2)*0.82),(int)((gp.tileSize*2)*0.15),(int)((gp.tileSize*2)*0.10)); 
+        solidArea = new Rectangle((int)(x+(gp.tileSize*scale)*0.41),(int)(y+(gp.tileSize*2)*0.82),(int)((gp.tileSize*2)*0.15),(int)((gp.tileSize*2)*0.10)); 
     }
 
     @Override
@@ -25,13 +27,13 @@ public class TreeTall extends WorldEntity {
         super.draw(g2, cameraX, cameraY);
 
         // DEBUG: draw tree collision rectangle
-        g2.setColor(java.awt.Color.GREEN);
-        g2.drawRect(
-        solidArea.x - (int) cameraX,
-        solidArea.y - (int) cameraY,
-        solidArea.width,
-        solidArea.height
-        );
+        // g2.setColor(java.awt.Color.GREEN);
+        // g2.drawRect(
+        // solidArea.x - (int) cameraX,
+        // solidArea.y - (int) cameraY,
+        // solidArea.width,
+        // solidArea.height
+        // );
     }
 
 }

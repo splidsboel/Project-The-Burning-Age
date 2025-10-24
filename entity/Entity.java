@@ -9,9 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 import main.GamePanel;
+import tools.Renderable;
 import tools.UtilityTool;
 
-public class Entity {
+public class Entity implements Renderable {
     GamePanel gp;    
     BufferedImage img;
 
@@ -19,6 +20,7 @@ public class Entity {
     //STATE
     public double worldX, worldY;
     public int spriteNum = 1;
+    public Rectangle entityArea;
     public Rectangle solidArea;
     public boolean collisionOn = false;
     public boolean moving = false;
@@ -94,4 +96,14 @@ public class Entity {
     public void changeAlpha(Graphics2D g2, float alphaValue) {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
     }
+
+    @Override public double getBottomY() {
+        return worldY + solidArea.y + solidArea.height;
+    }
+
+    @Override
+    public void draw(Graphics2D g2, double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

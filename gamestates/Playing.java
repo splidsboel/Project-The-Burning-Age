@@ -6,15 +6,21 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import main.GamePanel;
 import tile.TileManager;
 import static tools.Constants.PlayerConstants.RUNNING_LEFT;
 import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
+import tools.Renderable;
 import world.DecorManager;
+import world.WorldEntity;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
     public Player player;
+    public WorldEntity wEntity;
     public DecorManager decorM;
     public TileManager tileM;
 
@@ -34,6 +40,7 @@ public class Playing extends State implements Statemethods{
         //ENTITIES AND OBJECTS
         entity = new Entity(gp);
         player = new Player(gp);
+
         tileM = gp.tileM;
         decorM = gp.decorM;
 
@@ -48,10 +55,21 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void draw(Graphics2D g2) {
+        //TILES
         gp.tileM.draw(g2);
-        player.render(g2);
-        gp.decorM.draw(g2, player.cameraX, player.cameraY);
-        
+
+        //PLAYER AND DECOR SORT
+        List<Renderable> drawList = new ArrayList<>();
+        drawList.add(player);
+        drawList.addAll(gp.decorM.decorList);
+        drawList.sort(Comparator.comparingDouble(Renderable::getBottomY));
+        for (Renderable r : drawList) {
+            if(r instanceof Player) {
+                player.render(g2);
+            } else if (r instanceof WorldEntity we) {
+                we.draw(g2, player.cameraX, player.cameraY);
+            }
+        }
 
         if (p_pressed) {
             gp.debugText(g2);

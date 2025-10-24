@@ -19,10 +19,6 @@ import tools.UtilityTool;
 import world.DecorAssetLoader;
 import world.DecorManager;
 import world.TiledDecorLoader;
-import world.decoration.Grass;
-import world.decoration.Tree;
-import world.decoration.TreeTall;
-import world.decoration.TreeWide;
 
 public class GamePanel extends JPanel implements Runnable {
     //THREAD
@@ -100,8 +96,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         //WORLD FRAMES
         TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
-        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, Grass.grassFrames, this);
-        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, TreeWide.treeFrames, this);
+        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, this);
+        //TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, TreeWide.treeFrames, this);
         
         
     }
@@ -236,12 +232,6 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("cameraX: " + getPlaying().getPlayer().cameraX, x, y); y += lineHeight;
         g2.drawString("cameraY: " + getPlaying().getPlayer().cameraY, x, y); y += lineHeight;
 
-        g2.drawString("entityLeftCol: " + cChecker.entityLeftCol, x, y); y += lineHeight;
-        g2.drawString("entityRightCol: " + cChecker.entityRightCol, x, y); y += lineHeight;
-        g2.drawString("entityTopRow: " + cChecker.entityTopRow, x, y); y += lineHeight;
-        g2.drawString("entityButtomRow: " + cChecker.entityButtomRow, x, y); y += lineHeight;
-
-
         g2.drawString("mouseX: " + mouseH.mouseX, x, y); y += lineHeight;
         g2.drawString("mouseY: " + mouseH.mouseY, x, y); y += lineHeight;
         g2.drawString("scale: " + scale, x, y); y += lineHeight;
@@ -311,9 +301,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         //Rebuild decor
         DecorAssetLoader.clearCache();
-        decorM = new world.DecorManager(); 
-        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, null, this);
-        //getPlaying().decorM = decorM; // update Playing's reference
-        
+        decorM = new DecorManager(); 
+        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, this);
     }
 }

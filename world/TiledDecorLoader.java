@@ -21,7 +21,7 @@ import world.decoration.TreeWide;
 
 public class TiledDecorLoader {
 
-    public static void loadDecorFromTiled(String path, DecorManager decoM, BufferedImage[] frames, GamePanel gp) {
+    public static void loadDecorFromTiled(String path, DecorManager decoM, GamePanel gp) {
         try {
             // Step 1: Load and parse JSON
             InputStream is = TiledMapLoader.class.getClassLoader().getResourceAsStream(path);
@@ -75,15 +75,15 @@ public class TiledDecorLoader {
 
                     switch (objName) {  // <----- Det er her det sker!
                         case "grass" -> {
-                            decoM.add(new Grass(x, y, gp));
+                            decoM.add(new Grass(x, y, gp, (int)(Math.random() * (110 - 90 + 1)) + 90));
                         }
                         case "treeWide" -> {
                             y = y - 64 / gp.originalTileSize * gp.tileSize; //y er rettet da sprite er 64x64
-                            decoM.add(new TreeWide(x, y, gp));
+                            decoM.add(new TreeWide(x, y, gp, (int)(Math.random() * (110 - 90 + 1)) + 90));
                         }
                         case "treeTall" -> {
                             y = y - 64 / gp.originalTileSize * gp.tileSize; //y er rettet da sprite er 64x64
-                            decoM.add(new TreeTall(x, y, gp)); 
+                            decoM.add(new TreeTall(x, y, gp, (int)(Math.random() * (110 - 90 + 1)) + 90)); 
                         }
                         default -> System.out.println("Unhandled decor type: " + objName);
                     }

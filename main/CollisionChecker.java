@@ -7,90 +7,122 @@ import tile.Tile;
 public class CollisionChecker {
     GamePanel gp;
 
-    public int entityLeftCol;
-    public int entityRightCol;
-    public int entityTopRow;
-    public int entityButtomRow;
-
     public CollisionChecker(GamePanel gp) {
         this.gp = gp;
     }
 
-    public void checkTile(Entity entity) {
-        double entityLeftWorldX = entity.worldX + entity.solidArea.x;
-        double entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
-        double entityTopWorldY = entity.worldY + entity.solidArea.y;
-        double entityButtomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
+    public void check(Entity e) {
+        // reset
+        e.collisionUp = false;
+        e.collisionDown = false;
+        e.collisionLeft = false;
+        e.collisionRight = false;
 
-        entityLeftCol = (int)(entityLeftWorldX / gp.tileSize);
-        entityRightCol = (int)(entityRightWorldX / gp.tileSize);
-        entityTopRow = (int)(entityTopWorldY / gp.tileSize);
-        entityButtomRow = (int)(entityButtomWorldY / gp.tileSize);
-
-
-    
-        Tile tileLeft, tileRight;
-
-        if (entity.up) {
-            entityTopRow = (int)((entityTopWorldY - entity.speed) / gp.tileSize);
-            tileLeft = gp.tileM.tileMap[entityLeftCol][entityTopRow];
-            tileRight = gp.tileM.tileMap[entityRightCol][entityTopRow];
-            if (tileLeft.collision == true || tileRight.collision == true) {
-                entity.collisionOn = true;
-            }
-        }
-        if (entity.down) {
-            entityButtomRow = (int)((entityButtomWorldY + entity.speed) / gp.tileSize);
-            tileLeft = gp.tileM.tileMap[entityLeftCol][entityButtomRow];
-            tileRight = gp.tileM.tileMap[entityRightCol][entityButtomRow];
-            if (tileLeft.collision == true || tileRight.collision == true) {
-                entity.collisionOn = true;
-            }
-        }
-        if (entity.left) {
-            entityLeftCol = (int)((entityLeftWorldX - entity.speed) / gp.tileSize);
-            tileLeft = gp.tileM.tileMap[entityLeftCol][entityTopRow];
-            tileRight = gp.tileM.tileMap[entityLeftCol][entityButtomRow];
-            if (tileLeft.collision == true || tileRight.collision == true) {
-                entity.collisionOn = true;
-            }  
-        }
-        if(entity.right) {
-            entityRightCol = (int)((entityRightWorldX + entity.speed) / gp.tileSize);
-            tileLeft = gp.tileM.tileMap[entityRightCol][entityTopRow];
-            tileRight = gp.tileM.tileMap[entityRightCol][entityButtomRow];
-            if (tileLeft.collision == true || tileRight.collision == true) {
-                entity.collisionOn = true;
-            }
-        }      
+        checkTile(e);
+        checkDecor(e);
     }
 
-    public void checkDecor(Entity entity) {
+    private void checkTile(Entity e) {
+        // Current world bounds of the solidArea
+        double leftWorldX   = e.worldX + e.solidArea.x;
+        double rightWorldX  = e.worldX + e.solidArea.x + e.solidArea.width;
+        double topWorldY    = e.worldY + e.solidArea.y;
+        double bottomWorldY = e.worldY + e.solidArea.y + e.solidArea.height;
+
+        // ---- UP probe ----
+        {
+            int nextTopRow = (int)((topWorldY - e.speed) / gp.tileSize);
+            int leftCol    = (int)(leftWorldX / gp.tileSize);
+            int rightCol   = (int)(rightWorldX / gp.tileSize);
+
+            Tile t1 = gp.tileM.tileMap[leftCol][nextTopRow];
+            Tile t2 = gp.tileM.tileMap[rightCol][nextTopRow];
+
+            if (t1.collision || t2.collision) {
+                e.collisionUp = true;
+            }
+        }
+
+        // ---- DOWN probe ----
+        {
+            int nextBottomRow = (int)((bottomWorldY + e.speed) / gp.tileSize);
+            int leftCol       = (int)(leftWorldX / gp.tileSize);
+            int rightCol      = (int)(rightWorldX / gp.tileSize);
+
+            Tile t1 = gp.tileM.tileMap[leftCol][nextBottomRow];
+            Tile t2 = gp.tileM.tileMap[rightCol][nextBottomRow];
+
+            if (t1.collision || t2.collision) {
+                e.collisionDown = true;
+            }
+        }
+
+        // ---- LEFT probe ----
+        {
+            int nextLeftCol   = (int)((leftWorldX - e.speed) / gp.tileSize);
+            int topRow        = (int)(topWorldY / gp.tileSize);
+            int bottomRow     = (int)(bottomWorldY / gp.tileSize);
+
+            Tile t1 = gp.tileM.tileMap[nextLeftCol][topRow];
+            Tile t2 = gp.tileM.tileMap[nextLeftCol][bottomRow];
+
+            if (t1.collision || t2.collision) {
+                e.collisionLeft = true;
+            }
+        }
+
+        // ---- RIGHT probe ----
+        {
+            int nextRightCol  = (int)((rightWorldX + e.speed) / gp.tileSize);
+            int topRow        = (int)(topWorldY / gp.tileSize);
+            int bottomRow     = (int)(bottomWorldY / gp.tileSize);
+
+            Tile t1 = gp.tileM.tileMap[nextRightCol][topRow];
+            Tile t2 = gp.tileM.tileMap[nextRightCol][bottomRow];
+
+            if (t1.collision || t2.collision) {
+                e.collisionRight = true;
+            }
+        }
+    }
+
+    private void checkDecor(Entity e) {
         if (gp.decorM == null || gp.decorM.getDecorSolidAreaList().isEmpty()) return;
 
-        // Predict next position
-        double nextX = entity.worldX;
-        double nextY = entity.worldY;
+        // Build 4 predicted rectangles. One per axis.
+        Rectangle upBox = new Rectangle(
+            (int)(e.worldX + e.solidArea.x),
+            (int)(e.worldY + e.solidArea.y - e.speed),
+            e.solidArea.width,
+            e.solidArea.height
+        );
 
-        if (entity.up) nextY -= entity.speed;
-        if (entity.down) nextY += entity.speed;
-        if (entity.left) nextX -= entity.speed;
-        if (entity.right) nextX += entity.speed;
+        Rectangle downBox = new Rectangle(
+            (int)(e.worldX + e.solidArea.x),
+            (int)(e.worldY + e.solidArea.y + e.speed),
+            e.solidArea.width,
+            e.solidArea.height
+        );
 
-        // Build predicted collision box in world coordinates
-        int sx = (int)(nextX + entity.solidArea.x);
-        int sy = (int)(nextY + entity.solidArea.y);
-        Rectangle nextArea = new Rectangle(sx, sy, entity.solidArea.width, entity.solidArea.height);
+        Rectangle leftBox = new Rectangle(
+            (int)(e.worldX + e.solidArea.x - e.speed),
+            (int)(e.worldY + e.solidArea.y),
+            e.solidArea.width,
+            e.solidArea.height
+        );
 
-        // Check for intersection with any decor rectangle
+        Rectangle rightBox = new Rectangle(
+            (int)(e.worldX + e.solidArea.x + e.speed),
+            (int)(e.worldY + e.solidArea.y),
+            e.solidArea.width,
+            e.solidArea.height
+        );
+
         for (Rectangle decor : gp.decorM.getDecorSolidAreaList()) {
-            if (nextArea.intersects(decor)) {
-                entity.collisionOn = true;
-                break;
-            }
+            if (upBox.intersects(decor))    e.collisionUp = true;
+            if (downBox.intersects(decor))  e.collisionDown = true;
+            if (leftBox.intersects(decor))  e.collisionLeft = true;
+            if (rightBox.intersects(decor)) e.collisionRight = true;
         }
-
-        
     }
-
 }

@@ -1,6 +1,5 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -51,12 +50,10 @@ public class Player extends Entity {
     public void render(Graphics2D g2) {  
         drawPlayerImage(g2);
         
-        
         // DEBUG: show solidArea
-        g2.setColor(Color.GREEN);
-        g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
+        // g2.setColor(Color.GREEN);
+        // g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
     }
-
 
     public void drawPlayerImage(Graphics2D g2){
         if (this.moving) {
@@ -79,8 +76,6 @@ public class Player extends Entity {
             }
         }
     }
-
-
 
     public void setAnimation() {
         if (moving) {
@@ -106,41 +101,47 @@ public class Player extends Entity {
         
     }
 
-    public void updatePosition() {
-        setSolidArea();
-        collisionOn = false;
-        gp.cChecker.checkTile(this);
-        gp.cChecker.checkDecor(this);
-        moving = false;
-        boolean horizontalMove = left ^ right; // XOR: true if either is true, but not both
-        boolean verticalMove = up ^ down;
-        boolean diagonalMove = horizontalMove && verticalMove;
-        float effectiveSpeed = diagonalMove ? (int)speed / (float) Math.sqrt(2) : (int)speed;
-        
-        if (!collisionOn) {
+public void updatePosition() {
+    setSolidArea();
 
-                if (up && !down) {
-                    worldY -= effectiveSpeed;
-                    moving = true;
-                } else if (down && !up) {
-                    worldY += effectiveSpeed;
-                    moving = true;
-                }
-                if (left && !right) {
-                    worldX -= effectiveSpeed;
-                    moving = true;
-                } else if (right && !left) {
-                    worldX += effectiveSpeed;
-                    moving = true;
-                }
-    
-            //stay in bounds
-            if (moving) {
-                worldX = Math.max(0, Math.min(worldX, (gp.maxWorldCol * gp.tileSize) - gp.tileSize));
-                worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
-            }
-        }
+    // run collision
+    gp.cChecker.check(this);
+
+    moving = false;
+
+    // handle diagonal speed reduction
+    boolean horizontalMove = left ^ right;
+    boolean verticalMove   = up ^ down;
+    boolean diagonalMove   = horizontalMove && verticalMove;
+    double moveSpeed       = diagonalMove ? speed / Math.sqrt(2.0) : speed;
+
+    double startX = worldX;
+    double startY = worldY;
+
+    // vertical first
+    if (up && !down && !collisionUp) {
+        worldY -= moveSpeed;
+    } else if (down && !up && !collisionDown) {
+        worldY += moveSpeed;
     }
+
+    // horizontal next
+    if (left && !right && !collisionLeft) {
+        worldX -= moveSpeed;
+    } else if (right && !left && !collisionRight) {
+        worldX += moveSpeed;
+    }
+
+    // clamp to world bounds
+    worldX = Math.max(0, Math.min(worldX, (gp.maxWorldCol * gp.tileSize) - gp.tileSize));
+    worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
+
+    // set moving flag if position changed
+    if (worldX != startX || worldY != startY) {
+        moving = true;
+    }
+}
+
 
     public void updateAnimationTick() {
         aniTick++;
@@ -242,8 +243,6 @@ public class Player extends Entity {
         this.right_down = right_down;
     }
 
-    
-    //
     
     
 }

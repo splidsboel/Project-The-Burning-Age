@@ -3,9 +3,13 @@ package world;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import main.GamePanel;
+import tools.Renderable;
 
-public class WorldEntity {
+public class WorldEntity implements Renderable {
+    public GamePanel gp;
     public double x, y; // world position
+    public double scale;
     protected BufferedImage[] frames;
     protected int frameIndex = 0;
     protected int aniTick = 0;
@@ -13,11 +17,13 @@ public class WorldEntity {
 
 
 
+    public Rectangle worldEntityArea;
     public Rectangle solidArea;
     public boolean animated = false;
     public boolean visible = true;
 
-    public WorldEntity(double x, double y, BufferedImage[] frames, boolean animated) {
+    public WorldEntity(GamePanel gp, double x, double y, BufferedImage[] frames, boolean animated) {
+        this.gp = gp;
         this.x = x;
         this.y = y;
         this.frames = frames;
@@ -34,12 +40,14 @@ public class WorldEntity {
         }
     }
 
+    @Override
     public void draw(Graphics2D g2, double cameraX, double cameraY) {
         if (!visible || frames == null) return;
 
         int screenX = (int)(x - cameraX);
         int screenY = (int)(y - cameraY);
         g2.drawImage(frames[frameIndex], screenX, screenY, null);
+    
     }
     
     public void setX(double x) {
@@ -57,5 +65,18 @@ public class WorldEntity {
     public double getY() {
         return y;
     }
+
+    @Override
+    public double getBottomY() {
+        if (solidArea != null) {
+            return solidArea.y;
+        } else if (frames != null && frames.length > 0 && frames[0] != null) {
+            return y - gp.originalTileSize + frames[0].getHeight();
+        } else {
+            return y;
+        }
+    }
+
+
 }
 
