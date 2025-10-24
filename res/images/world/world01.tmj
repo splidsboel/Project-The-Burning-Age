@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"world.tmj"
+        }
+    },
  "height":25,
  "infinite":false,
  "layers":[
@@ -52,14 +60,14 @@
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":354.667,
-                 "y":393.333
+                 "x":127.667,
+                 "y":352.333
                 }, 
                 {
                  "gid":43,
                  "height":64,
                  "id":415,
-                 "name":"tree",
+                 "name":"treeWide",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -71,19 +79,19 @@
                  "gid":43,
                  "height":64,
                  "id":416,
-                 "name":"tree",
+                 "name":"treeWide",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":362,
-                 "y":415
+                 "x":96,
+                 "y":723
                 }, 
                 {
                  "gid":43,
                  "height":64,
                  "id":417,
-                 "name":"tree",
+                 "name":"treeWide",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -95,7 +103,7 @@
                  "gid":43,
                  "height":64,
                  "id":418,
-                 "name":"tree",
+                 "name":"treeWide",
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -107,13 +115,121 @@
                  "gid":43,
                  "height":64,
                  "id":420,
-                 "name":"tree",
+                 "name":"treeWide",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":64,
                  "x":88,
                  "y":624
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":421,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":167.333333333333,
+                 "y":537.333333333333
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":422,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":121.333333333333,
+                 "y":641.333333333333
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":423,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":61.3333333333333,
+                 "y":650
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":424,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":50.6666666666667,
+                 "y":600.666666666667
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":425,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":419.333333333333,
+                 "y":400.666666666667
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":457,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":197,
+                 "y":468
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":458,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":578,
+                 "y":411
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":460,
+                 "name":"treeTall",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":283,
+                 "y":311
+                }, 
+                {
+                 "gid":47,
+                 "height":64,
+                 "id":461,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":167,
+                 "y":454
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -122,7 +238,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":421,
+ "nextobjectid":462,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -153,6 +269,10 @@
         {
          "firstgid":43,
          "source":"decor\/trees\/tree01.tsx"
+        }, 
+        {
+         "firstgid":47,
+         "source":"decor\/trees\/tree02.tsx"
         }],
  "tilewidth":32,
  "type":"map",

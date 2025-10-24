@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -49,11 +50,11 @@ public class Player extends Entity {
 
     public void render(Graphics2D g2) {  
         drawPlayerImage(g2);
-
+        
         
         // DEBUG: show solidArea
-        //g2.setColor(Color.GREEN);
-        //g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
+        g2.setColor(Color.GREEN);
+        g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
     }
 
 
@@ -109,31 +110,32 @@ public class Player extends Entity {
         setSolidArea();
         collisionOn = false;
         gp.cChecker.checkTile(this);
+        gp.cChecker.checkDecor(this);
         moving = false;
         boolean horizontalMove = left ^ right; // XOR: true if either is true, but not both
         boolean verticalMove = up ^ down;
         boolean diagonalMove = horizontalMove && verticalMove;
         float effectiveSpeed = diagonalMove ? (int)speed / (float) Math.sqrt(2) : (int)speed;
-    
+        
         if (!collisionOn) {
-            // Update position
-            if (up && !down) {
-                worldY -= effectiveSpeed;
-                moving = true;
-            } else if (down && !up) {
-                worldY += effectiveSpeed;
-                moving = true;
-            }
-            if (left && !right) {
-                worldX -= effectiveSpeed;
-                moving = true;
-            } else if (right && !left) {
-                worldX += effectiveSpeed;
-                moving = true;
-            }
 
+                if (up && !down) {
+                    worldY -= effectiveSpeed;
+                    moving = true;
+                } else if (down && !up) {
+                    worldY += effectiveSpeed;
+                    moving = true;
+                }
+                if (left && !right) {
+                    worldX -= effectiveSpeed;
+                    moving = true;
+                } else if (right && !left) {
+                    worldX += effectiveSpeed;
+                    moving = true;
+                }
+    
+            //stay in bounds
             if (moving) {
-                // Stay in map bounds
                 worldX = Math.max(0, Math.min(worldX, (gp.maxWorldCol * gp.tileSize) - gp.tileSize));
                 worldY = Math.max(0, Math.min(worldY, (gp.maxWorldRow * gp.tileSize) - gp.tileSize));
             }

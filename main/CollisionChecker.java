@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import java.awt.Rectangle;
 import tile.Tile;
 
 public class CollisionChecker {
@@ -63,4 +64,33 @@ public class CollisionChecker {
             }
         }      
     }
+
+    public void checkDecor(Entity entity) {
+        if (gp.decorM == null || gp.decorM.getDecorSolidAreaList().isEmpty()) return;
+
+        // Predict next position
+        double nextX = entity.worldX;
+        double nextY = entity.worldY;
+
+        if (entity.up) nextY -= entity.speed;
+        if (entity.down) nextY += entity.speed;
+        if (entity.left) nextX -= entity.speed;
+        if (entity.right) nextX += entity.speed;
+
+        // Build predicted collision box in world coordinates
+        int sx = (int)(nextX + entity.solidArea.x);
+        int sy = (int)(nextY + entity.solidArea.y);
+        Rectangle nextArea = new Rectangle(sx, sy, entity.solidArea.width, entity.solidArea.height);
+
+        // Check for intersection with any decor rectangle
+        for (Rectangle decor : gp.decorM.getDecorSolidAreaList()) {
+            if (nextArea.intersects(decor)) {
+                entity.collisionOn = true;
+                break;
+            }
+        }
+
+        
+    }
+
 }

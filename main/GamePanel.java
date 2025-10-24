@@ -16,10 +16,13 @@ import javax.swing.JPanel;
 import tile.TileManager;
 import tile.TiledMapLoader;
 import tools.UtilityTool;
+import world.DecorAssetLoader;
 import world.DecorManager;
-import world.decoration.DecorAssetLoader;
+import world.TiledDecorLoader;
 import world.decoration.Grass;
 import world.decoration.Tree;
+import world.decoration.TreeTall;
+import world.decoration.TreeWide;
 
 public class GamePanel extends JPanel implements Runnable {
     //THREAD
@@ -96,9 +99,9 @@ public class GamePanel extends JPanel implements Runnable {
         cChecker = new CollisionChecker(this);
 
         //WORLD FRAMES
-        TiledMapLoader.loadTileLayer("images/world/world01.tmj", tileM);
-        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Grass.grassFrames, this);
-        TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, Tree.treeFrames, this);
+        TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
+        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, Grass.grassFrames, this);
+        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, TreeWide.treeFrames, this);
         
         
     }
@@ -124,7 +127,6 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     public void render() {
-
         switch (Gamestate.state) {
             case PLAYING: 
                 playing.draw(g2);
@@ -198,16 +200,16 @@ public class GamePanel extends JPanel implements Runnable {
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
 
-            if (deltaF >= 1) {
-                render();
-                frames++;
-                deltaF--;
-            }
-
             if (deltaU >= 1) {
                 update();
                 updates++;
                 deltaU--;
+            }
+
+            if (deltaF >= 1) {
+                render();
+                frames++;
+                deltaF--;
             }
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
@@ -306,15 +308,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void reloadWorld() {
-        //Rebuild tiles
-        tile.TiledMapLoader.loadTileLayer("images/world/world01.tmj", tileM);
-        getPlaying().tileM = tileM;
-        
+
         //Rebuild decor
         DecorAssetLoader.clearCache();
         decorM = new world.DecorManager(); 
-        tile.TiledMapLoader.loadDecorFromTiled("images/world/world01.tmj", decorM, null, this);
-        getPlaying().decorM = decorM; // update Playing's reference
+        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, null, this);
+        //getPlaying().decorM = decorM; // update Playing's reference
         
     }
 }

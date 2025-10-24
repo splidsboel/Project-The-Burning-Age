@@ -16,7 +16,8 @@ import com.google.gson.stream.JsonReader;
 import main.GamePanel;
 import tile.TiledMapLoader;
 import world.decoration.Grass;
-import world.decoration.Tree;
+import world.decoration.TreeTall;
+import world.decoration.TreeWide;
 
 public class TiledDecorLoader {
 
@@ -51,6 +52,7 @@ public class TiledDecorLoader {
 
                 String type = layer.get("type").getAsString();
                 String name = layer.get("name").getAsString();
+            
 
                 if (!"objectgroup".equals(type)) continue;
                 if (!name.toLowerCase().contains("decor")) continue;
@@ -71,14 +73,17 @@ public class TiledDecorLoader {
                     
                     //System.out.println("TileMapLoader. " + "object: " + name + " coordinate: " + x + "," + y + ". count:"+counter++);
 
-                    switch (objName.toLowerCase()) {  // <----- Det er her det sker!
+                    switch (objName) {  // <----- Det er her det sker!
                         case "grass" -> {
                             decoM.add(new Grass(x, y, gp));
                         }
-                        case "tree" -> {
+                        case "treeWide" -> {
                             y = y - 64 / gp.originalTileSize * gp.tileSize; //y er rettet da sprite er 64x64
-                            decoM.add(new Tree(x, y, gp));
-                            decoM.add(new Tree(x, y, gp));
+                            decoM.add(new TreeWide(x, y, gp));
+                        }
+                        case "treeTall" -> {
+                            y = y - 64 / gp.originalTileSize * gp.tileSize; //y er rettet da sprite er 64x64
+                            decoM.add(new TreeTall(x, y, gp)); 
                         }
                         default -> System.out.println("Unhandled decor type: " + objName);
                     }

@@ -1,6 +1,7 @@
 package world;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class WorldEntity {
@@ -10,6 +11,9 @@ public class WorldEntity {
     protected int aniTick = 0;
     protected int aniSpeed;
 
+
+
+    public Rectangle solidArea;
     public boolean animated = false;
     public boolean visible = true;
 
@@ -36,6 +40,22 @@ public class WorldEntity {
         int screenX = (int)(x - cameraX);
         int screenY = (int)(y - cameraY);
         g2.drawImage(frames[frameIndex], screenX, screenY, null);
+    }
+    
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 }
 
