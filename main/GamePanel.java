@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     //GRAPHICS
     private int targetTileSize = -1;
-    private int zoomAnimationSpeed = 2; // pixels per frame
+    private int zoomAnimationSpeed = 50; // pixels per frame
     private boolean zoomAnimating = false;
 
     //SYSTEMS
@@ -44,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
     //SCREEN SETTINGS
     public final int originalTileSize = 32;  
     public float scale;  // Scale factor for rendering
-    public int tileSize = originalTileSize;
+    public int tileSize = 64;
     public int initialTileSize;
 
     public int virtualWidth = 24 * originalTileSize; //768
@@ -241,8 +241,6 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
         g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
         g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
-
-        
     }
 
 
@@ -294,11 +292,10 @@ public class GamePanel extends JPanel implements Runnable {
     
         player.updateCameraOnPlayer();
         
-        reloadWorld(); // world and decor gets placed with new tileSize
+        reloadWorld(multiplier); // world and decor gets placed with new tileSize
     }
 
-    public void reloadWorld() {
-
+    public void reloadWorld(double multiplier) {
         //Rebuild decor
         DecorAssetLoader.clearCache();
         decorM = new DecorManager(); 

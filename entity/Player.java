@@ -1,17 +1,21 @@
 package entity;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
-import tools.Constants.PlayerConstants;
-import static tools.Constants.PlayerConstants.*;
 
 public class Player extends Entity {
     GamePanel gp;
     BufferedImage[][] animations;
-    private int aniTick, aniIndex, aniSpeed = 10; // 90 fps / 2 animationer
-    public int playerAction = RUNNING_LEFT;
+    private int aniTick, aniIndex, aniSpeed = 13; // 90 fps / 2 animationer
+    public final int runningUp = 1;
+    public final int runningDown = 0;
+    public final int runningLeft = 2;
+    public final int runningRight = 3;
+    // public static final int IDLE = 4;
+    public int playerAction;
 
 
     public double cameraX = 0;
@@ -33,26 +37,34 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 13;
         worldY = gp.tileSize * 15;
+        playerAction = runningDown;
         defaultSpeed =(int) (2 * gp.scale);
         speed = defaultSpeed;
+        solidAreaX = (int)(gp.tileSize*0.40);
+        solidAreaY = (int)(gp.tileSize*0.85);
+        solidAreaWidth = (int)(gp.tileSize*0.15);
+        solidAreaHeight = (int)(gp.tileSize*0.08);
     }
 
     public void update() {
         updateCameraOnPlayer();
-        updateAnimationTick();
         setAnimation();
+        updateAnimationTick();
+        setSolidArea(solidAreaX,solidAreaY,solidAreaWidth,solidAreaHeight);
         updatePosition();
-
-
-
     }
 
     public void render(Graphics2D g2) {  
         drawPlayerImage(g2);
         
         // DEBUG: show solidArea
-        // g2.setColor(Color.GREEN);
-        // g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
+        g2.setColor(Color.GREEN);
+        g2.drawRect((int)(worldX + solidArea.x - cameraX),(int)(worldY + solidArea.y - cameraY),solidArea.width,solidArea.height);
+    }
+
+
+    public void importPlayerImage() {
+        img = importImg("images/world/player/orc/orc.png");
     }
 
     public void drawPlayerImage(Graphics2D g2){
@@ -61,10 +73,6 @@ public class Player extends Entity {
         } else {
             g2.drawImage(animations[0][playerAction],(int)screenX,(int)screenY, (int)gp.tileSize,(int)gp.tileSize, null);   
         }
-    }
-
-    public void importPlayerImage() {
-        img = importImg("images/world/player/orc/orc.png");
     }
 
     public void loadAnimations() {
@@ -77,33 +85,35 @@ public class Player extends Entity {
         }
     }
 
+    public void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= animations.length) {
+                aniIndex = 1;
+            }
+        }
+    }
+
     public void setAnimation() {
         if (moving) {
             if (up) {
-                playerAction = RUNNING_UP;
+                playerAction = runningUp;
             }
             if (down) {
-                playerAction = RUNNING_DOWN;
+                playerAction = runningDown;
             }
             if (left) {
-                playerAction = RUNNING_LEFT;
+                playerAction = runningLeft;
             }
             if (right) {
-                playerAction = RUNNING_RIGHT;
-            }
-            
-         } //else {
-        //     playerAction = IDLE;
-        // }
+                playerAction = runningRight;
+            }  
+        } 
     } 
 
-    public void dash() {
-        
-    }
-
 public void updatePosition() {
-    setSolidArea();
-
     // run collision
     gp.cChecker.check(this);
 
@@ -142,18 +152,6 @@ public void updatePosition() {
     }
 }
 
-
-    public void updateAnimationTick() {
-        aniTick++;
-        if (aniTick >= aniSpeed) {
-            aniTick = 0;
-            aniIndex++;
-            if (aniIndex >= PlayerConstants.GetSpriteAmount(playerAction)) {
-                aniIndex = 1;
-            }
-        }
-    }
-
     public void updateCameraOnPlayer() {
         // Center the camera on the player:
         // Adjust by half the tile size so that the player sprite is centered.
@@ -173,22 +171,8 @@ public void updatePosition() {
         screenY = worldY - cameraY;
     }
 
-    public void setSolidArea() {
-        solidArea = new Rectangle((int)(gp.tileSize*0.34),(int)(gp.tileSize*0.85),(int)(gp.tileSize*0.28),(int)(gp.tileSize*0.11)); 
-        // solidArea.x = 11;
-        // solidArea.y = 23;
-        // solidArea.width = 9;
-        // solidArea.height = 7;
-    }
-    
-
-    public void playerLookDirection() {
-        // if (mouseH.mouseX < screenX) {
-        //     playerAction = RIGHT;
-        // }
-        // if (mouseH.mouseX >= screenX) {
-        //     playerAction = LEFT;
-        // }
+    public void setSolidArea(int x, int y, int width, int height) {
+        solidArea = new Rectangle(x,y,width,height); 
     }
 
     //GETTERS

@@ -4,7 +4,8 @@ package tile;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
-import tile.tiles.DesertTile;
+import tile.tiles.GrassTile;
+import tile.tiles.SandTile;
 import tile.tiles.WaterTile;
 import tools.UtilityTool;
 
@@ -19,14 +20,19 @@ public class TileManager {
     }
 
     public void registerTilesets() {
-        BufferedImage desertSheet = UtilityTool.importImg("images/world/ground/desert.png");
-        BufferedImage waterSheet = UtilityTool.importImg("images/world/ground/water.png");
-
-        Tileset desertSet = new Tileset(DesertTile.class, desertSheet, gp.originalTileSize);
+    
+        BufferedImage grassSheet = UtilityTool.importImg("images/world/ground/tiled/grass.png");
+        BufferedImage waterSheet = UtilityTool.importImg("images/world/ground/tiled/water.png");
+        BufferedImage sandSheet = UtilityTool.importImg("images/world/ground/tiled/sand.png");
+        
+        Tileset grassSet = new Tileset(GrassTile.class, grassSheet, gp.originalTileSize);
         Tileset waterSet = new Tileset(WaterTile.class, waterSheet, gp.originalTileSize);
+        Tileset sandSet = new Tileset(SandTile.class, sandSheet, gp.originalTileSize);
 
-        TilesetFactory.registerTileset(1, desertSet);
-        TilesetFactory.registerTileset(29, waterSet);
+        TilesetFactory.registerTileset(1, waterSet);
+        TilesetFactory.registerTileset(37, grassSet);
+        TilesetFactory.registerTileset(53, sandSet);
+        
     }
 
     public void setTile(int col, int row, Tile tile) {

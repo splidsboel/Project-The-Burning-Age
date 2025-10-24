@@ -22,6 +22,10 @@ public class Entity implements Renderable {
     public int spriteNum = 1;
     public Rectangle entityArea;
     public Rectangle solidArea;
+    public int solidAreaX;
+    public int solidAreaY;
+    public int solidAreaWidth;
+    public int solidAreaHeight;
     public boolean collisionOn = false;
     public boolean moving = false;
     public boolean up, right, left, down, left_up, left_down, right_up, right_down;

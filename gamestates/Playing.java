@@ -11,8 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import main.GamePanel;
 import tile.TileManager;
-import static tools.Constants.PlayerConstants.RUNNING_LEFT;
-import static tools.Constants.PlayerConstants.RUNNING_RIGHT;
 import tools.Renderable;
 import world.DecorManager;
 import world.WorldEntity;
@@ -94,10 +92,10 @@ public class Playing extends State implements Statemethods{
     @Override
     public void mouseMoved(MouseEvent e) {
         if (e.getX() < getPlayer().screenX + (gp.tileSize/2)) {
-            getPlayer().playerAction = RUNNING_LEFT;
+            getPlayer().playerAction = getPlayer().runningLeft;
         }
         if (e.getX() > getPlayer().screenX + (gp.tileSize/2)) {
-            getPlayer().playerAction = RUNNING_RIGHT;
+            getPlayer().playerAction = getPlayer().runningRight;
         }
     }
 
@@ -133,7 +131,6 @@ public class Playing extends State implements Statemethods{
                 case KeyEvent.VK_S -> gp.getPlaying().getPlayer().setDown(true);
                 case KeyEvent.VK_A -> gp.getPlaying().getPlayer().setLeft(true);
                 case KeyEvent.VK_D -> gp.getPlaying().getPlayer().setRight(true);
-                case KeyEvent.VK_SPACE -> gp.getPlaying().getPlayer().dash();
             }
     }
 

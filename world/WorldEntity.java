@@ -9,11 +9,18 @@ import tools.Renderable;
 public class WorldEntity implements Renderable {
     public GamePanel gp;
     public double x, y; // world position
+    public double baseX, baseY;
     public double scale;
-    protected BufferedImage[] frames;
+    public BufferedImage[] frames;
+    public BufferedImage[] originalFrames;
     protected int frameIndex = 0;
     protected int aniTick = 0;
     protected int aniSpeed;
+
+    public int solidAreaX;
+    public int solidAreaY;
+    public int solidAreaWidth;
+    public int solidAreaHeight;
 
 
 
@@ -47,8 +54,12 @@ public class WorldEntity implements Renderable {
         int screenX = (int)(x - cameraX);
         int screenY = (int)(y - cameraY);
         g2.drawImage(frames[frameIndex], screenX, screenY, null);
-    
     }
+
+    public void setSolidArea(double x, double y, int solidAreaX, int solidAreaY, int solidAreaWidth, int solidAreaHeight) {
+        solidArea = new Rectangle((int)(x+solidAreaX),(int)(y+solidAreaY),solidAreaWidth,solidAreaHeight); 
+    }
+  
     
     public void setX(double x) {
         this.x = x;
