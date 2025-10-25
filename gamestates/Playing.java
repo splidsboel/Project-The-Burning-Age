@@ -34,11 +34,11 @@ public class Playing extends State implements Statemethods{
     public void initializeClasses() {
 
         //ENTITIES AND OBJECTS
-        player = new Player(gp,10,10);
+        player = new Player(gp,gp.tileSize * 13, gp.tileSize * 15);
+
 
         tileM = gp.tileM;
         decorM = gp.decorM;
-
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Playing extends State implements Statemethods{
             if(r instanceof Player) {
                 player.draw(g2, player.getCameraX(), player.getCameraY());
             } else if (r instanceof Entity e) {
-                e.draw(g2, player.getCameraX(), player.getCameraX());
+                e.draw(g2, player.getCameraX(), player.getCameraY());
             }
         }
 
@@ -110,25 +110,12 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int code = e.getKeyCode();
-        // Handle diagonal movements
-        if (code == KeyEvent.VK_A && gp.getPlaying().getPlayer().up) {
-            gp.getPlaying().getPlayer().left_up = true;;
-            } else if (code == KeyEvent.VK_A && gp.getPlaying().getPlayer().down) {
-                gp.getPlaying().getPlayer().left_down = true;
-            } else if (code == KeyEvent.VK_D && gp.getPlaying().getPlayer().up) {
-                gp.getPlaying().getPlayer().right_up = true;
-            } else if (code == KeyEvent.VK_D && gp.getPlaying().getPlayer().down) {
-                gp.getPlaying().getPlayer().right_down = true;
-            }
-            
-            // Handle single-direction movements
-            switch (code) {
-                case KeyEvent.VK_W -> gp.getPlaying().getPlayer().up=true;
-                case KeyEvent.VK_S -> gp.getPlaying().getPlayer().down=true;
-                case KeyEvent.VK_A -> gp.getPlaying().getPlayer().left=true;
-                case KeyEvent.VK_D -> gp.getPlaying().getPlayer().right=true;
-            }
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W -> player.up = true;
+            case KeyEvent.VK_S -> player.down = true;
+            case KeyEvent.VK_A -> player.left = true;
+            case KeyEvent.VK_D -> player.right = true;
+        }
     }
 
     @Override

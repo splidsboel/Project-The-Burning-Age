@@ -8,8 +8,7 @@ import tools.Renderable;
 
 public abstract class Entity implements Renderable {
     protected GamePanel gp;
-    protected double x, y;
-    public double worldX, worldY;
+    public double x, y;
     protected BufferedImage[] frames;
     protected int frameIndex = 0;
     protected int aniTick = 0;

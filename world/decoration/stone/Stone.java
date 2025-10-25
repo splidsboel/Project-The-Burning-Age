@@ -1,4 +1,4 @@
-package world.decoration;
+package world.decoration.stone;
 
 import main.GamePanel;
 import world.DecorAssetLoader;

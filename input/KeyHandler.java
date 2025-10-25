@@ -19,12 +19,9 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (Gamestate.state) {
-            case PLAYING:
-                gp.getPlaying().keyPressed(e);
-            case MENU:
-                gp.getMenu().keyPressed(e);
-                break;
-            default:
+        case PLAYING -> gp.getPlaying().keyPressed(e);
+        case MENU -> gp.getMenu().keyPressed(e);
+            default -> throw new IllegalArgumentException("Unexpected value: " + Gamestate.state);
         }
     }
     

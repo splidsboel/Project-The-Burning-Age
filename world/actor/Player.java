@@ -1,6 +1,5 @@
 package world.actor;
 
-import world.Actor;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -58,22 +57,29 @@ public class Player extends Actor {
     public void update() {
         handleInput();
         updateCamera();
-        updateAnimation();
         updatePosition();
+        updateAnimation();
         super.update(); // keeps base animation tick
     }
 
     @Override
     public void draw(Graphics2D g2, double cameraX, double cameraY) {
-        BufferedImage frame = animations[aniIndex][playerAction];
-        int drawX = (int) (screenX);
-        int drawY = (int) (screenY);
-        g2.drawImage(frame, drawX, drawY, gp.tileSize, gp.tileSize, null);
+        if(moving) {
+            BufferedImage frame = animations[aniIndex][playerAction];
+            int drawX = (int) (screenX);
+            int drawY = (int) (screenY);
+            g2.drawImage(frame, drawX, drawY, gp.tileSize, gp.tileSize, null);
+        } else {
+            BufferedImage frame = animations[0][playerAction];
+            int drawX = (int) (screenX);
+            int drawY = (int) (screenY);
+            g2.drawImage(frame, drawX, drawY, gp.tileSize, gp.tileSize, null);
+        }
 
         // Debug: draw collision box
-        g2.setColor(Color.GREEN);
         Rectangle sa = solidArea;
-        g2.drawRect((int)(x + sa.x - cameraX), (int)(y + sa.y - cameraY), sa.width, sa.height);
+        g2.setColor(Color.GREEN);
+        g2.drawRect((int)(sa.x - cameraX), (int)(sa.y - cameraY), sa.width, sa.height);
     }
 
     private void handleInput() {
@@ -98,12 +104,16 @@ public class Player extends Actor {
     }
 
     private void updateAnimation() {
-        if (moving) setAnimationDirection();
-
-        aniTick++;
-        if (aniTick >= aniSpeed) {
-            aniTick = 0;
-            aniIndex = (aniIndex + 1) % animations.length;
+        if (moving) {
+            setAnimationDirection();
+            aniTick++;
+            if (aniTick >= aniSpeed) {
+                aniTick = 0;
+                aniIndex++;
+                if (aniIndex >= animations.length) {
+                    aniIndex = 1;
+                }
+            }
         }
     }
 
@@ -115,38 +125,41 @@ public class Player extends Actor {
     }
 
     private void updatePosition() {
+        solidArea.setLocation((int)(x + solidOffsetX), (int)(y + solidOffsetY));
         gp.cChecker.check(this);
-
-        double prevX = x;
-        double prevY = y;
         moving = false;
-
         boolean horizontal = left ^ right;
         boolean vertical = up ^ down;
         double moveSpeed = (horizontal && vertical) ? speed / Math.sqrt(2.0) : speed;
 
-        if (up && !collisionUp) y -= moveSpeed;
-        if (down && !collisionDown) y += moveSpeed;
-        if (left && !collisionLeft) x -= moveSpeed;
-        if (right && !collisionRight) x += moveSpeed;
-
+        // vertical first
+        if (up && !down && !collisionUp) {
+            y -= moveSpeed;
+            moving = true;
+        } else if (down && !up && !collisionDown) {
+            y += moveSpeed;
+            moving = true;
+        }
+        // horizontal next
+        if (left && !right && !collisionLeft) {
+            x -= moveSpeed;
+            moving = true;
+        } else if (right && !left && !collisionRight) {
+            x += moveSpeed;
+            moving = true;
+        }
         // Clamp position within world bounds
         x = Math.max(0, Math.min(x, gp.maxWorldCol * gp.tileSize - gp.tileSize));
         y = Math.max(0, Math.min(y, gp.maxWorldRow * gp.tileSize - gp.tileSize));
-
-        if (x != prevX || y != prevY) moving = true;
     }
 
     public void updateCamera() {
         cameraX = x - gp.screenWidth / 2.0 + gp.tileSize / 2.0;
         cameraY = y - gp.screenHeight / 2.0 + gp.tileSize / 2.0;
-
         double worldWidth = gp.maxWorldCol * gp.tileSize;
         double worldHeight = gp.maxWorldRow * gp.tileSize;
-
         cameraX = Math.max(0, Math.min(cameraX, worldWidth - gp.screenWidth));
         cameraY = Math.max(0, Math.min(cameraY, worldHeight - gp.screenHeight));
-
         screenX = x - cameraX;
         screenY = y - cameraY;
     }

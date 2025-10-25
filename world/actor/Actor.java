@@ -9,7 +9,6 @@ import world.Entity;
 public abstract class Actor extends Entity {
 
     //STATE
-
     public int spriteNum = 1;
     public Rectangle entityArea;
     public int solidAreaX;
@@ -20,10 +19,8 @@ public abstract class Actor extends Entity {
     public boolean moving = false;
     public boolean up, right, left, down, left_up, left_down, right_up, right_down;
 
-    
-
     //COUNTER
-    public int spriteCounter = 0;
+    public int spriteCounter;
 
     //CHARACTER STATUS
     public String name;
@@ -37,7 +34,7 @@ public abstract class Actor extends Entity {
     @Override
     public void update() {
         super.update();
-        move();
+        //move();
     }
 
     protected void move() {

@@ -225,20 +225,20 @@ public class GamePanel extends JPanel implements Runnable {
         int x = 10;
         int y = 400;
         int lineHeight = 20;
-        g2.drawString("worldX: " + getPlaying().getPlayer().worldX, x, y); y += lineHeight;
-        g2.drawString("worldY: " + getPlaying().getPlayer().worldY, x, y); y += lineHeight;
+        g2.drawString("worldX: " + getPlaying().getPlayer().x, x, y); y += lineHeight;
+        g2.drawString("worldY: " + getPlaying().getPlayer().y, x, y); y += lineHeight;
         g2.drawString("screenX: " + getPlaying().getPlayer().screenX, x, y); y += lineHeight;
         g2.drawString("screenY: " + getPlaying().getPlayer().screenY, x, y); y += lineHeight;
-        g2.drawString("cameraX: " + getPlaying().getPlayer().cameraX, x, y); y += lineHeight;
-        g2.drawString("cameraY: " + getPlaying().getPlayer().cameraY, x, y); y += lineHeight;
+        g2.drawString("cameraX: " + getPlaying().getPlayer().getCameraX(), x, y); y += lineHeight;
+        g2.drawString("cameraY: " + getPlaying().getPlayer().getCameraY(), x, y); y += lineHeight;
 
         g2.drawString("mouseX: " + mouseH.mouseX, x, y); y += lineHeight;
         g2.drawString("mouseY: " + mouseH.mouseY, x, y); y += lineHeight;
         g2.drawString("scale: " + scale, x, y); y += lineHeight;
         g2.drawString("tilesize: " + tileSize, x, y); y += lineHeight;
         g2.drawString("resolution: " + screenWidth + "x" + screenHeight, x, y); y += lineHeight;
-        g2.drawString("Col: " + (getPlaying().getPlayer().worldX)/tileSize, x, y); y += lineHeight;
-        g2.drawString("Row: " + (getPlaying().getPlayer().worldY)/tileSize, x, y); y += lineHeight;
+        g2.drawString("Col: " + (getPlaying().getPlayer().x)/tileSize, x, y); y += lineHeight;
+        g2.drawString("Row: " + (getPlaying().getPlayer().y)/tileSize, x, y); y += lineHeight;
         g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
         g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
     }
@@ -287,8 +287,8 @@ public class GamePanel extends JPanel implements Runnable {
     
         Player player = getPlaying().getPlayer();
         player.speed *= multiplier;
-        player.worldX *= multiplier;
-        player.worldY *= multiplier;
+        player.x *= multiplier;
+        player.x *= multiplier;
     
         player.updateCamera();
         

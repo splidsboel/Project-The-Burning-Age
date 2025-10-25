@@ -23,17 +23,19 @@ public class CollisionChecker {
     }
 
     private void checkTile(Actor e) {
+        
         // Current world bounds of the solidArea
-        double leftWorldX   = e.worldX + e.solidArea.x;
-        double rightWorldX  = e.worldX + e.solidArea.x + e.solidArea.width;
-        double topWorldY    = e.worldY + e.solidArea.y;
-        double bottomWorldY = e.worldY + e.solidArea.y + e.solidArea.height;
+        double leftx   = e.solidArea.x;
+        double rightx  = e.solidArea.x + e.solidArea.width;
+        double topy    = e.solidArea.y;
+        double bottomy = e.solidArea.y + e.solidArea.height;
+
 
         // ---- UP probe ----
         {
-            int nextTopRow = (int)((topWorldY - e.speed) / gp.tileSize);
-            int leftCol    = (int)(leftWorldX / gp.tileSize);
-            int rightCol   = (int)(rightWorldX / gp.tileSize);
+            int nextTopRow = (int)((topy - e.speed) / gp.tileSize);
+            int leftCol    = (int)(leftx / gp.tileSize);
+            int rightCol   = (int)(rightx / gp.tileSize);
 
             Tile t1 = gp.tileM.tileMap[leftCol][nextTopRow];
             Tile t2 = gp.tileM.tileMap[rightCol][nextTopRow];
@@ -45,9 +47,9 @@ public class CollisionChecker {
 
         // ---- DOWN probe ----
         {
-            int nextBottomRow = (int)((bottomWorldY + e.speed) / gp.tileSize);
-            int leftCol       = (int)(leftWorldX / gp.tileSize);
-            int rightCol      = (int)(rightWorldX / gp.tileSize);
+            int nextBottomRow = (int)((bottomy + e.speed) / gp.tileSize);
+            int leftCol       = (int)(leftx / gp.tileSize);
+            int rightCol      = (int)(rightx / gp.tileSize);
 
             Tile t1 = gp.tileM.tileMap[leftCol][nextBottomRow];
             Tile t2 = gp.tileM.tileMap[rightCol][nextBottomRow];
@@ -59,9 +61,9 @@ public class CollisionChecker {
 
         // ---- LEFT probe ----
         {
-            int nextLeftCol   = (int)((leftWorldX - e.speed) / gp.tileSize);
-            int topRow        = (int)(topWorldY / gp.tileSize);
-            int bottomRow     = (int)(bottomWorldY / gp.tileSize);
+            int nextLeftCol   = (int)((leftx - e.speed) / gp.tileSize);
+            int topRow        = (int)(topy / gp.tileSize);
+            int bottomRow     = (int)(bottomy / gp.tileSize);
 
             Tile t1 = gp.tileM.tileMap[nextLeftCol][topRow];
             Tile t2 = gp.tileM.tileMap[nextLeftCol][bottomRow];
@@ -73,9 +75,9 @@ public class CollisionChecker {
 
         // ---- RIGHT probe ----
         {
-            int nextRightCol  = (int)((rightWorldX + e.speed) / gp.tileSize);
-            int topRow        = (int)(topWorldY / gp.tileSize);
-            int bottomRow     = (int)(bottomWorldY / gp.tileSize);
+            int nextRightCol  = (int)((rightx + e.speed) / gp.tileSize);
+            int topRow        = (int)(topy / gp.tileSize);
+            int bottomRow     = (int)(bottomy / gp.tileSize);
 
             Tile t1 = gp.tileM.tileMap[nextRightCol][topRow];
             Tile t2 = gp.tileM.tileMap[nextRightCol][bottomRow];
@@ -87,42 +89,44 @@ public class CollisionChecker {
     }
 
     private void checkDecor(Actor e) {
+        
         if (gp.decorM == null || gp.decorM.getDecorSolidAreaList().isEmpty()) return;
 
         // Build 4 predicted rectangles. One per axis.
         Rectangle upBox = new Rectangle(
-            (int)(e.worldX + e.solidArea.x),
-            (int)(e.worldY + e.solidArea.y - e.speed),
+            (int)(e.solidArea.x),
+            (int)(e.solidArea.y - e.speed),
             e.solidArea.width,
             e.solidArea.height
         );
 
         Rectangle downBox = new Rectangle(
-            (int)(e.worldX + e.solidArea.x),
-            (int)(e.worldY + e.solidArea.y + e.speed),
+            (int)(e.solidArea.x),
+            (int)(e.solidArea.y + e.speed),
             e.solidArea.width,
             e.solidArea.height
         );
 
         Rectangle leftBox = new Rectangle(
-            (int)(e.worldX + e.solidArea.x - e.speed),
-            (int)(e.worldY + e.solidArea.y),
+            (int)(e.solidArea.x - e.speed),
+            (int)(e.solidArea.y),
             e.solidArea.width,
             e.solidArea.height
         );
 
         Rectangle rightBox = new Rectangle(
-            (int)(e.worldX + e.solidArea.x + e.speed),
-            (int)(e.worldY + e.solidArea.y),
+            (int)(e.solidArea.x + e.speed),
+            (int)(e.solidArea.y),
             e.solidArea.width,
             e.solidArea.height
         );
 
         for (Rectangle decor : gp.decorM.getDecorSolidAreaList()) {
-            if (upBox.intersects(decor))    e.collisionUp = true;
+            if (upBox.intersects(decor))    e.collisionUp = true; //System.out.println("Decor coliision!");
             if (downBox.intersects(decor))  e.collisionDown = true;
             if (leftBox.intersects(decor))  e.collisionLeft = true;
             if (rightBox.intersects(decor)) e.collisionRight = true;
+
         }
     }
 }
