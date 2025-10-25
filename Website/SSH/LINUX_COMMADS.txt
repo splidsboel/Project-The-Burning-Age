@@ -1,5 +1,0 @@
-Connect to in CMD to Linux terminal via. SSH:
-ssh betulis@192.168.137.36
-
-Rebuild .jar file and place it in /var/www/html/
-./build.sh

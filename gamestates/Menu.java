@@ -5,9 +5,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+import UI.MenuButton;
+import UI.MenuImage;
 import main.GamePanel;
-import main.UI.MenuButton;
-import main.UI.MenuImage;
 
 public class Menu extends State implements Statemethods {
     private MenuButton[] buttons = new MenuButton[3];
