@@ -1,12 +1,11 @@
 package input;
 
+import gamestates.Gamestate;
 import java.awt.GraphicsDevice;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import entity.Player;
-import gamestates.Gamestate;
 import main.GamePanel;
+import world.actor.Player;
 
 public class KeyHandler implements KeyListener {
     GamePanel gp;

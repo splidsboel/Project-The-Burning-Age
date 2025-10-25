@@ -8,6 +8,7 @@ import tile.tiles.GrassTile;
 import tile.tiles.SandTile;
 import tile.tiles.WaterTile;
 import tools.UtilityTool;
+import world.actor.Player;
 
 public class TileManager {
     GamePanel gp;
@@ -40,6 +41,7 @@ public class TileManager {
     }
 
     public void draw(Graphics2D g2) {
+        Player player = gp.getPlaying().getPlayer();
         for (int row = 0; row < gp.maxWorldRow; row++) {
             for (int col = 0; col < gp.maxWorldCol; col++) {
                 Tile tile = tileMap[col][row];
@@ -47,13 +49,13 @@ public class TileManager {
 
                 int worldX = col * gp.tileSize;
                 int worldY = row * gp.tileSize;
-                double screenX = worldX - gp.playing.player.cameraX;
-                double screenY = worldY - gp.playing.player.cameraY;
+                double screenX = worldX - player.getCameraX();
+                double screenY = worldY - player.getCameraY();
 
-                if (worldX + gp.tileSize > gp.playing.player.cameraX &&
-                    worldX - gp.tileSize < gp.playing.player.cameraX + gp.screenWidth &&
-                    worldY + gp.tileSize > gp.playing.player.cameraY &&
-                    worldY - gp.tileSize < gp.playing.player.cameraY + gp.screenHeight) {
+                if (worldX + gp.tileSize > player.getCameraX() &&
+                    worldX - gp.tileSize < player.getCameraX() + gp.screenWidth &&
+                    worldY + gp.tileSize > player.getCameraY() &&
+                    worldY - gp.tileSize < player.getCameraY() + gp.screenHeight) {
 
                     g2.drawImage(tile.getImage(), (int)screenX, (int)screenY, gp.tileSize, gp.tileSize, null);
                     

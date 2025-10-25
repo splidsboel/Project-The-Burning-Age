@@ -1,6 +1,5 @@
 package main;
 
-import entity.Player;
 import gamestates.Gamestate;
 import gamestates.Menu;
 import gamestates.Playing;
@@ -19,6 +18,7 @@ import tools.UtilityTool;
 import world.DecorAssetLoader;
 import world.DecorManager;
 import world.TiledDecorLoader;
+import world.actor.Player;
 
 public class GamePanel extends JPanel implements Runnable {
     //THREAD
@@ -290,7 +290,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.worldX *= multiplier;
         player.worldY *= multiplier;
     
-        player.updateCameraOnPlayer();
+        player.updateCamera();
         
         reloadWorld(multiplier); // world and decor gets placed with new tileSize
     }

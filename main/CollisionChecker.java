@@ -1,8 +1,8 @@
 package main;
 
-import entity.Entity;
 import java.awt.Rectangle;
 import tile.Tile;
+import world.actor.Actor;
 
 public class CollisionChecker {
     GamePanel gp;
@@ -11,7 +11,7 @@ public class CollisionChecker {
         this.gp = gp;
     }
 
-    public void check(Entity e) {
+    public void check(Actor e) {
         // reset
         e.collisionUp = false;
         e.collisionDown = false;
@@ -22,7 +22,7 @@ public class CollisionChecker {
         checkDecor(e);
     }
 
-    private void checkTile(Entity e) {
+    private void checkTile(Actor e) {
         // Current world bounds of the solidArea
         double leftWorldX   = e.worldX + e.solidArea.x;
         double rightWorldX  = e.worldX + e.solidArea.x + e.solidArea.width;
@@ -86,7 +86,7 @@ public class CollisionChecker {
         }
     }
 
-    private void checkDecor(Entity e) {
+    private void checkDecor(Actor e) {
         if (gp.decorM == null || gp.decorM.getDecorSolidAreaList().isEmpty()) return;
 
         // Build 4 predicted rectangles. One per axis.

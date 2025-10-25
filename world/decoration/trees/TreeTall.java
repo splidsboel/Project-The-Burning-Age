@@ -1,11 +1,11 @@
-package world.decoration;
+package world.decoration.trees;
 
 import java.awt.Graphics2D;
 import main.GamePanel;
 import world.DecorAssetLoader;
-import world.WorldEntity;
+import world.Entity;
 
-public class TreeTall extends WorldEntity {
+public class TreeTall extends Entity {
     GamePanel gp;
     protected int scale;
 
@@ -15,12 +15,12 @@ public class TreeTall extends WorldEntity {
         this.gp = gp;
         this.aniSpeed = aniSpeed;
         scale = 2;
-        solidAreaX = (int)((gp.tileSize*scale)*0.45);
-        solidAreaY = (int)((gp.tileSize*2)*0.85);
-        solidAreaWidth = (int)((gp.tileSize*2)*0.07);
-        solidAreaHeight = (int)((gp.tileSize*2)*0.04);
+        solidArea.x = (int)((gp.tileSize*scale)*0.45);
+        solidArea.y = (int)((gp.tileSize*2)*0.85);
+        solidArea.width = (int)((gp.tileSize*2)*0.07);
+        solidArea.height = (int)((gp.tileSize*2)*0.04);
         
-        setSolidArea(x, y,solidAreaX,solidAreaY,solidAreaWidth,solidAreaHeight);
+        setSolidArea(solidArea.x,solidArea.y,solidArea.width,solidArea.height);
     }
 
 

@@ -6,6 +6,9 @@ import com.google.gson.stream.JsonReader;
 import main.GamePanel;
 import tile.TiledMapLoader;
 import world.decoration.*;
+import world.decoration.grass.Grass;
+import world.decoration.trees.TreeTall;
+import world.decoration.trees.TreeWide;
 
 public class TiledDecorLoader {
 

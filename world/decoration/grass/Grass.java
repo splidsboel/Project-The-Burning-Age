@@ -1,10 +1,10 @@
-package world.decoration;
+package world.decoration.grass;
 
 import main.GamePanel;
 import world.DecorAssetLoader;
-import world.WorldEntity;
+import world.Entity;
 
-public class Grass extends WorldEntity {
+public class Grass extends Entity {
     GamePanel gp;
     
     public Grass(double x, double y, GamePanel gp, int aniSpeed) {

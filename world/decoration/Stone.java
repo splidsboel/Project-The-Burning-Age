@@ -2,9 +2,9 @@ package world.decoration;
 
 import main.GamePanel;
 import world.DecorAssetLoader;
-import world.WorldEntity;
+import world.Entity;
 
-public class Stone extends WorldEntity {
+public class Stone extends Entity {
     GamePanel gp;
     
     public Stone(double x, double y, GamePanel gp) {

@@ -1,7 +1,5 @@
 package gamestates;
 
-import entity.Entity;
-import entity.Player;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -13,12 +11,12 @@ import main.GamePanel;
 import tile.TileManager;
 import tools.Renderable;
 import world.DecorManager;
-import world.WorldEntity;
+import world.Entity;
+import world.actor.Player;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
     public Player player;
-    public WorldEntity wEntity;
     public DecorManager decorM;
     public TileManager tileM;
 
@@ -36,8 +34,7 @@ public class Playing extends State implements Statemethods{
     public void initializeClasses() {
 
         //ENTITIES AND OBJECTS
-        entity = new Entity(gp);
-        player = new Player(gp);
+        player = new Player(gp,10,10);
 
         tileM = gp.tileM;
         decorM = gp.decorM;
@@ -63,9 +60,9 @@ public class Playing extends State implements Statemethods{
         drawList.sort(Comparator.comparingDouble(Renderable::getBottomY));
         for (Renderable r : drawList) {
             if(r instanceof Player) {
-                player.render(g2);
-            } else if (r instanceof WorldEntity we) {
-                we.draw(g2, player.cameraX, player.cameraY);
+                player.draw(g2, player.getCameraX(), player.getCameraY());
+            } else if (r instanceof Entity e) {
+                e.draw(g2, player.getCameraX(), player.getCameraX());
             }
         }
 
@@ -115,22 +112,22 @@ public class Playing extends State implements Statemethods{
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
         // Handle diagonal movements
-        if (code == KeyEvent.VK_A && gp.getPlaying().getPlayer().isUp()) {
-            gp.getPlaying().getPlayer().setLeft_up(true);
-            } else if (code == KeyEvent.VK_A && gp.getPlaying().getPlayer().isDown()) {
-                gp.getPlaying().getPlayer().setLeft_down(true);
-            } else if (code == KeyEvent.VK_D && gp.getPlaying().getPlayer().isUp()) {
-                gp.getPlaying().getPlayer().setRight_up(true);
-            } else if (code == KeyEvent.VK_D && gp.getPlaying().getPlayer().isDown()) {
-                gp.getPlaying().getPlayer().setRight_down(true);
+        if (code == KeyEvent.VK_A && gp.getPlaying().getPlayer().up) {
+            gp.getPlaying().getPlayer().left_up = true;;
+            } else if (code == KeyEvent.VK_A && gp.getPlaying().getPlayer().down) {
+                gp.getPlaying().getPlayer().left_down = true;
+            } else if (code == KeyEvent.VK_D && gp.getPlaying().getPlayer().up) {
+                gp.getPlaying().getPlayer().right_up = true;
+            } else if (code == KeyEvent.VK_D && gp.getPlaying().getPlayer().down) {
+                gp.getPlaying().getPlayer().right_down = true;
             }
             
             // Handle single-direction movements
             switch (code) {
-                case KeyEvent.VK_W -> gp.getPlaying().getPlayer().setUp(true);
-                case KeyEvent.VK_S -> gp.getPlaying().getPlayer().setDown(true);
-                case KeyEvent.VK_A -> gp.getPlaying().getPlayer().setLeft(true);
-                case KeyEvent.VK_D -> gp.getPlaying().getPlayer().setRight(true);
+                case KeyEvent.VK_W -> gp.getPlaying().getPlayer().up=true;
+                case KeyEvent.VK_S -> gp.getPlaying().getPlayer().down=true;
+                case KeyEvent.VK_A -> gp.getPlaying().getPlayer().left=true;
+                case KeyEvent.VK_D -> gp.getPlaying().getPlayer().right=true;
             }
     }
 
@@ -139,16 +136,16 @@ public class Playing extends State implements Statemethods{
 
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
-                gp.getPlaying().getPlayer().setUp(false);
+                gp.getPlaying().getPlayer().up = false;
                 break;
             case KeyEvent.VK_S:
-                gp.getPlaying().getPlayer().setDown(false);
+                gp.getPlaying().getPlayer().down = false;
                 break;
             case KeyEvent.VK_A:
-                gp.getPlaying().getPlayer().setLeft(false);
+                gp.getPlaying().getPlayer().left = false;
                 break;
             case KeyEvent.VK_D:
-                gp.getPlaying().getPlayer().setRight(false);
+                gp.getPlaying().getPlayer().right = false;
                 break;
             case KeyEvent.VK_ESCAPE:
                 Gamestate.state = Gamestate.MENU;

@@ -1,12 +1,14 @@
-package world.decoration;
+package world.decoration.trees;
 
 import java.awt.Graphics2D;
 import main.GamePanel;
 import world.DecorAssetLoader;
-import world.WorldEntity;
+import world.Entity;
 
-public class TreeWide extends WorldEntity {
+public class TreeWide extends Entity {
     GamePanel gp;
+    protected int scale;
+    
 
     
     public TreeWide(double x, double y, GamePanel gp, int aniSpeed) {
@@ -14,12 +16,12 @@ public class TreeWide extends WorldEntity {
         this.gp=gp;
         this.aniSpeed = aniSpeed;
         scale = 2;
-        solidAreaX = (int)((gp.tileSize*scale)*0.37);
-        solidAreaY = (int)((gp.tileSize*2)*0.88);
-        solidAreaWidth = (int)((gp.tileSize*2)*0.25);
-        solidAreaHeight = (int)((gp.tileSize*2)*0.05);
+        solidArea.x = (int)((gp.tileSize*scale)*0.37);
+        solidArea.y = (int)((gp.tileSize*2)*0.88);
+        solidArea.width = (int)((gp.tileSize*2)*0.25);
+        solidArea.height = (int)((gp.tileSize*2)*0.05);
 
-        setSolidArea(x, y,solidAreaX,solidAreaY,solidAreaWidth,solidAreaHeight);
+         setSolidArea(solidArea.x,solidArea.y,solidArea.width,solidArea.height);
     }
 
     @Override
