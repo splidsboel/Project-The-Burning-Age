@@ -9,28 +9,30 @@ import tools.Renderable;
 public abstract class Entity implements Renderable {
     protected GamePanel gp;
     public double x, y;
+    protected double scale = 1.0;
     protected BufferedImage[] frames;
-    protected int frameIndex = 0;
-    protected int aniTick = 0;
-    protected int aniSpeed = 12;
-    protected boolean animated = false;
-    protected boolean visible = true;
+    protected int frameIndex;
+    protected int aniTick;
+    protected int aniSpeed;
 
     public Rectangle solidArea = new Rectangle();
+    public int solidAreaX;
+    public int solidAreaY;
+    public int solidAreaWidth;
+    public int solidAreaHeight;
     public int solidOffsetX, solidOffsetY;
     public boolean collisionUp, collisionDown, collisionLeft, collisionRight;
     public boolean collisionOn = false;
 
-    public Entity(GamePanel gp, double x, double y, BufferedImage[] frames, boolean animated) {
+    public Entity(GamePanel gp, double x, double y, BufferedImage[] frames) {
         this.gp = gp;
         this.x = x;
         this.y = y;
         this.frames = frames;
-        this.animated = animated;
     }
 
     public void update() {
-        if (!animated || frames == null || frames.length <= 1) return;
+        if (frames == null || frames.length <= 1) return;
         aniTick++;
         if (aniTick >= aniSpeed) {
             aniTick = 0;
@@ -40,7 +42,7 @@ public abstract class Entity implements Renderable {
 
     @Override
     public void draw(Graphics2D g2, double cameraX, double cameraY) {
-        if (!visible || frames == null || frames.length == 0) return;
+        if (frames == null || frames.length == 0) return;
         int screenX = (int) (x - cameraX);
         int screenY = (int) (y - cameraY);
         g2.drawImage(frames[frameIndex], screenX, screenY, null);
@@ -52,10 +54,6 @@ public abstract class Entity implements Renderable {
         this.solidArea.setBounds((int)(x + offsetX), (int)(y + offsetY), width, height);
     }
 
-    @Override
-    public double getBottomY() {
-        return y + solidArea.y + solidArea.height;
-    }
 
     public double getX() { return x; }
     public double getY() { return y; }

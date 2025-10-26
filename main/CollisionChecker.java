@@ -90,7 +90,7 @@ public class CollisionChecker {
 
     private void checkDecor(Actor e) {
         
-        if (gp.decorM == null || gp.decorM.getDecorSolidAreaList().isEmpty()) return;
+        if (gp.getEntityM() == null || gp.getEntityM().getDecorSolidAreaList().isEmpty()) return;
 
         // Build 4 predicted rectangles. One per axis.
         Rectangle upBox = new Rectangle(
@@ -121,7 +121,7 @@ public class CollisionChecker {
             e.solidArea.height
         );
 
-        for (Rectangle decor : gp.decorM.getDecorSolidAreaList()) {
+        for (Rectangle decor : gp.getEntityM().getDecorSolidAreaList()) {
             if (upBox.intersects(decor))    e.collisionUp = true; //System.out.println("Decor coliision!");
             if (downBox.intersects(decor))  e.collisionDown = true;
             if (leftBox.intersects(decor))  e.collisionLeft = true;

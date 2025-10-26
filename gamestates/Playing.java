@@ -10,14 +10,12 @@ import java.util.List;
 import main.GamePanel;
 import tile.TileManager;
 import tools.Renderable;
-import world.DecorManager;
 import world.Entity;
 import world.actor.Player;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
     public Player player;
-    public DecorManager decorM;
     public TileManager tileM;
 
     //Keys
@@ -38,13 +36,12 @@ public class Playing extends State implements Statemethods{
 
 
         tileM = gp.tileM;
-        decorM = gp.decorM;
     }
 
     @Override
     public void update() {
         player.update();
-        gp.decorM.update();
+        gp.getEntityM().update();
         
     }
 
@@ -56,14 +53,10 @@ public class Playing extends State implements Statemethods{
         //PLAYER AND DECOR SORT
         List<Renderable> drawList = new ArrayList<>();
         drawList.add(player);
-        drawList.addAll(gp.decorM.decorList);
+        drawList.addAll(gp.getEntityM().decorList);
         drawList.sort(Comparator.comparingDouble(Renderable::getBottomY));
         for (Renderable r : drawList) {
-            if(r instanceof Player) {
-                player.draw(g2, player.getCameraX(), player.getCameraY());
-            } else if (r instanceof Entity e) {
-                e.draw(g2, player.getCameraX(), player.getCameraY());
-            }
+            r.draw(g2, player.getCameraX(), player.getCameraY());
         }
 
         if (p_pressed) {

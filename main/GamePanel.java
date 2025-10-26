@@ -15,9 +15,9 @@ import javax.swing.JPanel;
 import tile.TileManager;
 import tile.TiledMapLoader;
 import tools.UtilityTool;
-import world.DecorAssetLoader;
-import world.DecorManager;
-import world.TiledDecorLoader;
+import world.EntityManager;
+import world.SpriteLoader;
+import world.TiledEntityLoader;
 import world.actor.Player;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -37,7 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     public KeyHandler keyH; 
     public MouseHandler mouseH;
     public TileManager tileM;
-    public DecorManager decorM;
+    public EntityManager entityM;
     public UtilityTool uTool;
     public CollisionChecker cChecker;
 
@@ -91,12 +91,12 @@ public class GamePanel extends JPanel implements Runnable {
         this.addMouseWheelListener(mouseH);
         uTool = new UtilityTool(this);
         tileM = new TileManager(this);
-        decorM = new DecorManager();
+        entityM = new EntityManager(this);
         cChecker = new CollisionChecker(this);
 
         //WORLD FRAMES
         TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
-        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, this);
+        TiledEntityLoader.loadEntities("images/world/world.tmj", entityM, this);
         //TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, TreeWide.treeFrames, this);
         
         
@@ -243,19 +243,38 @@ public class GamePanel extends JPanel implements Runnable {
         g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
     }
 
-
-    //GETTERS 
+    //GETTERS
     public Playing getPlaying() {
         return playing;
     }
+
     public Menu getMenu() {
         return menu;
     }
 
-    public double getScale() {
-        return scale;
+    public KeyHandler getKeyH() {
+        return keyH;
     }
 
+    public MouseHandler getMouseH() {
+        return mouseH;
+    }
+
+    public TileManager getTileM() {
+        return tileM;
+    }
+
+    public EntityManager getEntityM() {
+        return entityM;
+    }
+
+    public UtilityTool getuTool() {
+        return uTool;
+    }
+
+    public CollisionChecker getcChecker() {
+        return cChecker;
+    }
 
     //OTHER
     public void zoomInOut(int zoomChange) {
@@ -297,8 +316,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void reloadWorld(double multiplier) {
         //Rebuild decor
-        DecorAssetLoader.clearCache();
-        decorM = new DecorManager(); 
-        TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, this);
+        SpriteLoader.clearCache();
+        TiledEntityLoader.loadEntities("images/world/world.tmj", entityM, this);
     }
 }

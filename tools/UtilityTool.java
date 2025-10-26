@@ -9,9 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.imageio.ImageIO;
-
 import main.GamePanel;
 
 public class UtilityTool {
@@ -70,6 +68,13 @@ public class UtilityTool {
 
     
     //HELPER METHODS
+    //Utility for randomized number ---
+    public static int randomNumberInterval(int from, int to) {
+        return (int) (Math.random() * (to - from + 1)) + from;
+    }
+
+
+
     public int getXForCenteredText(String text, Graphics2D g2) {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         return gp.screenWidth/2 - length/2;

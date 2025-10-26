@@ -164,6 +164,14 @@ public class Player extends Actor {
         screenY = y - cameraY;
     }
 
+    @Override
+    public double getBottomY() {
+        if (solidArea != null) {
+            return solidArea.y + solidArea.height; // bottom in world coords
+        }
+        return y; // fallback
+    }
+
     //GETTERS
     public double getCameraX() {
         return cameraX;

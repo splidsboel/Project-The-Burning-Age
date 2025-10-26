@@ -8,7 +8,7 @@ import java.util.Map;
 import main.GamePanel;
 import tools.UtilityTool;
 
-public class DecorAssetLoader {
+public class SpriteLoader {
     private static final Map<String, BufferedImage[]> cachedAssets = new HashMap<>();
 
     public static BufferedImage[] getAssetFrames(GamePanel gp, int scale, String path) {

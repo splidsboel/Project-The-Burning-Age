@@ -1,34 +1,19 @@
 package world.actor;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import world.Entity;
 
 public abstract class Actor extends Entity {
 
-    //STATE
-    public int spriteNum = 1;
-    public Rectangle entityArea;
-    public int solidAreaX;
-    public int solidAreaY;
-    public int solidAreaWidth;
-    public int solidAreaHeight;
-
     public boolean moving = false;
     public boolean up, right, left, down, left_up, left_down, right_up, right_down;
-
-    //COUNTER
-    public int spriteCounter;
-
-    //CHARACTER STATUS
-    public String name;
     public int defaultSpeed;
     public double speed;
 
     public Actor(GamePanel gp, double x, double y, BufferedImage[] frames, boolean animated) {
-        super(gp, x, y, frames, animated);
+        super(gp, x, y, frames);
     }
 
     @Override
