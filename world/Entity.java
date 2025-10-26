@@ -13,15 +13,16 @@ public abstract class Entity implements Renderable {
     protected BufferedImage[] frames;
     protected int frameIndex;
     protected int aniTick;
-    protected int aniSpeed;
 
-    public Rectangle solidArea = new Rectangle();
-    public int solidAreaX;
-    public int solidAreaY;
-    public int solidAreaWidth;
-    public int solidAreaHeight;
-    protected int solidBaseWidth, solidBaseHeight; // unscaled dimensions
-    public int solidOffsetX, solidOffsetY;
+    // Collision box (physical presence)
+    protected final Rectangle solidArea = new Rectangle();
+    protected int solidOffsetX, solidOffsetY;
+    protected int solidBaseWidth, solidBaseHeight;
+
+    // Attack / interaction box (offensive or range zone)
+    protected final Rectangle hitBox = new Rectangle();
+    protected int hitOffsetX, hitOffsetY;
+    protected int hitBaseWidth, hitBaseHeight;
     public boolean collisionUp, collisionDown, collisionLeft, collisionRight;
     public boolean collisionOn = false;
 
@@ -34,12 +35,12 @@ public abstract class Entity implements Renderable {
 
     public void update() {
         updateSolidArea();
-        if (frames == null || frames.length <= 1) return;
-        aniTick++;
-        if (aniTick >= aniSpeed) {
-            aniTick = 0;
-            frameIndex = (frameIndex + 1) % frames.length;
-        }
+        // if (frames == null || frames.length <= 1) return;
+        // aniTick++;
+        // if (aniTick >= aniSpeed) {
+        //     aniTick = 0;
+        //     frameIndex = (frameIndex + 1) % frames.length;
+        // }
     }
 
     @Override
@@ -61,6 +62,17 @@ public abstract class Entity implements Renderable {
         g2.drawImage(img, (int) drawX, (int) drawY, drawW, drawH, null);
     }
 
+    public void animation(int aniSpeed) {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            frameIndex++;
+            if (frameIndex >= frames.length) {
+                frameIndex = 1;
+            }
+        }
+    }
+
     public void setSolidArea(int offsetX, int offsetY, int width, int height) {
         this.solidOffsetX = offsetX;
         this.solidOffsetY = offsetY;
@@ -79,10 +91,37 @@ public abstract class Entity implements Renderable {
         );
     }
 
+    public void setHitBox (double width, double height) {
+        this.hitBaseWidth = (int)(pixels * width);
+        this.hitBaseHeight = (int)(pixels * height);
+        this.hitOffsetX = (pixels - hitBaseWidth) / 2;
+        this.hitOffsetY = (pixels - hitBaseHeight) / 2;
+        updateHitBox();
+    }
+
+    public void updateHitBox() {
+        double scale = gp.tileSize / (double) gp.originalTileSize;
+        hitBox.setBounds(
+            (int)(x + hitOffsetX * scale),
+            (int)(y + hitOffsetY * scale),
+            (int)(hitBaseWidth * scale),
+            (int)(hitBaseHeight * scale)
+        );
+    }
+    
+    @Override
+    public void updatePosition() {
+
+    }
+
     //GETTERS
     @Override
     public Rectangle getSolidArea() {
         return solidArea;
+    }
+    @Override
+    public Rectangle getHitBox() {
+        return hitBox;
     }
 
     public double getX() { return x; }

@@ -3,6 +3,7 @@ package main;
 import java.awt.Rectangle;
 import java.util.List;
 import tile.Tile;
+import tools.Renderable;
 import world.actor.Actor;
 
 public class CollisionChecker {
@@ -12,24 +13,70 @@ public class CollisionChecker {
         this.gp = gp;
     }
 
-    public void check(Actor e) {
+    public void check(Actor a) {
         // reset
-        e.collisionUp = false;
-        e.collisionDown = false;
-        e.collisionLeft = false;
-        e.collisionRight = false;
+        a.collisionUp = false;
+        a.collisionDown = false;
+        a.collisionLeft = false;
+        a.collisionRight = false;
 
-        checkTile(e);
-        checkDecor(e);
+        checkTile(a);
+        checkDecor(a);
+        checkActor(a);
+    
+    }
+
+    private void checkActor(Actor a) {
+        List<Renderable> entities = gp.getEntityM().getHitBoxVisibleEntities(
+            gp.getPlaying().getPlayer().getCameraX(), gp.getPlaying().getPlayer().getCameraY(), gp.screenWidth, gp.screenHeight
+        );
+        if (entities.isEmpty()) {
+            return; 
+        }
+
+        Rectangle upBox = new Rectangle(
+            (int)(a.getHitBox().x),
+            (int)(a.getHitBox().y - a.speed),
+            a.getHitBox().width,
+            a.getHitBox().height
+        );
+
+        Rectangle downBox = new Rectangle(
+            (int)(a.getHitBox().x),
+            (int)(a.getHitBox().y + a.speed),
+            a.getHitBox().width,
+            a.getHitBox().height
+        );
+
+        Rectangle leftBox = new Rectangle(
+            (int)(a.getHitBox().x - a.speed),
+            (int)(a.getHitBox().y),
+            a.getHitBox().width,
+            a.getHitBox().height
+        );
+
+        Rectangle rightBox = new Rectangle(
+            (int)(a.getHitBox().x + a.speed),
+            (int)(a.getHitBox().y),
+            a.getHitBox().width,
+            a.getHitBox().height
+        );
+
+        for (Renderable e : entities) {
+            if (upBox.intersects(e.getHitBox()))    System.out.println("actor up hitbox"); 
+            if (downBox.intersects(e.getHitBox()))  System.out.println("actor down hitbox");
+            if (leftBox.intersects(e.getHitBox()))  System.out.println("actor left hitbox");
+            if (rightBox.intersects(e.getHitBox())) System.out.println("actor right hitbox");
+        }
     }
 
     private void checkTile(Actor e) {
         
-        // Current world bounds of the solidArea
-        double leftx   = e.solidArea.x;
-        double rightx  = e.solidArea.x + e.solidArea.width;
-        double topy    = e.solidArea.y;
-        double bottomy = e.solidArea.y + e.solidArea.height;
+        // Current world bounds of the getHitBox()
+        double leftx   = e.getSolidArea().x;
+        double rightx  = e.getSolidArea().x + e.getSolidArea().width;
+        double topy    = e.getSolidArea().y;
+        double bottomy = e.getSolidArea().y + e.getSolidArea().height;
 
 
         // ---- UP probe ----
@@ -89,46 +136,45 @@ public class CollisionChecker {
         }
     }
 
-    private void checkDecor(Actor e) {
-        List<Rectangle> decorAreas = gp.getEntityM().getDecorSolidAreaList(
+    private void checkDecor(Actor a) {
+        List<Renderable> entities = gp.getEntityM().getSolidAreaVisibleEntities(
             gp.getPlaying().getPlayer().getCameraX(), gp.getPlaying().getPlayer().getCameraY(), gp.screenWidth, gp.screenHeight
         );
-        if (decorAreas.isEmpty()) return;
+        if (entities.isEmpty()) return;
 
         Rectangle upBox = new Rectangle(
-            (int)(e.solidArea.x),
-            (int)(e.solidArea.y - e.speed),
-            e.solidArea.width,
-            e.solidArea.height
+            (int)(a.getSolidArea().x),
+            (int)(a.getSolidArea().y - a.speed),
+            a.getSolidArea().width,
+            a.getSolidArea().height
         );
 
         Rectangle downBox = new Rectangle(
-            (int)(e.solidArea.x),
-            (int)(e.solidArea.y + e.speed),
-            e.solidArea.width,
-            e.solidArea.height
+            (int)(a.getSolidArea().x),
+            (int)(a.getSolidArea().y + a.speed),
+            a.getSolidArea().width,
+            a.getSolidArea().height
         );
 
         Rectangle leftBox = new Rectangle(
-            (int)(e.solidArea.x - e.speed),
-            (int)(e.solidArea.y),
-            e.solidArea.width,
-            e.solidArea.height
+            (int)(a.getSolidArea().x - a.speed),
+            (int)(a.getSolidArea().y),
+            a.getSolidArea().width,
+            a.getSolidArea().height
         );
 
         Rectangle rightBox = new Rectangle(
-            (int)(e.solidArea.x + e.speed),
-            (int)(e.solidArea.y),
-            e.solidArea.width,
-            e.solidArea.height
+            (int)(a.getSolidArea().x + a.speed),
+            (int)(a.getSolidArea().y),
+            a.getSolidArea().width,
+            a.getSolidArea().height
         );
 
-        for (Rectangle decor : decorAreas) {
-            if (upBox.intersects(decor))    e.collisionUp = true;
-            if (downBox.intersects(decor))  e.collisionDown = true;
-            if (leftBox.intersects(decor))  e.collisionLeft = true;
-            if (rightBox.intersects(decor)) e.collisionRight = true;
+        for (Renderable e : entities) {
+            if (upBox.intersects(e.getSolidArea()))    a.collisionUp = true;
+            if (downBox.intersects(e.getSolidArea()))  a.collisionDown = true;
+            if (leftBox.intersects(e.getSolidArea()))  a.collisionLeft = true;
+            if (rightBox.intersects(e.getSolidArea())) a.collisionRight = true;
         }
     }
-
 }

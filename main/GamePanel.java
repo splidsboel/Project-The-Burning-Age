@@ -33,8 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     public float deviceScale = 1.0f;
     public float zoomScale = 1.0f;
 
-    private int targetTileSize = -1;
-    private int zoomSpeed = 50;
+    private int zoomSpeed = 30;
     private boolean zoomAnimating = false;
 
     // Screen & resolution
@@ -59,6 +58,8 @@ public class GamePanel extends JPanel implements Runnable {
         detectDeviceScale();
         initSystems();
         setupListeners();
+
+        entityM.actors.add(getPlaying().orc);
     }
 
     /** Initializes all subsystems */
@@ -114,7 +115,7 @@ public class GamePanel extends JPanel implements Runnable {
         deviceScale = Math.min(scaleX, scaleY);
         
         initialTileSize = (int) (originalTileSize * deviceScale);
-        tileSize = initialTileSize;
+        tileSize = initialTileSize * 2;
     }
 
     // =====================
@@ -169,7 +170,6 @@ public class GamePanel extends JPanel implements Runnable {
         switch (Gamestate.state) {
             case PLAYING -> {
                 playing.update();
-                if (zoomAnimating) animateZoomStep();
             }
             case MENU -> menu.update();
             case OPTIONS, QUIT -> System.exit(0);
@@ -194,33 +194,15 @@ public class GamePanel extends JPanel implements Runnable {
         int newTileSize = tileSize + zoomChange;
         if (newTileSize < initialTileSize || newTileSize > 256) return;
 
-        targetTileSize = newTileSize;
-        zoomAnimating = true;
-    }
-
-    private void animateZoomStep() {
-        if (tileSize == targetTileSize) {
-            zoomAnimating = false;
-            return;
-        }
-
-        int dir = Integer.compare(targetTileSize, tileSize);
-        tileSize += zoomSpeed * dir;
-
-        if ((dir > 0 && tileSize > targetTileSize) || (dir < 0 && tileSize < targetTileSize)) {
-            tileSize = targetTileSize;
-            zoomAnimating = false;
-        }
-
-        zoomScale = (float) tileSize / originalTileSize;
-        //tileM.onZoomChange(); // clear tile caches
-        getPlaying().getPlayer().updateCamera();
+        tileSize = newTileSize;
+        zoomScale = tileSize / originalTileSize;
     }
 
     // =====================
     //   DEBUG OVERLAY
     // =====================
     public void debugText(Graphics2D g2) {
+        
         g2.setColor(Color.BLACK);
         int x = 10, y = 400, lh = 20;
         var p = getPlaying().getPlayer();

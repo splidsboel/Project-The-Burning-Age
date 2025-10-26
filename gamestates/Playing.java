@@ -13,11 +13,13 @@ import main.GamePanel;
 import tile.TileManager;
 import tools.Renderable;
 import world.Entity;
+import world.actor.NPC.Orc;
 import world.actor.Player;
 
 public class Playing extends State implements Statemethods{
     public Entity entity;
     public Player player;
+    public Orc orc;
     public TileManager tileM;
 
     //Keys
@@ -35,16 +37,19 @@ public class Playing extends State implements Statemethods{
 
         //ENTITIES AND OBJECTS
         player = new Player(gp,gp.tileSize * 13, gp.tileSize * 15);
+        orc = new Orc(gp,gp.tileSize * 15 , gp.tileSize * 15);
 
 
         tileM = gp.tileM;
+
+        
     }
 
     @Override
     public void update() {
         player.update();
+        orc.update();
         gp.getEntityM().update();
-        
     }
 
     @Override
@@ -53,13 +58,15 @@ public class Playing extends State implements Statemethods{
         gp.tileM.draw(g2);
 
         // Collect and sort visible entities
-        List<Renderable> drawList = new ArrayList<>(gp.getEntityM().getVisibleEntities(
+        List<Renderable> drawList = new ArrayList<>(gp.getEntityM().getSolidAreaVisibleEntities(
             player.getCameraX(),
             player.getCameraY(),
             gp.screenWidth,
             gp.screenHeight
         ));
         drawList.add(player);
+        drawList.add(orc);
+
 
         drawList.sort(Comparator.comparingDouble(Renderable::getBottomY));
 
@@ -70,8 +77,11 @@ public class Playing extends State implements Statemethods{
             if(p_pressed) {
                 // Debug: draw collision box and text
                 Rectangle sa = r.getSolidArea();
+                Rectangle hb = r.getHitBox();
                 g2.setColor(Color.GREEN);
                 g2.drawRect((int)(sa.x - player.getCameraX()), (int)(sa.y - player.getCameraY()), sa.width, sa.height);
+                g2.setColor(Color.RED);
+                g2.drawRect((int)(hb.x - player.getCameraX()), (int)(hb.y - player.getCameraY()), hb.width, hb.height);
 
                 gp.debugText(g2);
             }

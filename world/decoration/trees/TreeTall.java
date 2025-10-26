@@ -15,8 +15,11 @@ public class TreeTall extends Tree {
             (int)(pixels * 0.07),
             (int)(pixels * 0.04)
         );
+    }
 
-        aniSpeed = UtilityTool.randomNumberInterval(90, 110);
+    @Override
+    public void update() {
+        animation(UtilityTool.randomNumberInterval(90,100));
     }
 
     @Override

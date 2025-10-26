@@ -14,8 +14,4 @@ public abstract class Decoration extends Entity {
         super.draw(g2, cameraX, cameraY);
 
     }
-
-    protected static int randomAniSpeed() {
-        return (int) (Math.random() * (110 - 90 + 1)) + 90;
-    }
 }

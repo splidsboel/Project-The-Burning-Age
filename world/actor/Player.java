@@ -17,7 +17,7 @@ public class Player extends Actor {
     private BufferedImage spriteSheet;
     private int aniTick;
     private int aniIndex;
-    private int aniSpeed = 13; // animation frame speed
+    private int aniSpeed; // animation frame speed
 
     // Animation states
     public static final int runningDown = 0;
@@ -43,10 +43,13 @@ public class Player extends Actor {
         y = gp.tileSize * 15;
 
         pixels = 32; // base sprite size (one tile)
-        defaultSpeed = (int)(2 * gp.deviceScale);
-        speed = defaultSpeed;
+        speed = (int)(2 * (gp.deviceScale * gp.zoomScale));
+        aniSpeed = 14;
 
-        // Define hitbox using base sprite pixel units — NOT scaled
+        setHitBox(
+            0.3,
+            0.5
+        );
         setSolidArea(
             (int)(pixels * 0.45),
             (int)(pixels * 0.85),
@@ -60,7 +63,7 @@ public class Player extends Actor {
     public void update() {
         handleInput();
         updateCamera();
-        updatePosition();
+        move();
         updateAnimation();
         super.update();
     }
@@ -113,6 +116,8 @@ public class Player extends Actor {
                     aniIndex = 1;
                 }
             }
+        } else {
+            aniIndex = 0;
         }
     }
 
@@ -123,8 +128,9 @@ public class Player extends Actor {
         if (right) playerAction = runningRight;
     }
 
-    private void updatePosition() {
+    private void move() {
         updateSolidArea();
+        updateHitBox();
         gp.cChecker.check(this);
         moving = false;
         boolean horizontal = left ^ right;
@@ -160,8 +166,8 @@ public class Player extends Actor {
         double worldHeight = gp.maxWorldRow * gp.tileSize;
         cameraX = Math.max(0, Math.min(cameraX, worldWidth - gp.screenWidth));
         cameraY = Math.max(0, Math.min(cameraY, worldHeight - gp.screenHeight));
-        screenX = x - cameraX;
-        screenY = y - cameraY;
+        screenX = (x - cameraX);
+        screenY = (y - cameraY);
     }
 
     @Override

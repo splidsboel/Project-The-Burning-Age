@@ -14,8 +14,15 @@ public class TreeWide extends Tree {
             (int)(pixels * 0.25),
             (int)(pixels * 0.05)
         );
-        aniSpeed = UtilityTool.randomNumberInterval(90,110);
+
     }
+
+    @Override
+    public void update() {
+        animation(UtilityTool.randomNumberInterval(90,100));
+        super.update();
+    }
+
 
     @Override
     public double getBottomY() {
