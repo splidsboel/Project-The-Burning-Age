@@ -12,6 +12,7 @@ public abstract class Actor extends Entity {
     public int defaultSpeed;
     public double speed;
 
+
     public Actor(GamePanel gp, double x, double y, BufferedImage[] frames, boolean animated) {
         super(gp, x, y, frames);
     }
@@ -19,16 +20,6 @@ public abstract class Actor extends Entity {
     @Override
     public void update() {
         super.update();
-        //move();
-    }
-
-    protected void move() {
-        if (collisionOn) return;
-        if (up)    y -= speed;
-        if (down)  y += speed;
-        if (left)  x -= speed;
-        if (right) x += speed;
-        solidArea.setLocation((int)(x + solidOffsetX), (int)(y + solidOffsetY));
     }
 
     @Override

@@ -1,6 +1,8 @@
 package gamestates;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -47,22 +49,35 @@ public class Playing extends State implements Statemethods{
 
     @Override
     public void draw(Graphics2D g2) {
-        //TILES
+        // Draw background first
         gp.tileM.draw(g2);
 
-        //PLAYER AND DECOR SORT
-        List<Renderable> drawList = new ArrayList<>();
+        // Collect and sort visible entities
+        List<Renderable> drawList = new ArrayList<>(gp.getEntityM().getVisibleEntities(
+            player.getCameraX(),
+            player.getCameraY(),
+            gp.screenWidth,
+            gp.screenHeight
+        ));
         drawList.add(player);
-        drawList.addAll(gp.getEntityM().decorList);
+
         drawList.sort(Comparator.comparingDouble(Renderable::getBottomY));
+
+        // Draw entities in depth order
         for (Renderable r : drawList) {
             r.draw(g2, player.getCameraX(), player.getCameraY());
-        }
 
-        if (p_pressed) {
-            gp.debugText(g2);
+            if(p_pressed) {
+                // Debug: draw collision box and text
+                Rectangle sa = r.getSolidArea();
+                g2.setColor(Color.GREEN);
+                g2.drawRect((int)(sa.x - player.getCameraX()), (int)(sa.y - player.getCameraY()), sa.width, sa.height);
+
+                gp.debugText(g2);
+            }
         }
     }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

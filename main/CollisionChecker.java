@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Rectangle;
+import java.util.List;
 import tile.Tile;
 import world.actor.Actor;
 
@@ -37,7 +38,7 @@ public class CollisionChecker {
             int leftCol    = (int)(leftx / gp.tileSize);
             int rightCol   = (int)(rightx / gp.tileSize);
 
-            Tile t1 = gp.tileM.tileMap[leftCol][nextTopRow];
+            Tile t1 = gp.getTileM().tileMap[leftCol][nextTopRow];
             Tile t2 = gp.tileM.tileMap[rightCol][nextTopRow];
 
             if (t1.collision || t2.collision) {
@@ -89,10 +90,11 @@ public class CollisionChecker {
     }
 
     private void checkDecor(Actor e) {
-        
-        if (gp.getEntityM() == null || gp.getEntityM().getDecorSolidAreaList().isEmpty()) return;
+        List<Rectangle> decorAreas = gp.getEntityM().getDecorSolidAreaList(
+            gp.getPlaying().getPlayer().getCameraX(), gp.getPlaying().getPlayer().getCameraY(), gp.screenWidth, gp.screenHeight
+        );
+        if (decorAreas.isEmpty()) return;
 
-        // Build 4 predicted rectangles. One per axis.
         Rectangle upBox = new Rectangle(
             (int)(e.solidArea.x),
             (int)(e.solidArea.y - e.speed),
@@ -121,12 +123,12 @@ public class CollisionChecker {
             e.solidArea.height
         );
 
-        for (Rectangle decor : gp.getEntityM().getDecorSolidAreaList()) {
-            if (upBox.intersects(decor))    e.collisionUp = true; //System.out.println("Decor coliision!");
+        for (Rectangle decor : decorAreas) {
+            if (upBox.intersects(decor))    e.collisionUp = true;
             if (downBox.intersects(decor))  e.collisionDown = true;
             if (leftBox.intersects(decor))  e.collisionLeft = true;
             if (rightBox.intersects(decor)) e.collisionRight = true;
-
         }
     }
+
 }

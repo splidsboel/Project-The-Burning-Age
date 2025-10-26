@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 import main.GamePanel;
-import world.DecorManager;
 import world.decoration.*;
 
 import java.awt.image.BufferedImage;

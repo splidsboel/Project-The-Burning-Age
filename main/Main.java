@@ -1,37 +1,51 @@
 package main;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 
-import javax.swing.JFrame;
+import java.awt.*;
+import javax.swing.*;
 
-public class Main {
+/**
+ * Entry point of the game.
+ * Handles display mode and GamePanel initialization.
+ */
+public class Main
+ {
+
     public static JFrame window;
+
     public static void main(String[] args) {
         System.out.println("Game starting...");
 
-        //JFRAME
-        window = new JFrame();
-        window.setTitle("The Burning Age");
+        // Create window
+        window = new JFrame("The Burning Age");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
         window.setUndecorated(true);
 
-        //GAMEPANEL
+        // Create and attach game panel
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
-        
-        //GAME WINDOW
+
+        // Setup display mode
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
-        gd.setFullScreenWindow(window);
-        gamePanel.setDoubleBuffered(true);
-        // window.setSize(1280, 720);
-        // window.setLocationRelativeTo(null); // Center the window
-        window.setVisible(true);
-        
 
-        //SETUP GAME AND START GAME THREAD
-        gamePanel.setupGame();
+        // Fullscreen fallback safety
+        try {
+            gd.setFullScreenWindow(window);
+        } catch (Exception e) {
+            System.err.println("Fullscreen not supported. Falling back to windowed mode.");
+            window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
+
+        // Enable hardware acceleration + double buffering
+        System.setProperty("sun.java2d.opengl", "true");
+        gamePanel.setDoubleBuffered(true);
+
+        // Show window
+        window.setVisible(true);
+
+        // Setup game and start main loop
         gamePanel.startGameThread();
     }
 }

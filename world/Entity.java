@@ -9,7 +9,7 @@ import tools.Renderable;
 public abstract class Entity implements Renderable {
     protected GamePanel gp;
     public double x, y;
-    protected double scale = 1.0;
+    protected int pixels = 32;
     protected BufferedImage[] frames;
     protected int frameIndex;
     protected int aniTick;
@@ -20,6 +20,7 @@ public abstract class Entity implements Renderable {
     public int solidAreaY;
     public int solidAreaWidth;
     public int solidAreaHeight;
+    protected int solidBaseWidth, solidBaseHeight; // unscaled dimensions
     public int solidOffsetX, solidOffsetY;
     public boolean collisionUp, collisionDown, collisionLeft, collisionRight;
     public boolean collisionOn = false;
@@ -32,6 +33,7 @@ public abstract class Entity implements Renderable {
     }
 
     public void update() {
+        updateSolidArea();
         if (frames == null || frames.length <= 1) return;
         aniTick++;
         if (aniTick >= aniSpeed) {
@@ -43,17 +45,45 @@ public abstract class Entity implements Renderable {
     @Override
     public void draw(Graphics2D g2, double cameraX, double cameraY) {
         if (frames == null || frames.length == 0) return;
-        int screenX = (int) (x - cameraX);
-        int screenY = (int) (y - cameraY);
-        g2.drawImage(frames[frameIndex], screenX, screenY, null);
+
+        // Base pixel scale per tile (tileSize is already zoomed)
+        double scale = gp.tileSize / (double) gp.originalTileSize;
+
+        BufferedImage img = frames[frameIndex];
+
+        // World → screen transform
+        double drawX = (x - cameraX);
+        double drawY = (y - cameraY);
+
+        int drawW = (int) (img.getWidth() * scale);
+        int drawH = (int) (img.getHeight() * scale);
+
+        g2.drawImage(img, (int) drawX, (int) drawY, drawW, drawH, null);
     }
 
     public void setSolidArea(int offsetX, int offsetY, int width, int height) {
         this.solidOffsetX = offsetX;
         this.solidOffsetY = offsetY;
-        this.solidArea.setBounds((int)(x + offsetX), (int)(y + offsetY), width, height);
+        this.solidBaseWidth = width;
+        this.solidBaseHeight = height;
+        updateSolidArea();
     }
 
+    public void updateSolidArea() {
+        double scale = gp.tileSize / (double) gp.originalTileSize;
+        solidArea.setBounds(
+            (int)(x + solidOffsetX * scale),
+            (int)(y + solidOffsetY * scale),
+            (int)(solidBaseWidth * scale),
+            (int)(solidBaseHeight * scale)
+        );
+    }
+
+    //GETTERS
+    @Override
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
 
     public double getX() { return x; }
     public double getY() { return y; }

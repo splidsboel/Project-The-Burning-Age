@@ -1,195 +1,137 @@
 package main;
 
-import gamestates.Gamestate;
+import gamestates.*;
 import gamestates.Menu;
-import gamestates.Playing;
-import input.KeyHandler;
-import input.MouseHandler;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+import input.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import tile.TileManager;
-import tile.TiledMapLoader;
+import tile.*;
 import tools.UtilityTool;
-import world.EntityManager;
-import world.SpriteLoader;
-import world.TiledEntityLoader;
-import world.actor.Player;
+import world.*;
 
 public class GamePanel extends JPanel implements Runnable {
-    //THREAD
-    Thread gameThread;
 
-    //GAMESTATES
+    // Core systems
+    private Thread gameThread;
     public Playing playing;
     public Menu menu;
-
-    //GRAPHICS
-    private int targetTileSize = -1;
-    private int zoomAnimationSpeed = 50; // pixels per frame
-    private boolean zoomAnimating = false;
-
-    //SYSTEMS
-    public KeyHandler keyH; 
+    public KeyHandler keyH;
     public MouseHandler mouseH;
-    public TileManager tileM;
-    public EntityManager entityM;
     public UtilityTool uTool;
     public CollisionChecker cChecker;
+    public TileManager tileM;
+    public EntityManager entityM;
 
-    //SCREEN SETTINGS
-    public final int originalTileSize = 32;  
-    public float scale;  // Scale factor for rendering
+    // Graphics & scaling
+    private BufferedImage screen;
+    private Graphics2D g2;
+
+    public final int originalTileSize = 32;
     public int tileSize = 64;
     public int initialTileSize;
+    public float deviceScale = 1.0f;
+    public float zoomScale = 1.0f;
 
-    public int virtualWidth = 24 * originalTileSize; //768
-    public int virtualHeight = 13 * originalTileSize; //432. amount of tile-pixels on screen. 16:0
-    public int detectedScreenWidth;
-    public int detectedScreenHeight;
-    public int screenWidth; // display resolution
-    public int screenHeight; 
-    public int currentZoom = 0;
+    private int targetTileSize = -1;
+    private int zoomSpeed = 40;
+    private boolean zoomAnimating = false;
 
-    protected final int FPS = 90;
-    protected int currentFPS;
-    protected final int UPS = 120;
-    protected int currentUPS;
-    public int frames;
-    public int updates;
-    BufferedImage screen;
-    public Graphics2D g2;
+    // Screen & resolution
+    public int screenWidth;
+    public int screenHeight;
+    public int virtualWidth = 24 * originalTileSize;
+    public int virtualHeight = 13 * originalTileSize;
 
-    //WORLD SETTINGS
-    public int maxWorldCol = 25;
-    public int maxWorldRow = 25;
+    // Frame timing
+    private static final int FPS = 90;
+    private static final int UPS = 120;
+    private int frames;
+    private int updates;
+    private int currentFPS;
+    private int currentUPS;
 
-    
+    // World limits
+    public int maxWorldCol = 100;
+    public int maxWorldRow = 100;
+
     public GamePanel() {
-        deviceScaleDetection();
-        initializeClasses();
+        detectDeviceScale();
+        initSystems();
+        setupListeners();
+    }
 
-        //MOUSE AND KEY LISTENER
-        this.addMouseListener(mouseH);
-        this.addMouseMotionListener(mouseH);
-        this.addKeyListener(keyH);
-        this.setFocusable(true);
-    } 
-
-    public void initializeClasses() {
-        //GAMESTATE
+    /** Initializes all subsystems */
+    private void initSystems() {
+        // Game states
         playing = new Playing(this);
         menu = new Menu(this);
 
-        //SYSTEMS
+        // Input and utilities
         keyH = new KeyHandler(this);
         mouseH = new MouseHandler(this);
-        this.addMouseWheelListener(mouseH);
         uTool = new UtilityTool(this);
-        tileM = new TileManager(this);
-        entityM = new EntityManager(this);
         cChecker = new CollisionChecker(this);
 
-        //WORLD FRAMES
+        // World systems
+        tileM = new TileManager(this);
+        entityM = new EntityManager(this);
+
+        // Initial world load
         TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);
-        TiledEntityLoader.loadEntities("images/world/world.tmj", entityM, this);
-        //TiledDecorLoader.loadDecorFromTiled("images/world/world.tmj", decorM, TreeWide.treeFrames, this);
-        
-        
-    }
+        EntityTiledLoader.loadEntities("images/world/world.tmj", entityM, this);
 
-    public void update() {
-
-        switch (Gamestate.state) {
-            case PLAYING: 
-                playing.update();
-                
-                //GRAPHICS
-                if (zoomAnimating) {
-                    animateZoomStep();
-                }
-                break;
-            case MENU:
-                menu.update();
-                break;
-            case OPTIONS:
-            case QUIT: 
-                System.exit(0);
-            default:       
-        }
-    }
-    public void render() {
-        switch (Gamestate.state) {
-            case PLAYING: 
-                playing.draw(g2);
-                break;
-            case MENU:
-                menu.draw(g2);
-                break;
-            default:       
-        }
-    
-        //DRAW TO SCREEN
-        Graphics g = getGraphics();
-        g.drawImage(screen, 0, 0, screenWidth, screenHeight,null);
-        g.dispose();
-    }
-    
-    public void deviceScaleDetection() {
-        // Detect actual screen size
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        detectedScreenWidth = gd.getDisplayMode().getWidth();
-        detectedScreenHeight = gd.getDisplayMode().getHeight();
-
-        if (detectedScreenWidth > 2000) {
-            screenWidth = detectedScreenWidth / 2;
-            screenHeight = detectedScreenHeight / 2;
-        } else {
-            screenWidth = detectedScreenWidth ;
-            screenHeight = detectedScreenHeight;
-        }
-
-
-
-        float scaleX = screenWidth/(float)virtualWidth;
-        float scaleY = screenHeight/(float)virtualHeight;
-        scale = Math.min(scaleX,scaleY);
-        initialTileSize = (int)(tileSize * scale);
-        tileSize = initialTileSize;
-
-        //System.out.println("scaleX " + scaleX + ", scaleY " + scaleY + ", scale " + scale + ", detectedScreenWidth " + detectedScreenWidth + ", detectedHeight " +detectedScreenHeight + ", screenWidth " +screenWidth + ", screenHeight " +screenHeight);
-    }
-    
-    //SETUP GAME AND START GAME THREAD METHODS
-    public void setupGame() {
-        //DRAW
+        // Prepare render buffer
         screen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) screen.getGraphics();
-    }   
+    }
 
-    public void startGameThread() {
-            gameThread = new Thread(this);
-            gameThread.start();
+    private void setupListeners() {
+        addKeyListener(keyH);
+        addMouseListener(mouseH);
+        addMouseMotionListener(mouseH);
+        addMouseWheelListener(mouseH);
+        setFocusable(true);
+        requestFocus();
+    }
+
+    /** Detects screen resolution and sets device scale */
+    private void detectDeviceScale() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        int detectedWidth = gd.getDisplayMode().getWidth();
+        int detectedHeight = gd.getDisplayMode().getHeight();
+
+        if (detectedWidth > 2000) {
+            screenWidth = detectedWidth / 2;
+            screenHeight = detectedHeight / 2;
+        } else {
+            screenWidth = detectedWidth;
+            screenHeight = detectedHeight;
         }
-    
+
+        float scaleX = screenWidth / (float) virtualWidth;
+        float scaleY = screenHeight / (float) virtualHeight;
+        deviceScale = Math.min(scaleX, scaleY);
+
+        initialTileSize = (int) (originalTileSize * deviceScale);
+        tileSize = initialTileSize;
+    }
+
+    // =====================
+    //   GAME LOOP
+    // =====================
     @Override
     public void run() {
-        double timePerFrame = 1000000000.0 / FPS;
-        double timePerUpdate = 1000000000.0 / UPS;
-        
-        long previousTime = System.nanoTime();
+        double timePerFrame = 1_000_000_000.0 / FPS;
+        double timePerUpdate = 1_000_000_000.0 / UPS;
 
-        frames = 0;
-        updates = 0;
+        long previousTime = System.nanoTime();
         long lastCheck = System.currentTimeMillis();
 
-        double deltaU = 0;
-        double deltaF = 0;
+        double deltaU = 0, deltaF = 0;
+        frames = updates = 0;
+
         while (gameThread != null) {
             long currentTime = System.nanoTime();
             deltaU += (currentTime - previousTime) / timePerUpdate;
@@ -201,7 +143,6 @@ public class GamePanel extends JPanel implements Runnable {
                 updates++;
                 deltaU--;
             }
-
             if (deltaF >= 1) {
                 render();
                 frames++;
@@ -209,114 +150,100 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
-                lastCheck = System.currentTimeMillis();
                 currentFPS = frames;
                 currentUPS = updates;
-                //System.out.println("FPS: " + frames + " UPS: "+ updates);
-                frames = 0;
-                updates = 0;
+                frames = updates = 0;
+                lastCheck = System.currentTimeMillis();
             }
         }
     }
 
-    //HELPER METHODS
-    public void debugText(Graphics2D g2) {
-        g2.setColor(Color.black);
-        int x = 10;
-        int y = 400;
-        int lineHeight = 20;
-        g2.drawString("worldX: " + getPlaying().getPlayer().x, x, y); y += lineHeight;
-        g2.drawString("worldY: " + getPlaying().getPlayer().y, x, y); y += lineHeight;
-        g2.drawString("screenX: " + getPlaying().getPlayer().screenX, x, y); y += lineHeight;
-        g2.drawString("screenY: " + getPlaying().getPlayer().screenY, x, y); y += lineHeight;
-        g2.drawString("cameraX: " + getPlaying().getPlayer().getCameraX(), x, y); y += lineHeight;
-        g2.drawString("cameraY: " + getPlaying().getPlayer().getCameraY(), x, y); y += lineHeight;
-
-        g2.drawString("mouseX: " + mouseH.mouseX, x, y); y += lineHeight;
-        g2.drawString("mouseY: " + mouseH.mouseY, x, y); y += lineHeight;
-        g2.drawString("scale: " + scale, x, y); y += lineHeight;
-        g2.drawString("tilesize: " + tileSize, x, y); y += lineHeight;
-        g2.drawString("resolution: " + screenWidth + "x" + screenHeight, x, y); y += lineHeight;
-        g2.drawString("Col: " + (getPlaying().getPlayer().x)/tileSize, x, y); y += lineHeight;
-        g2.drawString("Row: " + (getPlaying().getPlayer().y)/tileSize, x, y); y += lineHeight;
-        g2.drawString("FPS: " + currentFPS,x,y); y += lineHeight;
-        g2.drawString("UPS: " + currentUPS,x,y); y += lineHeight;
+    public void startGameThread() {
+        gameThread = new Thread(this);
+        gameThread.start();
     }
 
-    //GETTERS
-    public Playing getPlaying() {
-        return playing;
+    // =====================
+    //   UPDATE & RENDER
+    // =====================
+    public void update() {
+        switch (Gamestate.state) {
+            case PLAYING -> {
+                playing.update();
+                if (zoomAnimating) animateZoomStep();
+            }
+            case MENU -> menu.update();
+            case OPTIONS, QUIT -> System.exit(0);
+        }
     }
 
-    public Menu getMenu() {
-        return menu;
+    public void render() {
+        switch (Gamestate.state) {
+            case PLAYING -> playing.draw(g2);
+            case MENU -> menu.draw(g2);
+        }
+
+        Graphics g = getGraphics();
+        g.drawImage(screen, 0, 0, screenWidth, screenHeight, null);
+        g.dispose();
     }
 
-    public KeyHandler getKeyH() {
-        return keyH;
-    }
-
-    public MouseHandler getMouseH() {
-        return mouseH;
-    }
-
-    public TileManager getTileM() {
-        return tileM;
-    }
-
-    public EntityManager getEntityM() {
-        return entityM;
-    }
-
-    public UtilityTool getuTool() {
-        return uTool;
-    }
-
-    public CollisionChecker getcChecker() {
-        return cChecker;
-    }
-
-    //OTHER
+    // =====================
+    //   ZOOM SYSTEM
+    // =====================
     public void zoomInOut(int zoomChange) {
         int newTileSize = tileSize + zoomChange;
-    
-        if (newTileSize < initialTileSize || newTileSize > 250) return; // clamp
-    
+        if (newTileSize < initialTileSize || newTileSize > 256) return;
+
         targetTileSize = newTileSize;
         zoomAnimating = true;
     }
-    
+
     private void animateZoomStep() {
         if (tileSize == targetTileSize) {
             zoomAnimating = false;
             return;
         }
-    
-        int oldTileSize = tileSize;
-        int direction = targetTileSize > tileSize ? 1 : -1;
-        tileSize += zoomAnimationSpeed * direction;
-    
-        // Clamp
-        if ((direction == 1 && tileSize > targetTileSize) || (direction == -1 && tileSize < targetTileSize)) {
+
+        int dir = Integer.compare(targetTileSize, tileSize);
+        tileSize += zoomSpeed * dir;
+
+        if ((dir > 0 && tileSize > targetTileSize) || (dir < 0 && tileSize < targetTileSize)) {
             tileSize = targetTileSize;
             zoomAnimating = false;
         }
-    
-        double multiplier = (double) tileSize / oldTileSize;
-    
-        Player player = getPlaying().getPlayer();
-        player.speed *= multiplier;
-        player.x *= multiplier;
-        player.x *= multiplier;
-    
-        player.updateCamera();
-        
-        reloadWorld(multiplier); // world and decor gets placed with new tileSize
+
+        zoomScale = (float) tileSize / originalTileSize;
+        //tileM.onZoomChange(); // clear tile caches
+        getPlaying().getPlayer().updateCamera();
     }
 
-    public void reloadWorld(double multiplier) {
-        //Rebuild decor
-        SpriteLoader.clearCache();
-        TiledEntityLoader.loadEntities("images/world/world.tmj", entityM, this);
+    // =====================
+    //   DEBUG OVERLAY
+    // =====================
+    public void debugText(Graphics2D g2) {
+        g2.setColor(Color.BLACK);
+        int x = 10, y = 400, lh = 20;
+        var p = getPlaying().getPlayer();
+        g2.drawString("worldX: " + p.x, x, y += lh);
+        g2.drawString("worldY: " + p.y, x, y += lh);
+        g2.drawString("cameraX: " + p.getCameraX(), x, y += lh);
+        g2.drawString("cameraY: " + p.getCameraY(), x, y += lh);
+        g2.drawString("tileSize: " + tileSize, x, y += lh);
+        g2.drawString("deviceScale: " + deviceScale, x, y += lh);
+        g2.drawString("zoomScale: " + zoomScale, x, y += lh);
+        g2.drawString("FPS: " + currentFPS, x, y += lh);
+        g2.drawString("UPS: " + currentUPS, x, y += lh);
     }
+
+    // =====================
+    //   GETTERS
+    // =====================
+    public Playing getPlaying() { return playing; }
+    public Menu getMenu() { return menu; }
+    public TileManager getTileM() { return tileM; }
+    public EntityManager getEntityM() { return entityM; }
+    public CollisionChecker getCollisionChecker() { return cChecker; }
+    public float getZoomScale() { return zoomScale; }
+    public float getDeviceScale() { return deviceScale; }
 }

@@ -13,14 +13,6 @@ public abstract class Decoration extends Entity {
     public void draw(Graphics2D g2, double cameraX, double cameraY) {
         super.draw(g2, cameraX, cameraY);
 
-        // DEBUG: draw tree collision rectangle
-        g2.setColor(java.awt.Color.GREEN);
-        g2.drawRect(
-        solidArea.x - (int) cameraX,
-        solidArea.y - (int) cameraY,
-        solidArea.width,
-        solidArea.height
-        );
     }
 
     protected static int randomAniSpeed() {

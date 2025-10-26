@@ -1,10 +1,13 @@
 package world;
 
+import java.awt.Rectangle;
 import java.util.*;
 import main.GamePanel;
+import tools.Renderable;
 import world.actor.*;
 import world.decoration.*;
-import world.decoration.trees.TreeTall;
+import world.decoration.rocks.*;
+import world.decoration.trees.*;
 import world.item.*;
 
 public class EntityManager {
@@ -18,11 +21,34 @@ public class EntityManager {
     }
 
     public static Entity create(GamePanel gp, String type, double x, double y) {
-        return switch (type.toLowerCase()) {
-            case "tree_tall" -> new TreeTall(gp, x, y);
-            default -> null;
-        };
+
+        int pixels = 32;
+        double offsetY = 0;
+
+        switch (type) {
+            case "stoneSmall" -> {
+                System.out.println("Stone!");
+                pixels = 32;
+                offsetY = pixels / gp.originalTileSize * gp.tileSize; // 32px tall
+                return new Stone(gp, x, y - offsetY);
+            }
+            case "treeTall" -> {
+                pixels = 64;
+                offsetY = pixels / gp.originalTileSize * gp.tileSize; // 64px tall
+                return new TreeTall(gp, x, y - offsetY);
+            }
+            case "treeWide" -> {
+                pixels = 64;
+                offsetY = pixels / gp.originalTileSize * gp.tileSize; // 64px tall
+                return new TreeWide(gp, x, y - offsetY);
+            }
+            default -> {
+                System.out.println("Unknown entity type: " + type);
+                return null;
+            }
+        }
     }
+
 
     public void update() {
         actors.forEach(Entity::update);
@@ -38,4 +64,38 @@ public class EntityManager {
         all.sort(Comparator.comparingDouble(Entity::getBottomY));
         all.forEach(e -> e.draw(g2, camX, camY));
     }
+
+    public List<Renderable> getVisibleEntities(double camX, double camY, int viewW, int viewH) {
+        List<Renderable> visible = new ArrayList<>();
+        double margin = gp.tileSize * 2;
+        double minX = camX - margin, maxX = camX + viewW + margin;
+        double minY = camY - margin, maxY = camY + viewH + margin;
+
+        for (Decoration d : decorations) {
+            if (d.x + d.solidArea.width > minX && d.x < maxX && d.y + d.solidArea.height > minY && d.y < maxY)
+                visible.add(d);
+        }
+        // add actors, items later if needed
+        return visible;
+    }
+
+    public List<Rectangle> getDecorSolidAreaList(double camX, double camY, int viewW, int viewH) {
+        List<Rectangle> result = new ArrayList<>();
+        double margin = gp.tileSize * 2; // small buffer around view
+        double minX = camX - margin;
+        double maxX = camX + viewW + margin;
+        double minY = camY - margin;
+        double maxY = camY + viewH + margin;
+
+        for (Decoration d : decorations) {
+            Rectangle r = d.solidArea;
+            if (r.x + r.width > minX && r.x < maxX && r.y + r.height > minY && r.y < maxY) {
+                result.add(r);
+            }
+        }
+        return result;
+    }
+
+
+
 }

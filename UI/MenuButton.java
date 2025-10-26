@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import gamestates.Gamestate;
 import java.awt.Graphics2D;
@@ -32,8 +32,8 @@ public class MenuButton {
     }
 
     public void initializeBounds() {
-        int xOffsetCenter = (int)(b_width * gp.scale) / 2;
-        bounds = new Rectangle(x - xOffsetCenter, y, (int)(b_width * gp.scale), (int)(b_height * gp.scale));
+        int xOffsetCenter = (int)(b_width * gp.deviceScale) / 2;
+        bounds = new Rectangle(x - xOffsetCenter, y, (int)(b_width * gp.deviceScale), (int)(b_height * gp.deviceScale));
     }
 
     private void loadImgs() {
@@ -58,8 +58,8 @@ public class MenuButton {
     }
     
     public void draw(Graphics2D g2) {
-        int xOffsetCenter = (int)(b_width * gp.scale) / 2;
-        g2.drawImage(imgs[index], x - xOffsetCenter, y, (int)(b_width * gp.getScale()),(int)(b_height * gp.getScale()), null);
+        int xOffsetCenter = (int)(b_width * gp.deviceScale) / 2;
+        g2.drawImage(imgs[index], x - xOffsetCenter, y, (int)(b_width * gp.getDeviceScale()),(int)(b_height * gp.getDeviceScale()), null);
     }
 
     //GETTERS AND SETTERS

@@ -4,10 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-
-import UI.MenuButton;
-import UI.MenuImage;
 import main.GamePanel;
+import ui.MenuButton;
+import ui.MenuImage;
 
 public class Menu extends State implements Statemethods {
     private MenuButton[] buttons = new MenuButton[3];
@@ -24,9 +23,9 @@ public class Menu extends State implements Statemethods {
     }
 
     public void loadButtons() {
-        buttons[0] = new MenuButton((gp.screenWidth / 2),(int) (240*gp.scale), 0, Gamestate.PLAYING, gp);
-        buttons[1] = new MenuButton((gp.screenWidth / 2),(int) (275*gp.scale) , 1, Gamestate.OPTIONS, gp);
-        buttons[2] = new MenuButton((gp.screenWidth / 2),(int) (310*gp.scale) , 2, Gamestate.QUIT, gp);
+        buttons[0] = new MenuButton((gp.screenWidth / 2),(int) (240*gp.deviceScale), 0, Gamestate.PLAYING, gp);
+        buttons[1] = new MenuButton((gp.screenWidth / 2),(int) (275*gp.deviceScale) , 1, Gamestate.OPTIONS, gp);
+        buttons[2] = new MenuButton((gp.screenWidth / 2),(int) (310*gp.deviceScale) , 2, Gamestate.QUIT, gp);
     }
 
     public void loadImages() {
@@ -44,7 +43,7 @@ public class Menu extends State implements Statemethods {
     public void draw(Graphics2D g2) {
         updateAnimationTick();
 
-        img.draw(g2, aniIndex, gp.scale);
+        img.draw(g2, aniIndex, gp.deviceScale);
         
         for (MenuButton mb : buttons) {
             mb.draw(g2);

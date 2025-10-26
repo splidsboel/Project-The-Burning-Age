@@ -1,8 +1,6 @@
 package world.actor;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import tools.UtilityTool;
@@ -43,15 +41,20 @@ public class Player extends Actor {
     private void setDefaultValues() {
         x = gp.tileSize * 13;
         y = gp.tileSize * 15;
-        defaultSpeed = (int) (2 * gp.scale);
+
+        pixels = 32; // base sprite size (one tile)
+        defaultSpeed = (int)(2 * gp.deviceScale);
         speed = defaultSpeed;
 
-        solidOffsetX = (int) (gp.tileSize * 0.40);
-        solidOffsetY = (int) (gp.tileSize * 0.85);
-        int width = (int) (gp.tileSize * 0.15);
-        int height = (int) (gp.tileSize * 0.08);
-        setSolidArea(solidOffsetX, solidOffsetY, width, height);
+        // Define hitbox using base sprite pixel units — NOT scaled
+        setSolidArea(
+            (int)(pixels * 0.45),
+            (int)(pixels * 0.85),
+            (int)(pixels * 0.15),
+            (int)(pixels * 0.08)
+        );
     }
+
 
     @Override
     public void update() {
@@ -59,7 +62,7 @@ public class Player extends Actor {
         updateCamera();
         updatePosition();
         updateAnimation();
-        super.update(); // keeps base animation tick
+        super.update();
     }
 
     @Override
@@ -76,10 +79,6 @@ public class Player extends Actor {
             g2.drawImage(frame, drawX, drawY, gp.tileSize, gp.tileSize, null);
         }
 
-        // Debug: draw collision box
-        Rectangle sa = solidArea;
-        g2.setColor(Color.GREEN);
-        g2.drawRect((int)(sa.x - cameraX), (int)(sa.y - cameraY), sa.width, sa.height);
     }
 
     private void handleInput() {
@@ -98,7 +97,7 @@ public class Player extends Actor {
         animations = new BufferedImage[3][4];
         for (int i = 0; i < animations.length; i++) {
             for (int j = 0; j < animations[i].length; j++) {
-                animations[i][j] = spriteSheet.getSubimage(i * 32, j * 32, 32, 32);
+                animations[i][j] = spriteSheet.getSubimage(i * pixels, j * pixels, pixels, pixels);
             }
         }
     }
@@ -125,7 +124,7 @@ public class Player extends Actor {
     }
 
     private void updatePosition() {
-        solidArea.setLocation((int)(x + solidOffsetX), (int)(y + solidOffsetY));
+        updateSolidArea();
         gp.cChecker.check(this);
         moving = false;
         boolean horizontal = left ^ right;
@@ -151,6 +150,7 @@ public class Player extends Actor {
         // Clamp position within world bounds
         x = Math.max(0, Math.min(x, gp.maxWorldCol * gp.tileSize - gp.tileSize));
         y = Math.max(0, Math.min(y, gp.maxWorldRow * gp.tileSize - gp.tileSize));
+        updateSolidArea();
     }
 
     public void updateCamera() {
@@ -170,7 +170,7 @@ public class Player extends Actor {
             return solidArea.y + solidArea.height; // bottom in world coords
         }
         return y; // fallback
-    }
+    } 
 
     //GETTERS
     public double getCameraX() {
@@ -180,7 +180,5 @@ public class Player extends Actor {
     public double getCameraY() {
         return cameraY;
     }
-
-    
     
 }

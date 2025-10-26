@@ -1,8 +1,8 @@
 package gamestates;
 
-import UI.MenuButton;
 import java.awt.event.MouseEvent;
 import main.GamePanel;
+import ui.MenuButton;
 
 public class State {
     public GamePanel gp;
