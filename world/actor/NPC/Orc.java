@@ -97,9 +97,9 @@ public class Orc extends Actor {
     private void randomMovement() {
         gp.cChecker.check(this);
         moveTimer++;
-        if (moveTimer >= UtilityTool.randomNumberInterval(500, 1000)) {
+        if (moveTimer >= UtilityTool.randomNumberInterval(500, 750)) {
             moveTimer = 0;
-            int dir = rand.nextInt(11);
+            int dir = rand.nextInt(10);
             up = down = left = right = false;
             switch (dir) {
                 case 0 -> up = true;
@@ -112,7 +112,6 @@ public class Orc extends Actor {
                 case 7 -> moving = false;
                 case 8 -> moving = false;
                 case 9 -> moving = false;
-                case 10 -> moving = false;
             }
         }
 

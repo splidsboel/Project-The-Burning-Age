@@ -181,6 +181,7 @@ public class CollisionChecker {
         );
 
         for (Renderable e : entities) {
+            if (e == a) continue; // 
             if (upBox.intersects(e.getSolidArea()))    a.collisionUp = true;
             if (downBox.intersects(e.getSolidArea()))  a.collisionDown = true;
             if (leftBox.intersects(e.getSolidArea()))  a.collisionLeft = true;
