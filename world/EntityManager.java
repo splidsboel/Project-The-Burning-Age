@@ -49,10 +49,14 @@ public class EntityManager {
 
 
 
+
     public void update() {
         actors.forEach(Entity::update);
         decorations.forEach(Entity::update);
         items.forEach(Entity::update);
+
+
+        
     }
 
     public void draw(java.awt.Graphics2D g2, double camX, double camY) {
@@ -62,6 +66,7 @@ public class EntityManager {
         all.addAll(items);
         all.sort(Comparator.comparingDouble(Entity::getBottomY));
         all.forEach(e -> e.draw(g2, camX, camY));
+
     }
 
     public List<Renderable> getSolidAreaVisibleEntities(double camX, double camY, int viewW, int viewH) {
@@ -75,6 +80,13 @@ public class EntityManager {
                 visible.add(d);
         }
 
+        for (Actor a : actors) {
+            if (a.isAlive()) {
+                if (a.x + a.solidArea.width > minX && a.x < maxX && a.y + a.solidArea.height > minY && a.y < maxY) {
+                visible.add(a);
+                } 
+            }           
+        }
         return visible;
     }
 

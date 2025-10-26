@@ -3,6 +3,7 @@ package main;
 import java.awt.Rectangle;
 import java.util.List;
 import tile.Tile;
+import tools.Damageable;
 import tools.Renderable;
 import world.actor.Actor;
 
@@ -63,10 +64,19 @@ public class CollisionChecker {
         );
 
         for (Renderable e : entities) {
-            if (upBox.intersects(e.getHitBox()))    System.out.println("actor up hitbox"); 
-            if (downBox.intersects(e.getHitBox()))  System.out.println("actor down hitbox");
-            if (leftBox.intersects(e.getHitBox()))  System.out.println("actor left hitbox");
-            if (rightBox.intersects(e.getHitBox())) System.out.println("actor right hitbox");
+            if (e == a) continue; // 
+            if (e instanceof Damageable d && upBox.intersects(e.getHitBox())) {
+                d.damage(10);
+            };  
+            if (e instanceof Damageable d && downBox.intersects(e.getHitBox())) {
+                d.damage(10);
+            };  
+            if ( e instanceof Damageable d &&leftBox.intersects(e.getHitBox())) {
+                d.damage(10);
+            };  
+            if ( e instanceof Damageable d &&rightBox.intersects(e.getHitBox())) {
+                d.damage(10);
+            };  
         }
     }
 

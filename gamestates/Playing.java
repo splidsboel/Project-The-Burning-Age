@@ -34,22 +34,19 @@ public class Playing extends State implements Statemethods{
     }
 
     public void initializeClasses() {
-
         //ENTITIES AND OBJECTS
         player = new Player(gp,gp.tileSize * 13, gp.tileSize * 15);
         orc = new Orc(gp,gp.tileSize * 15 , gp.tileSize * 15);
 
-
-        tileM = gp.tileM;
-
-        
+        gp.getEntityM().actors.add(orc);
     }
 
     @Override
     public void update() {
+        gp.getEntityM().update();
         player.update();
         orc.update();
-        gp.getEntityM().update();
+        
     }
 
     @Override
@@ -64,9 +61,10 @@ public class Playing extends State implements Statemethods{
             gp.screenWidth,
             gp.screenHeight
         ));
-        drawList.add(player);
-        drawList.add(orc);
 
+        if (player.isAlive()) {
+            drawList.add(player);
+        }
 
         drawList.sort(Comparator.comparingDouble(Renderable::getBottomY));
 

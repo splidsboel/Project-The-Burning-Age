@@ -3,9 +3,20 @@ package world.actor;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
+import tools.Damageable;
 import world.Entity;
 
-public abstract class Actor extends Entity {
+public abstract class Actor extends Entity implements Damageable {
+    //Stats
+    protected String name;
+    protected int health;
+    protected boolean isAlive = true;
+
+    //Combat
+    protected boolean invulnerable; 
+    protected int invulTime = 0;      // frames remaining
+    protected int invulDuration = 60; // 1 second at 60 FPS
+
 
     //Movement
     public boolean moving = false;
@@ -28,6 +39,14 @@ public abstract class Actor extends Entity {
         super.update();
         updateSolidArea();
         updateHitBox();
+
+
+        if (invulnerable) {
+            invulTime--;
+        }
+        if (invulTime <= 0) { 
+            invulnerable = false;
+        }
     }
 
     @Override
@@ -50,4 +69,44 @@ public abstract class Actor extends Entity {
             aniIndex = 0;
         }
     }
+
+    @Override
+    public void damage(int dmg) {
+        if (invulnerable) {
+        } else {
+            setHealth(health - dmg);
+            invulnerable = true;
+            invulTime = invulDuration;
+            if (health <= 0) {
+                kill();
+            }
+        }
+    }
+
+    @Override
+    public void kill() {
+        setAlive(false);
+    }
+
+    //GETTERS
+    public int getHealth() {
+        return health;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+
+    //SETTERS
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setAlive(boolean isAlive) {
+        this.isAlive = isAlive;
+    }
+
+
+    
 }

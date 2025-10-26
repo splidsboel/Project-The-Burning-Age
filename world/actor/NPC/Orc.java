@@ -34,6 +34,9 @@ public class Orc extends Actor {
         pixels = 32; // base sprite size (one tile)
         speed = (int)(0.4 * (gp.deviceScale * gp.zoomScale));
         aniSpeed = 50;
+
+        //Stats
+        health = 100;
         
 
         setHitBox(
@@ -54,6 +57,7 @@ public class Orc extends Actor {
         updateAnimation();
         randomMovement();
         super.update();
+        System.out.println(health);
     }
 
     @Override

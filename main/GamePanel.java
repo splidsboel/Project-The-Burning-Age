@@ -58,16 +58,10 @@ public class GamePanel extends JPanel implements Runnable {
         detectDeviceScale();
         initSystems();
         setupListeners();
-
-        entityM.actors.add(getPlaying().orc);
     }
 
     /** Initializes all subsystems */
     private void initSystems() {
-        // Game states
-        playing = new Playing(this);
-        menu = new Menu(this);
-
         // Input and utilities
         keyH = new KeyHandler(this);
         mouseH = new MouseHandler(this);
@@ -77,6 +71,10 @@ public class GamePanel extends JPanel implements Runnable {
         // World systems
         tileM = new TileManager(this);
         entityM = new EntityManager(this);
+
+        // Game states
+        playing = new Playing(this);
+        menu = new Menu(this);
 
         // Initial world load
         TiledMapLoader.loadTileLayer("images/world/world.tmj", tileM);

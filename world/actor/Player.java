@@ -46,6 +46,9 @@ public class Player extends Actor {
         speed = (int)(2 * (gp.deviceScale * gp.zoomScale));
         aniSpeed = 14;
 
+        //Stats
+        health = 100;
+
         setHitBox(
             0.3,
             0.5
