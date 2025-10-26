@@ -7,6 +7,7 @@ import main.GamePanel;
 import tile.TiledMapLoader;
 import world.decoration.*;
 import world.decoration.grass.Grass;
+import world.decoration.stone.Stone;
 import world.decoration.trees.TreeTall;
 import world.decoration.trees.TreeWide;
 
