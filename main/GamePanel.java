@@ -28,13 +28,13 @@ public class GamePanel extends JPanel implements Runnable {
     private Graphics2D g2;
 
     public final int originalTileSize = 32;
-    public int tileSize = 64;
+    public int tileSize;
     public int initialTileSize;
     public float deviceScale = 1.0f;
     public float zoomScale = 1.0f;
 
     private int targetTileSize = -1;
-    private int zoomSpeed = 40;
+    private int zoomSpeed = 50;
     private boolean zoomAnimating = false;
 
     // Screen & resolution
@@ -52,8 +52,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int currentUPS;
 
     // World limits
-    public int maxWorldCol = 100;
-    public int maxWorldRow = 100;
+    public int maxWorldCol = 25;
+    public int maxWorldRow = 25;
 
     public GamePanel() {
         detectDeviceScale();
@@ -101,7 +101,7 @@ public class GamePanel extends JPanel implements Runnable {
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         int detectedWidth = gd.getDisplayMode().getWidth();
         int detectedHeight = gd.getDisplayMode().getHeight();
-
+        
         if (detectedWidth > 2000) {
             screenWidth = detectedWidth / 2;
             screenHeight = detectedHeight / 2;
@@ -109,11 +109,10 @@ public class GamePanel extends JPanel implements Runnable {
             screenWidth = detectedWidth;
             screenHeight = detectedHeight;
         }
-
         float scaleX = screenWidth / (float) virtualWidth;
         float scaleY = screenHeight / (float) virtualHeight;
         deviceScale = Math.min(scaleX, scaleY);
-
+        
         initialTileSize = (int) (originalTileSize * deviceScale);
         tileSize = initialTileSize;
     }
