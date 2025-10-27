@@ -1,5 +1,6 @@
 package engine.core;
 
+import engine.input.KeyboardInput;
 import engine.input.MouseInput;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -9,6 +10,12 @@ import javafx.stage.Stage;
 public class Game {
     //Core Systems
     private MouseInput mouseInput;
+    private KeyboardInput keyboardInput;
+
+    //World Settings
+    private double originalTileSize;
+
+
 
     private final Stage stage;
     private final Canvas canvas;
@@ -22,15 +29,20 @@ public class Game {
         this.canvas = new Canvas(width, height);
         this.scene = new Scene(new javafx.scene.layout.Pane(canvas));
         stage.setScene(scene);
-        System.out.println("Game initialized");
+        System.out.println("Game initialized.");
 
         initSystems();
 
     }
 
     private void initSystems() {
-        initMouseInput();
+        initInputs(); //Keyboard and mouse
+        initWorldSettings();
         
+    }
+
+    private void initWorldSettings() {
+        originalTileSize = 32;
     }
 
     public void update(double delta) {
@@ -56,15 +68,22 @@ public class Game {
 
 
 
-    private void initMouseInput() {
+    private void initInputs() {
         mouseInput = new MouseInput();
+        keyboardInput = new KeyboardInput();
         canvas.setOnMouseMoved(mouseInput::onMouseMoved);
         canvas.setOnMousePressed(mouseInput::onMousePressed);
         canvas.setOnMouseReleased(mouseInput::onMouseReleased);
+        canvas.setOnKeyPressed(keyboardInput::onKeyPressed);
+        canvas.setOnKeyReleased(keyboardInput::onKeyReleased);
     }
 
 
     //GETTERS
+
+    public double getOriginalTileSize() {
+        return originalTileSize;
+    }
     
     public Canvas getCanvas() {
         return canvas;
@@ -86,7 +105,7 @@ public class Game {
         return stage;
     }
 
-        public boolean isRunning() {
+    public boolean isRunning() {
         return running;
     }
 
@@ -97,5 +116,10 @@ public class Game {
     public MouseInput getMouseInput() {
         return mouseInput;
     }
+
+    public KeyboardInput getKeyboardInput() {
+        return keyboardInput;
+    }
+
     
 }

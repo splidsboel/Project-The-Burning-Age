@@ -10,12 +10,14 @@ public class PlayState extends GameState {
 
     public PlayState(Game game) {
         super(game);
-        System.out.println("PlayState initialized");
+        System.out.println("PlayState initialized.");
     }
 
     @Override
     public void update(double delta) {
         state.update(delta);
+
+        move();
     }
 
     @Override
@@ -33,5 +35,22 @@ public class PlayState extends GameState {
 
     @Override
     public void onExit() {
+    }
+
+    protected void move() {
+        // KeyboardInput keys = game.getKeyboardInput();
+        // if (keys.isKeyPressed(KeyCode.W)) {
+        //     player.moveUp(delta);
+        // }
+        // if (keys.isKeyPressed(KeyCode.S)) {
+        //     player.moveDown(delta);
+        // }
+        // if (keys.isKeyPressed(KeyCode.A)) {
+        //     player.moveLeft(delta);
+        // }
+        // if (keys.isKeyPressed(KeyCode.D)) {
+        //     player.moveRight(delta);
+        // }
+
     }
 }

@@ -13,21 +13,24 @@ public class MainMenu extends MenuState{
     private final Game game;
     private final double canvasWidth;
     private final double canvasHeight;
-    private final Image spriteSheet;
+    private final Image buttonSpriteSheet;
+    private final Image logoSpriteSheet;
 
     private Button play;
     private Button options;
     private Button quit;
+    private Logo logo;
 
     public MainMenu(Game game) {
         super(game);
         this.game = game;
-        this.spriteSheet = new Image(getClass().getResource("/assets/ui/menu_buttons.png").toExternalForm());
+        this.buttonSpriteSheet = new Image(getClass().getResource("/assets/ui/menu_buttons.png").toExternalForm());
+        this.logoSpriteSheet = new Image(getClass().getResource("/assets/ui/dragon_logo.png").toExternalForm());
         this.canvasWidth = game.getCanvas().getWidth();
         this.canvasHeight = game.getCanvas().getHeight();
-        System.out.println("Menu initialized");
+        System.out.println("Menu initialized.");
 
-        loadButtons();
+        load();
     }
 
     // Called from MenuState.update()
@@ -40,15 +43,15 @@ public class MainMenu extends MenuState{
     // Called from MenuState.render(gc)
     public void render(GraphicsContext g) {
         g.setImageSmoothing(false);
-         g.clearRect(0, 0, canvasWidth, canvasHeight);
-        drawButtons(g);
+        g.clearRect(0, 0, canvasWidth, canvasHeight);
+        drawUI(g);
     }
 
-    private void loadButtons() {
-        play = new Button(spriteSheet, 0, 3, (int)(canvasWidth / 2), 700);     // x, y example positions
-        options = new Button(spriteSheet, 1, 3, (int)(canvasWidth / 2), 800);
-        quit = new Button(spriteSheet, 2, 3,(int)(canvasWidth / 2), 900);
-
+    private void load() {
+        play = new Button(buttonSpriteSheet, 0, 3, (int)(canvasWidth / 2), 700);     // x, y example positions
+        options = new Button(buttonSpriteSheet, 1, 3, (int)(canvasWidth / 2), 800);
+        quit = new Button(buttonSpriteSheet, 2, 3,(int)(canvasWidth / 2), 900);
+        logo = new Logo(logoSpriteSheet, 0, 3, (int)(canvasWidth / 2), 100);
     }
 
     private void handleMouse() {
@@ -96,9 +99,11 @@ public class MainMenu extends MenuState{
     }
 
 
-    private void drawButtons(GraphicsContext g) {
+
+    private void drawUI(GraphicsContext g) {
         play.draw(g);
         options.draw(g);
         quit.draw(g);
+        logo.draw(g);
     }
 }

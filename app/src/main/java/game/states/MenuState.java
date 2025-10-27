@@ -10,7 +10,7 @@ public class MenuState extends GameState {
 
     public MenuState(Game game) {
         super(game);
-        System.out.println("MenuState initialized");
+        System.out.println("MenuState initialized.");
     }
 
     @Override

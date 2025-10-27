@@ -1,22 +1,21 @@
 package game.states.ui.menu;
 
-import engine.input.events.Hoverable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 
-public class Button implements Hoverable {
-    public static final int pixelWidth = 33;
-    public static final int pixelHeight = 16;
-    private static final int buttonWidth = 33 * 3;
-    private static final int buttonHeight = 16 * 3;
+public class Logo {
+    public static final int pixelWidth = 128;
+    public static final int pixelHeight = 120;
+    private static final int logoWidth = 128 * 3;
+    private static final int logoHeight = 120 * 3;
 
     private final Image[] frames;
     private int currentFrame;
     private final double x, y;
 
-    public Button(Image spriteSheet, int rowIndex, int frameCount, double x, double y) {
+    public Logo(Image spriteSheet, int rowIndex, int frameCount, double x, double y) {
         this.x = x;
         this.y = y;
         
@@ -32,22 +31,12 @@ public class Button implements Hoverable {
     }
 
     public void draw(GraphicsContext g) {
-        g.drawImage(frames[currentFrame], x - (buttonWidth / 2), y, buttonWidth, buttonHeight);
+        for (int i = 0; i < frames.length; i++) {
+            g.drawImage(frames[i], x - (logoWidth / 2), y, logoWidth, logoHeight);
+        }     
     }
 
     public void setFrame(int index) {
         currentFrame = index;
     }
-    
-
-    @Override
-    public boolean isHovered(double mouseX, double mouseY) {
-        double width = buttonWidth;
-        double height = buttonHeight;
-        double left = x - (buttonWidth / 2);
-        double top = y;
-        return mouseX >= left && mouseX <= left + width &&
-           mouseY >= top && mouseY <= top + height;
-    }
-
 }
