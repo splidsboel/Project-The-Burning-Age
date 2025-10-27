@@ -12,6 +12,6 @@ public abstract class GameState {
 
     public abstract void onEnter();
     public abstract void onExit();
-    public void update(double delta){};
-    public void render(GraphicsContext gc){};
+    public abstract void update(double delta);
+    public abstract void render(GraphicsContext gc);
 }

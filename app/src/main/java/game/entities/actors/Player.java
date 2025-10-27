@@ -5,7 +5,6 @@ import game.entities.Actor;
 import game.entities.behavior.Controllable;
 import game.entities.behavior.Damageable;
 import game.entities.behavior.Moveable;
-import game.entities.behavior.Renderable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
@@ -44,7 +43,6 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     public void render(GraphicsContext g) {
         Image frame = animations[2][2];
         g.drawImage(frame, x, y, width, height);
-
     }
 
     @Override

@@ -14,6 +14,8 @@ public class Game {
 
     //World Settings
     private double originalTileSize;
+    private double worldWidth;
+    private double worldHeight;
 
 
 
@@ -37,12 +39,14 @@ public class Game {
 
     private void initSystems() {
         initInputs(); //Keyboard and mouse
-        initWorldSettings();
+        initWorldSettings(); //Tile size, 
         
     }
 
     private void initWorldSettings() {
         originalTileSize = 32;
+        worldWidth = originalTileSize * 25;
+        worldHeight = originalTileSize * 25;
     }
 
     public void update(double delta) {
@@ -85,6 +89,14 @@ public class Game {
         return originalTileSize;
     }
     
+    public double getWorldWidth() {
+        return worldWidth;
+    }
+
+    public double getWorldHeight() {
+        return worldHeight;
+    }
+
     public Canvas getCanvas() {
         return canvas;
     }
