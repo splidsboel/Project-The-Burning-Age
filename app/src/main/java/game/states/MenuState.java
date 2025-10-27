@@ -2,29 +2,30 @@ package game.states;
 
 import engine.core.Game;
 import engine.core.GameState;
-import game.states.ui.menu.MainMenuUI;
+import game.states.ui.menu.MainMenu;
 import javafx.scene.canvas.GraphicsContext;
 
 public class MenuState extends GameState {
-    private MainMenuUI ui;
+    private MainMenu state;
 
     public MenuState(Game game) {
         super(game);
+        System.out.println("MenuState initialized");
     }
 
     @Override
     public void update(double delta) {
-        ui.update(delta);
+        state.update(delta);
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        ui.render(gc);
+        state.render(gc);
     }
 
     @Override
     public void onEnter() {
-    ui = new MainMenuUI(game); 
+    state = new MainMenu(game); 
     }
 
     @Override

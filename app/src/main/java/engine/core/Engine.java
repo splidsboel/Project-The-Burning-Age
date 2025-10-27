@@ -28,11 +28,15 @@ public class Engine extends Application {
         stage.setFullScreen(true);
         stage.setScene(scene);
 
+        System.out.println("Game starting...");
         Game game = new Game(stage, width, height);
         game.changeState(new MenuState(game)); // <-- create state first
         startGameThread(game);    // <-- then start loop
         stage.show();
+        
     }
+
+
 
     private void startGameThread(Game game) {
         AtomicBoolean renderPending = new AtomicBoolean(false);
@@ -62,7 +66,6 @@ public class Engine extends Application {
         gameThread.setDaemon(true);
         gameThread.start();
     }
-
 
     public static void main(String[] args) {
         launch(args);

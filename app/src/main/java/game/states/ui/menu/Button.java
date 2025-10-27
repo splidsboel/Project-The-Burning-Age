@@ -7,8 +7,10 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 
 public class Button implements Hoverable {
-    private static final int buttonWidth = 33;
-    private static final int buttonHeight = 16;
+    public static final int bWidthDefault = 33;
+    public static final int bHeightDefault = 16;
+    private static final int buttonWidth = 33 * 2;
+    private static final int buttonHeight = 16 * 2;
 
     private final Image[] frames;
     private int currentFrame;
@@ -21,28 +23,30 @@ public class Button implements Hoverable {
         PixelReader reader = spriteSheet.getPixelReader();
         for (int i = 0; i < frameCount; i++) { 
             frames[i] = new WritableImage(reader,
-                    i * buttonWidth,
-                    rowIndex * buttonHeight,
-                    buttonWidth,
-                    buttonHeight);
+                    i * bWidthDefault,
+                    rowIndex * bHeightDefault,
+                    bWidthDefault,
+                    bHeightDefault);
         }
     }
 
     public void draw(GraphicsContext g) {
-        g.drawImage(frames[currentFrame], x - (buttonWidth / 2), y, buttonWidth * 3, buttonHeight * 3);
+        g.drawImage(frames[currentFrame], x - (buttonWidth / 2), y, buttonWidth, buttonHeight);
     }
 
     public void setFrame(int index) {
         currentFrame = index;
     }
+    
 
     @Override
     public boolean isHovered(double mouseX, double mouseY) {
-        double width = buttonWidth * 3;
-        double height = buttonHeight * 3;
+        double width = buttonWidth;
+        double height = buttonHeight;
         double left = x - (buttonWidth / 2);
         double top = y;
         return mouseX >= left && mouseX <= left + width &&
            mouseY >= top && mouseY <= top + height;
     }
+
 }
