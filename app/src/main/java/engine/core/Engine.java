@@ -31,9 +31,7 @@ public class Engine extends Application {
         System.out.println("Game starting...");
         Game game = new Game(stage, width, height);
         game.changeState(new MenuState(game)); // <-- create state first
-        startGameThread(game);    // <-- then start loop
-        stage.show();
-        
+        startGameThread(game);    // <-- then start loop  
     }
 
 

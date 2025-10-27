@@ -6,10 +6,8 @@ import java.util.List;
 
 import engine.core.Game;
 import engine.map.TiledMap;
-import engine.render.Camera;
 import game.entities.Entity;
 import game.entities.actors.Player;
-import game.entities.decorations.Tree;
 import game.states.PlayState;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -20,7 +18,7 @@ public class World extends PlayState {
 
     private final List<Entity> entities = new ArrayList<>();
     private final Player player;
-    private final Camera camera;
+    //private final Camera camera;
 
     public World(Game game) {
         super(game);
@@ -28,7 +26,7 @@ public class World extends PlayState {
         this.canvasHeight = game.getCanvas().getHeight();
         System.out.println("World initialized.");
 
-        camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
+        //camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
         player = new Player(game, game.getOriginalTileSize() * 2, game.getOriginalTileSize() * 2);
         
         entities.add(player);
@@ -36,16 +34,14 @@ public class World extends PlayState {
 
     @Override
     public void update(double delta) {
-        // Example: handle animations, hover states, etc.
-        // If nothing dynamic yet, leave empty.
         player.update(delta);
-        camera.follow(player, game.getWorldWidth(), game.getWorldHeight());
+        //camera.follow(player, game.getWorldWidth(), game.getWorldHeight());
     }
 
     @Override
     public void render(GraphicsContext g) {
         g.save();
-        camera.apply(g);
+        //camera.apply(g);
         for (Entity e : entities) {
             e.render(g);
         }
@@ -64,7 +60,7 @@ public class World extends PlayState {
             if ("objectgroup".equals(layer.type)) {
                 for (TiledMap.MapObject obj : layer.objects) {
                     switch (obj.type) {
-                        case "Tree" -> addEntity(new Tree(game, obj.x, obj.y));
+                        //case "Tree" -> addEntity(new Tree(game, obj.x, obj.y));
                    }
                 }
             }

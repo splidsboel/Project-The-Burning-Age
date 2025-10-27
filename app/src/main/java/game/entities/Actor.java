@@ -22,9 +22,4 @@ public abstract class Actor extends Entity {
         y += dy * speed * delta;
     }
 
-    public void setDirection(double dx, double dy) {
-        this.dx = dx;
-        this.dy = dy;
-    }
-
 }

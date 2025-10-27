@@ -31,6 +31,7 @@ public class Game {
         this.canvas = new Canvas(width, height);
         this.scene = new Scene(new javafx.scene.layout.Pane(canvas));
         stage.setScene(scene);
+        stage.show();
         System.out.println("Game initialized.");
 
         initSystems();
@@ -80,6 +81,8 @@ public class Game {
         canvas.setOnMouseReleased(mouseInput::onMouseReleased);
         canvas.setOnKeyPressed(keyboardInput::onKeyPressed);
         canvas.setOnKeyReleased(keyboardInput::onKeyReleased);
+        canvas.setFocusTraversable(true);
+        canvas.requestFocus(); // ensure it receives key events
     }
 
 
