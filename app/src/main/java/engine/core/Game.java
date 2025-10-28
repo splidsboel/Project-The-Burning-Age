@@ -4,26 +4,27 @@ import engine.input.KeyboardInput;
 import engine.input.MouseInput;
 import engine.map.TiledMap;
 import engine.map.TiledMapLoader;
-//import engine.map.TiledRenderer;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
 public class Game {
-    //Core Systems
+    // Core systems
     private MouseInput mouseInput;
     private KeyboardInput keyboardInput;
     private TiledMap tiledMap;
     private TiledMapLoader tiledLoader;
     private GraphicsContext g;
 
-    //World Settings
-    private double originalTileSize;
-    private double worldWidth;
-    private double worldHeight;
-
-
+    // World + display settings
+    private final double originalTileSize = 32;
+    private double tileSize;      // scaled size in screen pixels
+    private double deviceScale;   // screen → logical scale
+    private double virtualWidth = 24 * originalTileSize;;
+    private double virtualHeight = 13 * originalTileSize;;
+    private double screenWidth;
+    private double screenHeight;
 
     private final Stage stage;
     private final Canvas canvas;
@@ -32,53 +33,41 @@ public class Game {
     private boolean running = true;
 
     public Game(Stage stage, double width, double height) {
-        //Game setup
         this.stage = stage;
-        this.canvas = new Canvas(width, height);
+        this.screenWidth = width;
+        this.screenHeight = height;
+
+        computeDeviceScale(virtualWidth, virtualHeight);
+        initTileScaling();
+
+        this.canvas = new Canvas(screenWidth, screenHeight);
         this.scene = new Scene(new javafx.scene.layout.Pane(canvas));
         this.g = canvas.getGraphicsContext2D();
         stage.setScene(scene);
         stage.show();
-        System.out.println("Game initialized.");
+
+        System.out.println("Game initialized at " + screenWidth + "x" + screenHeight + " (scale=" + String.format("%.2f", deviceScale) + "). Tilesize: " + tileSize);
 
         initSystems();
-
     }
 
+    // --- display scaling ---
+    private void computeDeviceScale(double targetVirtualWidth, double targetVirtualHeight) {
+        double scaleX = screenWidth / targetVirtualWidth;
+        double scaleY = screenHeight / targetVirtualHeight;
+        deviceScale = Math.min(scaleX, scaleY);
+    }
+
+    private void initTileScaling() {
+        // scale tile to match display scaling; adjustable multiplier if you want larger sprites
+        tileSize = originalTileSize * deviceScale;
+    }
+
+    // --- core setup ---
     private void initSystems() {
-        initInputs(); //Keyboard and mouse
-        initWorldSettings(); //Tile size, 
+        initInputs();
         tiledLoader = new TiledMapLoader();
     }
-
-    private void initWorldSettings() {
-        originalTileSize = 32;
-        worldWidth = originalTileSize * 25;
-        worldHeight = originalTileSize * 25;
-    }
-
-    public void update(double delta) {
-        if (currentState != null) {
-            currentState.update(delta);
-        }    
-    }
-
-    public void render(GraphicsContext gc) {
-        if (currentState != null) {
-            currentState.render(gc);
-        }        
-    }
-
-    public void changeState(GameState newState) {
-        if (currentState != null) {
-            currentState.unload();
-        }
-
-        currentState = newState;
-        currentState.load();
-    }
-
-
 
     private void initInputs() {
         mouseInput = new MouseInput();
@@ -86,70 +75,52 @@ public class Game {
         canvas.setOnMouseMoved(mouseInput::onMouseMoved);
         canvas.setOnMousePressed(mouseInput::onMousePressed);
         canvas.setOnMouseReleased(mouseInput::onMouseReleased);
+        canvas.setOnScroll(mouseInput::onScroll);
         canvas.setOnKeyPressed(keyboardInput::onKeyPressed);
         canvas.setOnKeyReleased(keyboardInput::onKeyReleased);
         canvas.setFocusTraversable(true);
-        canvas.requestFocus(); // ensure it receives key events
+        canvas.requestFocus();
     }
 
-
-    //GETTERS   
-    
-    public double getOriginalTileSize() {
-        return originalTileSize;
-    }
-    
-    public TiledMap getTiledMap() {
-        return tiledMap;
+    // --- loop interaction ---
+    public void update(double delta) {
+        if (currentState != null) currentState.update(delta);
     }
 
-    public double getWorldWidth() {
-        return worldWidth;
+    public void render(GraphicsContext gc) {
+        if (currentState != null) currentState.render(gc);
     }
 
-    public double getWorldHeight() {
-        return worldHeight;
+    public void changeState(GameState newState) {
+        if (currentState != null) currentState.unload();
+        currentState = newState;
+        currentState.load();
     }
 
-    public Canvas getCanvas() {
-        return canvas;
+    // --- setters ---
+    public void setTiledMap(TiledMap map) {
+        this.tiledMap = map;
     }
 
-    public Scene getScene() {
-        return scene;
-    }
+    // --- getters ---
+    public double getTileSize() { return tileSize; }
+    public double getDeviceScale() { return deviceScale; }
+    public double getVirtualWidth() { return virtualWidth; }
+    public double getVirtualHeight() { return virtualHeight; }
+    public double getScreenWidth() { return screenWidth; }
+    public double getScreenHeight() { return screenHeight; }
+    public double getOriginalTileSize() { return originalTileSize; }
 
-    public GameState getCurrentState() {
-        return currentState;
-    }
+    public Canvas getCanvas() { return canvas; }
+    public Scene getScene() { return scene; }
+    public GraphicsContext getGraphicsContext() { return g; }
+    public Stage getStage() { return stage; }
 
-    public GraphicsContext getGraphicsContext() {
-        return canvas.getGraphicsContext2D();
-    }
+    public boolean isRunning() { return running; }
+    public void stopRunning() { running = false; }
 
-    public Stage getStage() {
-        return stage;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void stopRunning() {
-        running = false;
-    }
-
-    public MouseInput getMouseInput() {
-        return mouseInput;
-    }
-
-    public KeyboardInput getKeyboardInput() {
-        return keyboardInput;
-    }
-
-    public TiledMapLoader getTiledLoader() {
-        return tiledLoader;
-    }
-
-    
+    public MouseInput getMouseInput() { return mouseInput; }
+    public KeyboardInput getKeyboardInput() { return keyboardInput; }
+    public TiledMapLoader getTiledLoader() { return tiledLoader; }
+    public TiledMap getTiledMap() { return tiledMap; }
 }

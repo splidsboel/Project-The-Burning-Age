@@ -1,12 +1,14 @@
 package engine.input;
 
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
 public class MouseInput {
     private double mouseX;
     private double mouseY;
     private boolean mousePressed;
     private boolean mouseReleased;
+    private double scrollDeltaY; // scroll wheel delta
 
     public void onMouseMoved(MouseEvent e) {
         mouseX = e.getX();
@@ -21,6 +23,16 @@ public class MouseInput {
     public void onMouseReleased(MouseEvent e) {
         mouseReleased = true;
         mousePressed = false;
+    }
+
+    public void onScroll(ScrollEvent e) {
+        scrollDeltaY = e.getDeltaY();
+    }
+
+    public double consumeScrollDeltaY() {
+        double val = scrollDeltaY;
+        scrollDeltaY = 0;
+        return val;
     }
 
     public boolean consumePressed() {

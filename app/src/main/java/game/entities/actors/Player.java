@@ -24,13 +24,13 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     private boolean moving;
     private double aniTimer;
     private int aniIndex;
-    private final double aniSpeed = 0.1; // seconds per frame 
+    private final double aniSpeed = 0.2; // seconds per frame 
     private final int runDown = 0, runUp = 1, runLeft = 2, runRight = 3;
     private int playerAction = runLeft;
 
 
     public Player(Game game, double x, double y) {
-        super(game, x, y, game.getOriginalTileSize(), game.getOriginalTileSize(), 150);
+        super(game, game.getTileSize()*15, game.getTileSize()*15, game.getTileSize(), game.getTileSize(), 500);
         this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
         this.pixels = 32;
         loadAnimations();
@@ -94,9 +94,10 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
             moving = true;
         }
 
-        // Clamp to world
-        double maxX = game.getWorldWidth() - width;
-        double maxY = game.getWorldHeight() - height;
+        // Clamp player inside world bounds (in pixels)
+        double maxX = (game.getTiledMap().getMapWidth()  * game.getTileSize()) - width;
+        double maxY = (game.getTiledMap().getMapHeight() * game.getTileSize()) - height;
+
         x = Math.max(0, Math.min(x, maxX));
         y = Math.max(0, Math.min(y, maxY));
     }
@@ -106,7 +107,10 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
                 aniTimer += delta;
                 if (aniTimer >= aniSpeed) {
                     aniTimer = 0;
-                    aniIndex = (aniIndex + 1) % animations.length;
+                    aniIndex++;
+                    if (aniIndex >= animations.length) {
+                    aniIndex = 1;
+                    }
                 }
         } else {
             aniIndex = 0;

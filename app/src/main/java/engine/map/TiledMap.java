@@ -62,19 +62,53 @@ public class TiledMap {
     private Entity createEntity(MapObject mo, Image img, TiledMapLoader.LoadedMapData data) {
         if (mo == null || img == null) return null;
 
-        double worldX = mo.x;
-        double worldY = mo.y - mo.h;
-        double width = mo.w;
-        double height = mo.h;
+            // --- scale world coordinates based on actual screen tile size ---
+            double scale = game.getTileSize() / tileWidth;
+
+            double worldX = mo.x * scale;
+            double worldY = (mo.y - mo.h) * scale;
+            double width  = mo.w * scale;
+            double height = mo.h * scale;
 
         if (isTreeWide(mo.gid)) {
             List<Image> frames = data.animatedTiles.get(mo.gid);
-            List<Integer> durs = data.animatedDurations.get(mo.gid);
+            List<Integer> durs  = data.animatedDurations.get(mo.gid);
+
+            // fallback for static tiles
+            if (frames == null || frames.isEmpty()) {
+                frames = List.of(img);
+                durs   = List.of(Integer.MAX_VALUE);
+            }
+
             return new TreeWide(game, frames, durs, worldX, worldY, width, height);
-            
+        }
+        if (isTreeTall(mo.gid)) {
+            List<Image> frames = data.animatedTiles.get(mo.gid);
+            List<Integer> durs  = data.animatedDurations.get(mo.gid);
+
+            // fallback for static tiles
+            if (frames == null || frames.isEmpty()) {
+                frames = List.of(img);
+                durs   = List.of(Integer.MAX_VALUE);
+            }
+
+            return new TreeWide(game, frames, durs, worldX, worldY, width, height);
+        }
+        if (isRock(mo.gid)) {
+            List<Image> frames = data.animatedTiles.get(mo.gid);
+            List<Integer> durs  = data.animatedDurations.get(mo.gid);
+
+            // fallback for static tiles
+            if (frames == null || frames.isEmpty()) {
+                frames = List.of(img);
+                durs   = List.of(Integer.MAX_VALUE);
+            }
+
+            return new TreeWide(game, frames, durs, worldX, worldY, width, height);
         }
         return null;
     }
+
 
 
     // Replace with your actual GID mapping logic

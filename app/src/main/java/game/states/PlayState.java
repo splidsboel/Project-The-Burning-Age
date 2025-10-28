@@ -45,5 +45,10 @@ public class PlayState extends GameState {
         if (game.getKeyboardInput().isKeyPressed(KeyCode.ESCAPE)) {
             game.changeState(new MenuState(game));
         }
+        double scroll = game.getMouseInput().consumeScrollDeltaY();
+        if (scroll != 0) {
+            if (scroll > 0) world.getCamera().zoomIn(0.1);
+            else world.getCamera().zoomOut(0.1);
+        }
     }
 }

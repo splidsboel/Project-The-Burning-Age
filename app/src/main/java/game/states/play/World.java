@@ -27,10 +27,12 @@ public class World extends PlayState {
         // Load map
         TiledMapLoader.LoadedMapData data = game.getTiledLoader().load(path);
         map = new TiledMap(game, data);
+        game.setTiledMap(map); // <-- make map accessible to other systems (Player)
+
 
         // Camera and player
-        camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
         player = new Player(game, game.getOriginalTileSize(), game.getOriginalTileSize());
+        camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
 
         // Load entities from map
         entities.addAll(map.getEntities());
@@ -46,23 +48,30 @@ public class World extends PlayState {
 
     @Override
     public void update(double delta) {
+
+        
         for (Entity e : entities) {
             e.update(delta);
         }
-        // camera.follow(player, map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight());
+        camera.update(
+            player.getX(),
+            player.getY(),
+            game.getTileSize(),map.getMapWidth(),(map.getMapHeight())
+        );
     }
 
     @Override
     public void render(GraphicsContext g) {
         g.save();
-        // camera.apply(g); // enable if camera scrolling is implemented
+        camera.apply(g); // enable if camera scrolling is implemented
+        
 
         // Draw tiles
         for (int y = 0; y < map.getMapHeight(); y++) {
             for (int x = 0; x < map.getMapWidth(); x++) {
                 Tile tile = map.getTile(x, y);
                 if (tile != null)
-                    tile.render(g, x * map.getTileWidth(), y * map.getTileHeight(), game.getOriginalTileSize());
+                    tile.render(g, x * game.getTileSize(), y * game.getTileSize(), game.getTileSize());
             }
         }
 
@@ -77,4 +86,14 @@ public class World extends PlayState {
     public void addEntity(Entity entity) {
         entities.add(entity);
     }
+
+    //GETTERS
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
 }

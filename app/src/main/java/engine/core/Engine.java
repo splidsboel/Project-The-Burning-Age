@@ -18,18 +18,18 @@ public class Engine extends Application {
     @Override
     public void start(Stage stage) {
         Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-        double width = screenBounds.getWidth();
-        double height = screenBounds.getHeight();
+        double screenWidth = screenBounds.getWidth();
+        double screenHeight = screenBounds.getHeight();
 
         Pane root = new Pane();
-        Scene scene = new Scene(root, width, height);
+        Scene scene = new Scene(root, screenWidth, screenHeight);
 
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreen(true);
         stage.setScene(scene);
 
         System.out.println("Game starting...");
-        Game game = new Game(stage, width, height);
+        Game game = new Game(stage, screenWidth, screenHeight);
         game.changeState(new MenuState(game)); // <-- create state first
         startGameThread(game);    // <-- then start loop  
     }
@@ -51,13 +51,13 @@ public class Engine extends Application {
                 if (delta > 0.1) delta = 0.1;
                 lastTime = now;
 
-                game.update(delta);
+                game.update(delta); // UPDATE
 
                 if (renderPending.compareAndSet(false, true)) {
                     final int currentFps = fps;
                     Platform.runLater(() -> {
                         GraphicsContext gc = game.getGraphicsContext();
-                        game.render(gc);
+                        game.render(gc); // RENDER
                         gc.setFill(javafx.scene.paint.Color.WHITE);
                         gc.fillText("FPS: " + currentFps, 20, 30);
                         renderPending.set(false);

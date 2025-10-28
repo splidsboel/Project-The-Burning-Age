@@ -9,4 +9,20 @@
    <frame tileid="3" duration="1000"/>
   </animation>
  </tile>
+ <tile id="1">
+  <animation>
+   <frame tileid="1" duration="990"/>
+   <frame tileid="2" duration="980"/>
+   <frame tileid="3" duration="970"/>
+   <frame tileid="0" duration="990"/>
+  </animation>
+ </tile>
+ <tile id="2">
+  <animation>
+   <frame tileid="0" duration="960"/>
+   <frame tileid="1" duration="950"/>
+   <frame tileid="2" duration="940"/>
+   <frame tileid="3" duration="950"/>
+  </animation>
+ </tile>
 </tileset>
