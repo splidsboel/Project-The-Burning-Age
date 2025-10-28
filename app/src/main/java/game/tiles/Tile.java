@@ -1,14 +1,16 @@
 package game.tiles;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
-public class Tile {
-    private final int id;
-    private final String name;
+public abstract class Tile {
+    protected Image texture;
 
-    public Tile(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public Tile(Image texture) {
+        this.texture = texture;
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
+    public void render(GraphicsContext gc, double x, double y, double size) {
+        gc.drawImage(texture, x, y, size, size);
+    }
+    
 }
