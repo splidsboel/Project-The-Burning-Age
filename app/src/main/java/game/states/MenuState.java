@@ -2,7 +2,7 @@ package game.states;
 
 import engine.core.Game;
 import engine.core.GameState;
-import game.states.ui.menu.MainMenu;
+import game.states.menu.MainMenu;
 import javafx.scene.canvas.GraphicsContext;
 
 public class MenuState extends GameState {

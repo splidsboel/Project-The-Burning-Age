@@ -1,8 +1,9 @@
 package engine.map;
 
-import com.google.gson.Gson;
 import java.io.FileReader;
 import java.io.IOException;
+
+import com.google.gson.Gson;
 
 public class TiledMap {
     public int width;
@@ -27,6 +28,7 @@ public class TiledMap {
     }
 
     public static class MapObject {
+        public int gid;
         public String name;
         public String type;
         public double x;

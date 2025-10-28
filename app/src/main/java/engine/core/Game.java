@@ -2,6 +2,8 @@ package engine.core;
 
 import engine.input.KeyboardInput;
 import engine.input.MouseInput;
+import engine.map.TiledMap;
+import engine.map.TiledRenderer;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -11,6 +13,8 @@ public class Game {
     //Core Systems
     private MouseInput mouseInput;
     private KeyboardInput keyboardInput;
+    private TiledMap tiledMap;
+    private TiledRenderer tiledRenderer;
 
     //World Settings
     private double originalTileSize;
@@ -41,6 +45,8 @@ public class Game {
     private void initSystems() {
         initInputs(); //Keyboard and mouse
         initWorldSettings(); //Tile size, 
+        //tiledMap = new TiledMap();
+        //tiledRenderer = new TiledRenderer(tiledMap);
         
     }
 
@@ -86,12 +92,20 @@ public class Game {
     }
 
 
-    //GETTERS
-
+    //GETTERS   
+    
     public double getOriginalTileSize() {
         return originalTileSize;
     }
     
+    public TiledMap getTiledMap() {
+        return tiledMap;
+    }
+
+    public TiledRenderer getTiledRenderer() {
+        return tiledRenderer;
+    }
+
     public double getWorldWidth() {
         return worldWidth;
     }

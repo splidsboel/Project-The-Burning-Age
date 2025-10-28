@@ -1,4 +1,4 @@
-package game.states.ui.menu;
+package game.states.menu.ui;
 
 import engine.input.events.Hoverable;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,14 +12,28 @@ public class Button implements Hoverable {
     private static final int buttonWidth = 33 * 3;
     private static final int buttonHeight = 16 * 3;
 
-    private final Image[] frames;
+    private Image spriteSheet;
+    private Image[] frames;
+    private final int frameCount;
+    private final int rowIndex;
     private int currentFrame;
     private final double x, y;
 
     public Button(Image spriteSheet, int rowIndex, int frameCount, double x, double y) {
         this.x = x;
         this.y = y;
+        this.spriteSheet = spriteSheet;
+        this.rowIndex = rowIndex;
+        this.frameCount = frameCount;
         
+        loadAnimations();
+    }
+
+    public void draw(GraphicsContext g) {
+        g.drawImage(frames[currentFrame], x - (buttonWidth / 2), y, buttonWidth, buttonHeight);
+    }
+
+    private void loadAnimations() {
         frames = new Image[frameCount];
         PixelReader reader = spriteSheet.getPixelReader();
         for (int i = 0; i < frameCount; i++) { 
@@ -29,10 +43,6 @@ public class Button implements Hoverable {
                     pixelWidth,
                     pixelHeight);
         }
-    }
-
-    public void draw(GraphicsContext g) {
-        g.drawImage(frames[currentFrame], x - (buttonWidth / 2), y, buttonWidth, buttonHeight);
     }
 
     public void setFrame(int index) {
