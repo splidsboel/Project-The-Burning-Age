@@ -41,6 +41,9 @@ public class Engine extends Application {
 
         Thread gameThread = new Thread(() -> {
             long lastTime = System.nanoTime();
+            long fpsTimer = System.currentTimeMillis();
+            int frames = 0;
+            int fps = 0;
 
             while (game.isRunning()) {
                 long now = System.nanoTime();
@@ -49,21 +52,35 @@ public class Engine extends Application {
                 lastTime = now;
 
                 game.update(delta);
-                GraphicsContext gc = game.getGraphicsContext();
+
                 if (renderPending.compareAndSet(false, true)) {
+                    final int currentFps = fps;
                     Platform.runLater(() -> {
+                        GraphicsContext gc = game.getGraphicsContext();
                         game.render(gc);
+                        gc.setFill(javafx.scene.paint.Color.WHITE);
+                        gc.fillText("FPS: " + currentFps, 20, 30);
                         renderPending.set(false);
                     });
+                    frames++;
                 }
 
-                Thread.onSpinWait();
+                if (System.currentTimeMillis() - fpsTimer >= 1000) {
+                    fps = frames;
+                    frames = 0;
+                    fpsTimer += 1000;
+                }
+
+                try {
+                    Thread.sleep(2); // small delay to prevent busy-wait
+                } catch (InterruptedException ignored) {}
             }
         }, "GameThread");
 
         gameThread.setDaemon(true);
         gameThread.start();
     }
+
 
     public static void main(String[] args) {
         launch(args);
