@@ -3,14 +3,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public abstract class Tile {
-    protected Image texture;
+    protected Image image;
 
-    public Tile(Image texture) {
-        this.texture = texture;
+    public Tile(Image image) {
+        this.image = image;
     }
 
     public void render(GraphicsContext gc, double x, double y, double size) {
-        gc.drawImage(texture, x, y, size, size);
+        gc.drawImage(image, x, y, size, size);
     }
     
 }

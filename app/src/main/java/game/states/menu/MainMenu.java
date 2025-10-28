@@ -36,6 +36,7 @@ public class MainMenu extends MenuState{
     }
 
     // Called from MenuState.update()
+    @Override
     public void update(double delta) {
         // Example: handle animations, hover states, etc.
         // If nothing dynamic yet, leave empty.
@@ -43,13 +44,15 @@ public class MainMenu extends MenuState{
     }
 
     // Called from MenuState.render(gc)
+    @Override
     public void render(GraphicsContext g) {
         g.setImageSmoothing(false);
         g.clearRect(0, 0, canvasWidth, canvasHeight);
         drawUI(g);
     }
 
-    private void load() {
+    @Override
+    public void load() {
         play = new Button(buttonSpriteSheet, 0, 3, (int)(canvasWidth / 2), 700);     // x, y example positions
         options = new Button(buttonSpriteSheet, 1, 3, (int)(canvasWidth / 2), 800);
         quit = new Button(buttonSpriteSheet, 2, 3,(int)(canvasWidth / 2), 900);

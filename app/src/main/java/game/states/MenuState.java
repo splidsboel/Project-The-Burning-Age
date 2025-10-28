@@ -24,11 +24,11 @@ public class MenuState extends GameState {
     }
 
     @Override
-    public void onEnter() {
+    public void load() {
     state = new MainMenu(game); 
     }
 
     @Override
-    public void onExit() {
+    public void unload() {
     }
 }

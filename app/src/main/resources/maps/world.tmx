@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="35">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="37">
  <editorsettings>
   <export target="world.tmj" format="json"/>
  </editorsettings>
@@ -40,11 +40,11 @@
  </layer>
  <objectgroup id="2" name="Object Layer 1">
   <object id="18" name="treeWide" gid="60" x="241.333" y="445.333" width="64" height="64"/>
-  <object id="19" name="treeWide" gid="60" x="263.333" y="386.667" width="64" height="64"/>
   <object id="20" name="treeWide" gid="60" x="208" y="404.667" width="64" height="64"/>
   <object id="25" name="treeTall" gid="62" x="489.333" y="290" width="64" height="64"/>
   <object id="26" name="treeTall" gid="62" x="464" y="303.333" width="64" height="64"/>
-  <object id="28" name="treeTall" gid="62" x="505.333" y="310.667" width="64" height="64"/>
   <object id="29" name="rockMedium" gid="65" x="420" y="413" width="32" height="32"/>
+  <object id="35" name="treeWide" gid="63" x="508.667" y="322.667" width="64" height="64"/>
+  <object id="36" name="treeWide" gid="57" x="259.333" y="387.333" width="64" height="64"/>
  </objectgroup>
 </map>

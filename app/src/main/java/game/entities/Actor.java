@@ -1,6 +1,7 @@
 package game.entities;
 
 import engine.core.Game;
+import javafx.scene.canvas.GraphicsContext;
 
 public abstract class Actor extends Entity {
     protected double speed;
@@ -19,6 +20,11 @@ public abstract class Actor extends Entity {
     @Override
     public void update(double delta) {
 
+    }
+
+    @Override
+    public void render(GraphicsContext g) {
+        
     }
 
 }

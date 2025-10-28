@@ -3,6 +3,7 @@ package engine.core;
 import engine.input.KeyboardInput;
 import engine.input.MouseInput;
 import engine.map.TiledMap;
+import engine.map.TiledMapLoader;
 //import engine.map.TiledRenderer;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -14,7 +15,8 @@ public class Game {
     private MouseInput mouseInput;
     private KeyboardInput keyboardInput;
     private TiledMap tiledMap;
-    //private TiledRenderer tiledRenderer;
+    private TiledMapLoader tiledLoader;
+    private GraphicsContext g;
 
     //World Settings
     private double originalTileSize;
@@ -34,6 +36,7 @@ public class Game {
         this.stage = stage;
         this.canvas = new Canvas(width, height);
         this.scene = new Scene(new javafx.scene.layout.Pane(canvas));
+        this.g = canvas.getGraphicsContext2D();
         stage.setScene(scene);
         stage.show();
         System.out.println("Game initialized.");
@@ -45,9 +48,7 @@ public class Game {
     private void initSystems() {
         initInputs(); //Keyboard and mouse
         initWorldSettings(); //Tile size, 
-        //tiledMap = new TiledMap();
-        //tiledRenderer = new TiledRenderer(tiledMap);
-        
+        tiledLoader = new TiledMapLoader();
     }
 
     private void initWorldSettings() {
@@ -70,11 +71,11 @@ public class Game {
 
     public void changeState(GameState newState) {
         if (currentState != null) {
-            currentState.onExit();
+            currentState.unload();
         }
 
         currentState = newState;
-        currentState.onEnter();
+        currentState.load();
     }
 
 
@@ -101,10 +102,6 @@ public class Game {
     public TiledMap getTiledMap() {
         return tiledMap;
     }
-
-    // public TiledRenderer getTiledRenderer() {
-    //     return tiledRenderer;
-    // }
 
     public double getWorldWidth() {
         return worldWidth;
@@ -148,6 +145,10 @@ public class Game {
 
     public KeyboardInput getKeyboardInput() {
         return keyboardInput;
+    }
+
+    public TiledMapLoader getTiledLoader() {
+        return tiledLoader;
     }
 
     

@@ -14,76 +14,66 @@ import game.tiles.Tile;
 import javafx.scene.canvas.GraphicsContext;
 
 public class World extends PlayState {
-    //Map
-    private final Tile[][] tiles;
-    private TiledMap map;
-    private final int mapWidth, mapHeight; //tileSize;
-
-    //Screen
-    private final double canvasWidth;
-    private final double canvasHeight;
-
-    //Entites
     private final List<Entity> entities = new ArrayList<>();
     private final Player player;
     private final Camera camera;
+    private final TiledMap map;
+
+    private static final String path = "/maps/world.tmj";
 
     public World(Game game) {
         super(game);
-        this.canvasWidth = game.getCanvas().getWidth();
-        this.canvasHeight = game.getCanvas().getHeight();
 
-        // Load map and renderer
-        TiledMapLoader loader = new TiledMapLoader();
-        TiledMapLoader.LoadedMapData data = loader.load("/maps/world.tmj");
-        map = new TiledMap(data);
-        this.mapWidth= map.getWidth();
-        this.mapHeight = map.getHeight();
-        //this.tileSize = map.getTileSize();
-        tiles = new Tile[mapHeight][mapWidth];
+        // Load map
+        TiledMapLoader.LoadedMapData data = game.getTiledLoader().load(path);
+        map = new TiledMap(game, data);
 
-
-        System.out.println("World initialized.");
-
-        
-    
-
-        // Create player and camera
+        // Camera and player
         camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
         player = new Player(game, game.getOriginalTileSize(), game.getOriginalTileSize());
+
+        // Load entities from map
+        entities.addAll(map.getEntities());
         entities.add(player);
+
+        System.out.println("World initialized with " + entities.size() + " entities.");
+    }
+
+    @Override
+    public void load() {
+        // Reserved for extra asset loading if needed later
     }
 
     @Override
     public void update(double delta) {
-        player.update(delta);
-        //camera.follow(player, game.getWorldWidth(), game.getWorldHeight());
-    }
-
-@Override
-public void render(GraphicsContext g) {
-    g.save();
-
-    // if you want camera scrolling uncomment:
-    //camera.apply(g);
-
-    // In render:
-    for (int y = 0; y < map.getHeight(); y++) {
-        for (int x = 0; x < map.getWidth(); x++) {
-            Tile tile = map.getTile(x, y);
-            if (tile != null)
-                tile.render(g, x * map.getTileWidth(), y * map.getTileHeight(), game.getOriginalTileSize());
+        for (Entity e : entities) {
+            e.update(delta);
         }
+        // camera.follow(player, map.getWidth() * map.getTileWidth(), map.getHeight() * map.getTileHeight());
     }
 
-    // 3. draw entities (player etc.) above world
-    for (Entity e : entities) {
-        e.render(g);
+    @Override
+    public void render(GraphicsContext g) {
+        g.save();
+        // camera.apply(g); // enable if camera scrolling is implemented
+
+        // Draw tiles
+        for (int y = 0; y < map.getMapHeight(); y++) {
+            for (int x = 0; x < map.getMapWidth(); x++) {
+                Tile tile = map.getTile(x, y);
+                if (tile != null)
+                    tile.render(g, x * map.getTileWidth(), y * map.getTileHeight(), game.getOriginalTileSize());
+            }
+        }
+
+        // Draw entities
+        for (Entity e : entities) {
+            e.render(g);
+        }
+
+        g.restore();
     }
 
-    g.restore();
-}
-    
     public void addEntity(Entity entity) {
         entities.add(entity);
     }

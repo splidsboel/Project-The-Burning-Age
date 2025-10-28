@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 
 public class PlayState extends GameState {
-    private World state;
+    private World world;
 
     public PlayState(Game game) {
         super(game);
@@ -15,26 +15,30 @@ public class PlayState extends GameState {
     }
 
     @Override
-    public void update(double delta) {
-        state.update(delta);
-        handleInput();
+    public void load() {
+        // Load the world once when this state starts
+        world = new World(game);
     }
 
     @Override
-    public void render(GraphicsContext gc) {
-        gc.clearRect(0, 0, game.getCanvas().getWidth(), game.getCanvas().getHeight()); // clear canvas on state initialization
-        if (state != null) {
-            state.render(gc);
+    public void update(double delta) {
+        handleInput();
+        if (world != null) {
+            world.update(delta);
         }
     }
 
     @Override
-    public void onEnter() {
-        state = new World(game); 
+    public void render(GraphicsContext gc) {
+        gc.clearRect(0, 0, game.getCanvas().getWidth(), game.getCanvas().getHeight());
+        if (world != null) {
+            world.render(gc);
+        }
     }
 
     @Override
-    public void onExit() {
+    public void unload() {
+        world = null;
     }
 
     private void handleInput() {

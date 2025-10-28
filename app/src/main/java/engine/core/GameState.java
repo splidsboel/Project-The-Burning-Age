@@ -10,8 +10,9 @@ public abstract class GameState {
 
     }
 
-    public abstract void onEnter();
-    public abstract void onExit();
+    public abstract void load();
+    public abstract void unload();
     public abstract void update(double delta);
     public abstract void render(GraphicsContext gc);
+
 }
