@@ -6,6 +6,7 @@ import java.util.List;
 
 import engine.core.Game;
 import engine.map.TiledMap;
+import engine.render.Camera;
 import game.entities.Entity;
 import game.entities.actors.Player;
 import game.states.PlayState;
@@ -18,7 +19,7 @@ public class World extends PlayState {
 
     private final List<Entity> entities = new ArrayList<>();
     private final Player player;
-    //private final Camera camera;
+    private final Camera camera;
 
     public World(Game game) {
         super(game);
@@ -26,7 +27,7 @@ public class World extends PlayState {
         this.canvasHeight = game.getCanvas().getHeight();
         System.out.println("World initialized.");
 
-        //camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
+        camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
         player = new Player(game, game.getOriginalTileSize() * 2, game.getOriginalTileSize() * 2);
         
         entities.add(player);
@@ -35,13 +36,13 @@ public class World extends PlayState {
     @Override
     public void update(double delta) {
         player.update(delta);
-        //camera.follow(player, game.getWorldWidth(), game.getWorldHeight());
+        camera.follow(player, game.getWorldWidth(), game.getWorldHeight());
     }
 
     @Override
     public void render(GraphicsContext g) {
         g.save();
-        //camera.apply(g);
+        camera.apply(g);
         for (Entity e : entities) {
             e.render(g);
         }

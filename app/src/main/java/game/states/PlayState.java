@@ -4,6 +4,7 @@ import engine.core.Game;
 import engine.core.GameState;
 import game.states.play.World;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 
 public class PlayState extends GameState {
     private World state;
@@ -16,8 +17,7 @@ public class PlayState extends GameState {
     @Override
     public void update(double delta) {
         state.update(delta);
-
-        move();
+        handleInput();
     }
 
     @Override
@@ -37,20 +37,9 @@ public class PlayState extends GameState {
     public void onExit() {
     }
 
-    protected void move() {
-        // KeyboardInput keys = game.getKeyboardInput();
-        // if (keys.isKeyPressed(KeyCode.W)) {
-        //     player.moveUp(delta);
-        // }
-        // if (keys.isKeyPressed(KeyCode.S)) {
-        //     player.moveDown(delta);
-        // }
-        // if (keys.isKeyPressed(KeyCode.A)) {
-        //     player.moveLeft(delta);
-        // }
-        // if (keys.isKeyPressed(KeyCode.D)) {
-        //     player.moveRight(delta);
-        // }
-
+    private void handleInput() {
+        if (game.getKeyboardInput().isKeyPressed(KeyCode.ESCAPE)) {
+            game.changeState(new MenuState(game));
+        }
     }
 }

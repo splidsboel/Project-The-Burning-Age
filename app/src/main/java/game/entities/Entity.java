@@ -5,11 +5,18 @@ import game.entities.behavior.Renderable;
 import game.entities.behavior.Updateable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 public abstract class Entity implements Renderable, Updateable {
     protected Game game;
     protected double x, y;
     protected double width, height;
+
+    //Animation
+
+    private double aniTimer;
+    private int aniIndex;
+    private double aniSpeed = 0.1; // seconds per frame (~7.7 FPS)
 
     public Entity (Game game, double x, double y, double width, double height) {
         this.game = game;
@@ -25,8 +32,6 @@ public abstract class Entity implements Renderable, Updateable {
     @Override
     public void render(GraphicsContext g) { }
 
-
-
     public double getX() { return x; }
     public double getY() { return y; }
     public double getWidth() { return width; }
@@ -40,4 +45,21 @@ public abstract class Entity implements Renderable, Updateable {
         this.x = x;
         this.y = y;
     }
+
+    private void updateAnimation(double delta, Image[] animations) {
+        aniTimer += delta;
+        if (aniTimer >= aniSpeed) {
+            aniTimer = 0;
+            aniIndex = (aniIndex + 1) % animations.length;
+        }
+    }
+
+    private void updateAnimation(double delta, Image[][] animations) {
+        aniTimer += delta;
+        if (aniTimer >= aniSpeed) {
+            aniTimer = 0;
+            aniIndex = (aniIndex + 1) % animations[0].length;
+        }
+    }
+
 }

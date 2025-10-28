@@ -13,7 +13,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 
 public class Player extends Actor implements Controllable, Moveable, Damageable {
-    private Image spriteSheet;
+    private final Image spriteSheet;
     private Image[][] animations;
     private int pixels; 
     private int playerWidth;
@@ -24,12 +24,9 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     private boolean moving;
     private double aniTimer;
     private int aniIndex;
-    private double aniSpeed = 0.1; // seconds per frame (~7.7 FPS)
-    private int runDown = 0, runUp = 1, runLeft = 2, runRight = 3;
+    private final double aniSpeed = 0.1; // seconds per frame 
+    private final int runDown = 0, runUp = 1, runLeft = 2, runRight = 3;
     private int playerAction = runLeft;
-
-
-
 
 
     public Player(Game game, double x, double y) {
@@ -44,6 +41,7 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
         handleInput();
         move(delta);
         updateAnimation(delta);
+        setAnimationDirection();
     }
 
     @Override
@@ -105,7 +103,6 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
 
     private void updateAnimation(double delta) {
         if (moving) {
-            setAnimationDirection();
                 aniTimer += delta;
                 if (aniTimer >= aniSpeed) {
                     aniTimer = 0;
@@ -117,18 +114,10 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     }
 
     private void setAnimationDirection() {
-        if (up) {
-            playerAction = runUp;
-        } 
-        if (down) {
-            playerAction = runDown;
-        }
-        if (left) {
-            playerAction = runLeft;
-        } 
-        if (right) {
-            playerAction = runRight;
-        }
+        if (up)    playerAction = runUp;
+        if (down)  playerAction = runDown;
+        if (left)  playerAction = runLeft;
+        if (right) playerAction = runRight;
     }
 
     private void loadAnimations() {
@@ -140,7 +129,6 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
             }
         }
     }
-
 
     @Override
     public void takeDamage(int amount) {
