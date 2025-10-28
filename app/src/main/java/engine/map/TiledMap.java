@@ -46,7 +46,7 @@ public class TiledMap {
         // Create Entity objects
         for (MapObject mo : data.objects) {
             Image img = tileImages.get(mo.gid);
-            Entity e = createEntity(mo, img);
+            Entity e = createEntity(mo, img, data);
             if (e != null) entities.add(e);
         }
     }
@@ -59,7 +59,7 @@ public class TiledMap {
         else return null;
     }
 
-    private Entity createEntity(MapObject mo, Image img) {
+    private Entity createEntity(MapObject mo, Image img, TiledMapLoader.LoadedMapData data) {
         if (mo == null || img == null) return null;
 
         double worldX = mo.x;
@@ -67,8 +67,12 @@ public class TiledMap {
         double width = mo.w;
         double height = mo.h;
 
-        if (isTreeWide(mo.gid))
-            return new TreeWide(game, img, worldX, worldY, width, height);
+        if (isTreeWide(mo.gid)) {
+            List<Image> frames = data.animatedTiles.get(mo.gid);
+            List<Integer> durs = data.animatedDurations.get(mo.gid);
+            return new TreeWide(game, frames, durs, worldX, worldY, width, height);
+            
+        }
         return null;
     }
 

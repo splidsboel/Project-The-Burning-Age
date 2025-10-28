@@ -44,30 +44,6 @@
          "name":"Object Layer 1",
          "objects":[
                 {
-                 "gid":60,
-                 "height":64,
-                 "id":18,
-                 "name":"treeWide",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":241.333,
-                 "y":445.333
-                }, 
-                {
-                 "gid":60,
-                 "height":64,
-                 "id":20,
-                 "name":"treeWide",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":208,
-                 "y":404.667
-                }, 
-                {
                  "gid":62,
                  "height":64,
                  "id":25,
@@ -104,18 +80,6 @@
                  "y":413
                 }, 
                 {
-                 "gid":63,
-                 "height":64,
-                 "id":35,
-                 "name":"treeWide",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":508.666666666667,
-                 "y":322.666666666667
-                }, 
-                {
                  "gid":57,
                  "height":64,
                  "id":36,
@@ -124,8 +88,8 @@
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":259.333333333333,
-                 "y":387.333333333333
+                 "x":259.333,
+                 "y":387.333
                 }],
          "opacity":1,
          "type":"objectgroup",

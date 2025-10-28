@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Loads a Tiled (.json + .tsx) map into raw structured data.
@@ -29,7 +31,7 @@ public class TiledMapLoader {
             // -------- layers --------
             JsonArray layers = root.getAsJsonArray("layers");
 
-            // 1. tile layer
+            // 1. tile layer. makes a int[][] of tile ids
             JsonObject tileLayer = null;
             for (JsonElement le : layers) {
                 JsonObject lo = le.getAsJsonObject();
@@ -79,27 +81,45 @@ public class TiledMapLoader {
                 tilesets.add(ts);
             }
             tilesets.sort(Comparator.comparingInt(t -> t.firstGid));
-
-            // Build gid→image cache
+            
             Map<Integer, Image> tileImages = new HashMap<>();
+            Map<Integer, List<Image>> animatedTiles = new HashMap<>();
+            Map<Integer, List<Integer>> animatedDurations = new HashMap<>();
+        
+            // Build gid → image cache with correct per-tileset size
             for (Tileset ts : tilesets) {
-                int totalTiles = (int) (ts.image.getWidth() / ts.tileWidth) *
-                                 (int) (ts.image.getHeight() / ts.tileHeight);
+                int totalTiles = (int) (ts.image.getWidth() / ts.tileWidth)
+                            * (int) (ts.image.getHeight() / ts.tileHeight);
                 for (int localId = 0; localId < totalTiles; localId++) {
                     int gid = ts.firstGid + localId;
                     int cols = ts.columns;
-                    int srcX = (localId % cols) * tileWidth;
-                    int srcY = (localId / cols) * tileHeight;
+                    int srcX = (localId % cols) * ts.tileWidth;
+                    int srcY = (localId / cols) * ts.tileHeight;
+
                     Image img = new WritableImage(
                             ts.image.getPixelReader(),
                             srcX, srcY,
-                            tileWidth, tileHeight
+                            ts.tileWidth, ts.tileHeight
                     );
                     tileImages.put(gid, img);
                 }
+
+                // add animations
+                for (var entry : ts.animations.entrySet()) {
+                    int baseGid = ts.firstGid + entry.getKey();
+                    List<Image> frames = new ArrayList<>();
+                    List<Integer> durs = ts.frameDurations.get(entry.getKey());
+                    for (int localFrameId : entry.getValue()) {
+                        int gid = ts.firstGid + localFrameId;
+                        frames.add(tileImages.get(gid));
+                    }
+                    animatedTiles.put(baseGid, frames);
+                    animatedDurations.put(baseGid, durs);
+                }
             }
 
-            return new LoadedMapData(width, height, tileWidth, tileHeight, tileIds, objects, tileImages);
+
+            return new LoadedMapData(width, height, tileWidth, tileHeight, tileIds, objects, tileImages, animatedTiles, animatedDurations);
 
         } catch (IOException ex) {
             throw new RuntimeException("Failed to load map: " + resourcePath, ex);
@@ -112,10 +132,15 @@ public class TiledMapLoader {
         public final int[][] tileIds;
         public final List<TiledMap.MapObject> objects;
         public final Map<Integer, Image> tileImages;
+        public final Map<Integer, List<Image>> animatedTiles;
+        public final Map<Integer, List<Integer>> animatedDurations;
 
         public LoadedMapData(int width, int height, int tileWidth, int tileHeight,
-                             int[][] tileIds, List<TiledMap.MapObject> objects,
-                             Map<Integer, Image> tileImages) {
+                            int[][] tileIds,
+                            List<TiledMap.MapObject> objects,
+                            Map<Integer, Image> tileImages,
+                            Map<Integer, List<Image>> animatedTiles,
+                            Map<Integer, List<Integer>> animatedDurations) {
             this.width = width;
             this.height = height;
             this.tileWidth = tileWidth;
@@ -123,8 +148,11 @@ public class TiledMapLoader {
             this.tileIds = tileIds;
             this.objects = objects;
             this.tileImages = tileImages;
+            this.animatedTiles = animatedTiles;
+            this.animatedDurations = animatedDurations;
         }
     }
+
 
     // --- internal helpers ---
     private InputStream reqStream(String path) throws IOException {
@@ -155,6 +183,7 @@ public class TiledMapLoader {
         try (InputStream in = reqStream(tsxPath)) {
             xml = new String(in.readAllBytes());
         }
+
         int tw = parseIntAttr(xml, "tilewidth");
         int th = parseIntAttr(xml, "tileheight");
 
@@ -173,8 +202,40 @@ public class TiledMapLoader {
         ts.columns = columns;
         ts.tileWidth = tw;
         ts.tileHeight = th;
+        ts.animations = new HashMap<>();
+        ts.frameDurations = new HashMap<>();
+
+        // --- Parse animation blocks ---
+        Pattern tilePattern = Pattern.compile("<tile id=\"(\\d+)\">([\\s\\S]*?)</tile>");
+        Matcher tileMatcher = tilePattern.matcher(xml);
+        while (tileMatcher.find()) {
+            int tileId = Integer.parseInt(tileMatcher.group(1));
+            String tileContent = tileMatcher.group(2);
+
+            if (!tileContent.contains("<animation>"))
+                continue;
+
+            List<Integer> frameIds = new ArrayList<>();
+            List<Integer> durations = new ArrayList<>();
+
+            Matcher frameMatcher = Pattern.compile(
+                    "<frame tileid=\"(\\d+)\" duration=\"(\\d+)\""
+            ).matcher(tileContent);
+
+            while (frameMatcher.find()) {
+                frameIds.add(Integer.parseInt(frameMatcher.group(1)));
+                durations.add(Integer.parseInt(frameMatcher.group(2)));
+            }
+
+            if (!frameIds.isEmpty()) {
+                ts.animations.put(tileId, frameIds);
+                ts.frameDurations.put(tileId, durations);
+            }
+        }
+
         return ts;
     }
+
 
     private String joinDir(String dir, String file) {
         if (file.startsWith("/")) return file;
@@ -214,7 +275,9 @@ public class TiledMapLoader {
         int firstGid;
         Image image;
         int columns;
-        int tileWidth;
-        int tileHeight;
+        int tileWidth, tileHeight;
+        Map<Integer, List<Integer>> animations = new HashMap<>();
+        Map<Integer, List<Integer>> frameDurations = new HashMap<>();
     }
+
 }

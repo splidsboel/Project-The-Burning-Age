@@ -9,11 +9,11 @@ import javafx.scene.image.Image;
 
 public abstract class Entity implements Renderable, Updateable {
     protected Game game;
+    protected Image image;
     protected double x, y;
     protected double width, height;
 
     //Animation
-
     private double aniTimer;
     private int aniIndex;
     private double aniSpeed = 0.1; // seconds per frame (~7.7 FPS)
@@ -44,22 +44,6 @@ public abstract class Entity implements Renderable, Updateable {
     public void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
-    }
-
-    private void updateAnimation(double delta, Image[] animations) {
-        aniTimer += delta;
-        if (aniTimer >= aniSpeed) {
-            aniTimer = 0;
-            aniIndex = (aniIndex + 1) % animations.length;
-        }
-    }
-
-    private void updateAnimation(double delta, Image[][] animations) {
-        aniTimer += delta;
-        if (aniTimer >= aniSpeed) {
-            aniTimer = 0;
-            aniIndex = (aniIndex + 1) % animations[0].length;
-        }
     }
 
 }
