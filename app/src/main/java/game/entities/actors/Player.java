@@ -32,7 +32,7 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
 
 
     public Player(Game game, World world, double x, double y) {
-        super(game, game.getTileSize()*13, game.getTileSize()*13, game.getTileSize(), game.getTileSize(), 500);
+        super(game, game.getTileSize()*247, game.getTileSize()*250, game.getTileSize(), game.getTileSize(), 500);
         this.world = world;
         this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
         this.pixels = 32;
