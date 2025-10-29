@@ -1,4 +1,4 @@
-package game.entities.decorations.trees;
+package game.entities.decorations.rocks;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import game.entities.Decoration;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 
-public class Tree extends Decoration {
-    public Tree(Game game, List<Image> frames, List<Integer> durations,
+public class Rock extends Decoration {
+    public Rock(Game game, List<Image> frames, List<Integer> durations,
                     double x, double y, double w, double h) {
         super(game, frames, durations, x, y, w, h);
     }

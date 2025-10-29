@@ -70,7 +70,7 @@ public abstract class Decoration extends Entity implements Collidable {
         return solidArea;
     }
 
-        // For depth sorting: the Y-coordinate of the “feet” or base
+    // For depth sorting: the Y-coordinate of the “feet” or base
     @Override
     public double getBottomY() {
         if (solidArea != null) {

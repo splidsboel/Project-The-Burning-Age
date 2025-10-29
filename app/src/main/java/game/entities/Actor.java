@@ -11,7 +11,7 @@ public abstract class Actor extends Entity {
     //Stats
     protected int health;
 
-    // Solid area if needed (for obstacles)
+    // Solid area
     protected Rectangle2D solidArea;
     private int solidOffsetX, solidOffsetY;
     private int solidBaseWidth, solidBaseHeight;
@@ -55,7 +55,7 @@ public abstract class Actor extends Entity {
         return solidArea;
     }
 
-        // For depth sorting: the Y-coordinate of the “feet” or base
+    // For depth sorting: the Y-coordinate of the “feet” or base
     @Override
     public double getBottomY() {
         if (solidArea != null) {

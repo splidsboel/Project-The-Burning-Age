@@ -6,11 +6,9 @@ import javafx.scene.image.Image;
 
 public class TreeWide extends Tree {
 
-    public TreeWide(Game g, List<Image> frames, List<Integer> durations,
+    public TreeWide(Game game, List<Image> frames, List<Integer> durations,
                     double x, double y, double w, double h) {
-        super(g, frames, durations, x, y, w, h);
-
-        // Define solid collision area relative to sprite
+        super(game, frames, durations, x, y, w, h);
         
         setSolidArea(
             (int) (w/game.getDeviceScale()* 0.40),
