@@ -9,25 +9,20 @@ import game.entities.behavior.Collidable;
 import game.entities.behavior.Controllable;
 import game.entities.behavior.Damageable;
 import game.entities.behavior.Moveable;
-import game.states.PlayState;
 import game.states.play.World;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
 
 public class Player extends Actor implements Collidable, Controllable, Moveable, Damageable {
     private World world;
     private final Image spriteSheet;
     private Image[][] animations;
     private int pixels; 
-    private int playerWidth;
-    private int playerHeight;
 
     private boolean up, down, left, right = false;
-    private boolean collisionUp, collisionDown, collisionLeft, collisionRight;
     private boolean moving;
     private double aniTimer;
     private int aniIndex;

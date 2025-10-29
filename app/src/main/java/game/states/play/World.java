@@ -59,41 +59,72 @@ public class World extends PlayState {
     @Override
     public void render(GraphicsContext g) {
         g.save();
-        camera.apply(g); // enable if camera scrolling is implemented
-        
-        // Draw tiles
-        for (int y = 0; y < map.getMapHeight(); y++) {
-            for (int x = 0; x < map.getMapWidth(); x++) {
+        camera.apply(g);
+
+        int tileSize = (int)game.getTileSize();
+
+        // --- compute visible tile range ---
+        int startX = (int)(camera.getX() / tileSize);
+        int endX   = (int)((camera.getX() + camera.getViewportWidth() / camera.getZoom()) / tileSize) + 1;
+        int startY = (int)(camera.getY() / tileSize);
+        int endY   = (int)((camera.getY() + camera.getViewportHeight() / camera.getZoom()) / tileSize) + 1;
+
+        // clamp to map size
+        startX = Math.max(0, startX);
+        startY = Math.max(0, startY);
+        endX   = Math.min(map.getMapWidth(),  endX);
+        endY   = Math.min(map.getMapHeight(), endY);
+
+        // --- draw only visible tiles ---
+        for (int y = startY; y < endY; y++) {
+            for (int x = startX; x < endX; x++) {
                 Tile tile = map.getTile(x, y);
-                if (tile != null)
-                    tile.render(g, x * game.getTileSize(), y * game.getTileSize(), game.getTileSize());
+                if (tile == null) continue;
+
+                double worldX = x * tileSize;
+                double worldY = y * tileSize;
+
+                tile.render(g, worldX, worldY, tileSize);
             }
         }
 
-        // Sort and draaw entities
-        entities.sort(Comparator.comparingDouble(Entity::getBottomY)); 
+        // --- draw only visible entities ---
+        entities.sort(Comparator.comparingDouble(Entity::getBottomY));
         for (Entity e : entities) {
-            e.render(g);
+            // skip off-screen entities
+            double ex = e.getX();
+            double ey = e.getY();
+            double ew = e.getWidth();
+            double eh = e.getHeight();
+
+            boolean visible =
+                ex + ew > camera.getX() &&
+                ex < camera.getX() + camera.getViewportWidth() / camera.getZoom() &&
+                ey + eh > camera.getY() &&
+                ey < camera.getY() + camera.getViewportHeight() / camera.getZoom();
+
+            if (visible) e.render(g);
         }
 
-        // Debug 
+        // --- debug solid areas ---
         if (game.getKeyboardInput().isKeyPressed(javafx.scene.input.KeyCode.SPACE)) {
-            // Draw debug shapes (world space)
             g.setLineWidth(1.5);
+            g.setStroke(javafx.scene.paint.Color.GREEN);
             for (Entity e : entities) {
                 if (e instanceof Collidable c && c.getSolidArea() != null) {
                     var s = c.getSolidArea();
-                    g.setStroke(javafx.scene.paint.Color.GREEN);
                     g.strokeRect(s.getMinX(), s.getMinY(), s.getWidth(), s.getHeight());
                 }
             }
         }
+
         g.restore();
 
-        // Draw FPS in screen space (HUD)
+        // --- HUD (screen space) ---
         g.setFill(javafx.scene.paint.Color.WHITE);
         g.fillText("FPS: " + game.getEngine().getFps(), 20, 30);
     }
+
 
     public void addEntity(Entity entity) {
         entities.add(entity);

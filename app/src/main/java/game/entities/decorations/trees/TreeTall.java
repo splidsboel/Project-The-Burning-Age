@@ -11,8 +11,8 @@ public class TreeTall extends Tree {
         super(g, frames, durations, x, y, w, h);
         
         setSolidArea(
-            (int) (w/game.getDeviceScale()* 0.45),
-            (int) (h/game.getDeviceScale()* 0.85),
+            (int) (w/game.getDeviceScale()* 0.46),
+            (int) (h/game.getDeviceScale()* 0.86),
             (int) (w/game.getDeviceScale()* 0.07),
             (int) (h/game.getDeviceScale()* 0.04)
         );

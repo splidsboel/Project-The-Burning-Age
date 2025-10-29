@@ -13,7 +13,7 @@ public class TreeWide extends Tree {
         // Define solid collision area relative to sprite
         
         setSolidArea(
-            (int) (w/game.getDeviceScale()* 0.37),
+            (int) (w/game.getDeviceScale()* 0.40),
             (int) (h/game.getDeviceScale()* 0.88),
             (int) (w/game.getDeviceScale()* 0.25),
             (int) (h/game.getDeviceScale()* 0.05)
