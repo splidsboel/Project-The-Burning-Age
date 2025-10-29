@@ -39,7 +39,7 @@ public class World extends PlayState {
         // Load entities from map
         entities.addAll(map.getEntities());
         entities.add(player);
-
+        camera.setZoom(3);
         System.out.println("World initialized with " + entities.size() + " entities.");
     }
 
@@ -105,7 +105,13 @@ public class World extends PlayState {
 
             if (visible) e.render(g);
         }
+        debug(g);
+        g.restore();
 
+    }
+
+
+    public void debug(GraphicsContext g) {
         // --- debug solid areas ---
         if (game.getKeyboardInput().isKeyPressed(javafx.scene.input.KeyCode.SPACE)) {
             g.setLineWidth(1.5);
@@ -117,14 +123,7 @@ public class World extends PlayState {
                 }
             }
         }
-
-        g.restore();
-
-        // --- HUD (screen space) ---
-        g.setFill(javafx.scene.paint.Color.WHITE);
-        g.fillText("FPS: " + game.getEngine().getFps(), 20, 30);
     }
-
 
     public void addEntity(Entity entity) {
         entities.add(entity);

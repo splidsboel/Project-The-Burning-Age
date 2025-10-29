@@ -15,6 +15,7 @@ import javafx.stage.StageStyle;
 
 public class Engine extends Application {
     public int fps;
+    public int ups;
 
     @Override
     public void start(Stage stage) {
@@ -44,6 +45,7 @@ public class Engine extends Application {
             long lastTime = System.nanoTime();
             long fpsTimer = System.currentTimeMillis();
             int frames = 0;
+            int updates = 0;
 
             while (game.isRunning()) {
                 long now = System.nanoTime();
@@ -52,6 +54,7 @@ public class Engine extends Application {
                 lastTime = now;
 
                 game.update(delta); // UPDATE
+                updates++;
 
                 if (renderPending.compareAndSet(false, true)) {
                     Platform.runLater(() -> {
@@ -65,7 +68,9 @@ public class Engine extends Application {
 
                 if (System.currentTimeMillis() - fpsTimer >= 1000) {
                     fps = frames;
+                    ups = updates;
                     frames = 0;
+                    updates = 0;
                     fpsTimer += 1000;
                 }
 
@@ -81,6 +86,10 @@ public class Engine extends Application {
 
     public int getFps() {
         return fps;
+    }
+
+    public int getUps() {
+        return ups;
     }
 
 

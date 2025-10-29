@@ -9,14 +9,16 @@ import game.entities.behavior.Collidable;
 import game.entities.behavior.Controllable;
 import game.entities.behavior.Damageable;
 import game.entities.behavior.Moveable;
+import game.entities.behavior.Swimmer;
 import game.states.play.World;
+import game.tiles.Tile;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 
-public class Player extends Actor implements Collidable, Controllable, Moveable, Damageable {
+public class Player extends Actor implements Collidable, Controllable, Moveable, Damageable, Swimmer {
     private World world;
     private final Image spriteSheet;
     private Image[][] animations;
@@ -32,7 +34,7 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
 
 
     public Player(Game game, World world, double x, double y) {
-        super(game, game.getTileSize()*247, game.getTileSize()*250, game.getTileSize(), game.getTileSize(), 500);
+        super(game, game.getTileSize()*247, game.getTileSize()*250, game.getTileSize(), game.getTileSize(), 250);
         this.world = world;
         this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
         this.pixels = 32;
@@ -55,13 +57,44 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
         setAnimationDirection();
     }
 
+
     @Override
     public void render(GraphicsContext g) {
         Image frame = animations[aniIndex][playerAction];
-        g.drawImage(frame, x, y, width, height);
-       
-       
+
+        int tileSize = (int) game.getTileSize();
+        int tileX = (int) ((x + tileSize / 2) / tileSize);
+        int tileY = (int) ((y + tileSize) / tileSize);
+
+        Tile t = game.getTiledMap().getTile(tileX, tileY);
+
+        // Swimming Y-offset from the Swimmer interface
+        double offsetY = computeSwimOffsetY(game.getTiledMap(), x, y, tileSize);
+
+        // --- normal draw if not in swimmable tile ---
+        if (!(t instanceof game.tiles.behaviors.Swimmable)) {
+            g.drawImage(frame, x, y + offsetY, width, height);
+            return;
+        }
+
+        // --- if swimmable: clip bottom 70% of player sprite ---
+        g.save();
+
+        // Draw invisible "water surface" rectangle that hides sprite height
+        double visibleHeight = height * 0.65;
+        double clipY = y + offsetY;  // top of visible portion
+        g.beginPath();
+        g.rect(x, clipY, width, visibleHeight);
+        g.closePath();
+        g.clip();
+
+        // Draw the player
+        g.drawImage(frame, x, y + offsetY, width, height);
+
+        g.restore();
     }
+
+
 
     @Override
     public void handleInput() {
@@ -110,7 +143,7 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
             moving = true;
         } 
 
-            // Predictive solid collision check
+        // Predictive solid collision check
         if (!game.getCollision().willCollideWithSolid(game.getTiledMap(), this,
             nextX - x, nextY - y, (int)game.getTileSize(), world.getEntities())) {
             x = nextX;

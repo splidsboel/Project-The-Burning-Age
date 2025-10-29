@@ -24,8 +24,8 @@ public class Game {
     private final double originalTileSize = 32;
     private double tileSize;      // scaled size in screen pixels
     private double deviceScale;   // screen → logical scale
-    private double virtualWidth = 24 * originalTileSize;;
-    private double virtualHeight = 13 * originalTileSize;;
+    private double virtualWidth = 1280;
+    private double virtualHeight = 720;
     private double screenWidth;
     private double screenHeight;
 
