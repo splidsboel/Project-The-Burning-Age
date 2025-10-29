@@ -1,18 +1,31 @@
+
 package engine.core;
 
 import javafx.scene.canvas.GraphicsContext;
 
 public abstract class GameState {
-    protected Game game;
+    protected final Game game;
+    private final Object stateLock = new Object();
 
     public GameState(Game game) {
         this.game = game;
-
     }
 
+    protected abstract void update(double delta);
+    protected abstract void render(GraphicsContext gc);
     public abstract void load();
     public abstract void unload();
-    public abstract void update(double delta);
-    public abstract void render(GraphicsContext gc);
 
+    // synchronized entry points used by the engine
+    public void safeUpdate(double delta) {
+        synchronized (stateLock) {
+            update(delta);
+        }
+    }
+
+    public void safeRender(GraphicsContext gc) {
+        synchronized (stateLock) {
+            render(gc);
+        }
+    }
 }

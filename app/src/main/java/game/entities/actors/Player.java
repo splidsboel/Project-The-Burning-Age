@@ -1,18 +1,25 @@
 package game.entities.actors;
 
+import javafx.geometry.Rectangle2D;
+
 import engine.core.Game;
 import engine.input.KeyboardInput;
 import game.entities.Actor;
+import game.entities.behavior.Collidable;
 import game.entities.behavior.Controllable;
 import game.entities.behavior.Damageable;
 import game.entities.behavior.Moveable;
+import game.states.PlayState;
+import game.states.play.World;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
 
-public class Player extends Actor implements Controllable, Moveable, Damageable {
+public class Player extends Actor implements Collidable, Controllable, Moveable, Damageable {
+    private World world;
     private final Image spriteSheet;
     private Image[][] animations;
     private int pixels; 
@@ -29,11 +36,20 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     private int playerAction = runLeft;
 
 
-    public Player(Game game, double x, double y) {
-        super(game, game.getTileSize()*15, game.getTileSize()*15, game.getTileSize(), game.getTileSize(), 500);
+    public Player(Game game, World world, double x, double y) {
+        super(game, game.getTileSize()*13, game.getTileSize()*13, game.getTileSize(), game.getTileSize(), 500);
+        this.world = world;
         this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
         this.pixels = 32;
         loadAnimations();
+        
+        setSolidArea(
+            (int)(pixels * 0.45),
+            (int)(pixels * 0.85),
+            (int)(pixels * 0.15),
+            (int)(pixels * 0.08)
+        );
+        
     }
 
     @Override
@@ -48,6 +64,8 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     public void render(GraphicsContext g) {
         Image frame = animations[aniIndex][playerAction];
         g.drawImage(frame, x, y, width, height);
+       
+       
     }
 
     @Override
@@ -70,28 +88,38 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
 
     @Override
     public void move(double delta) {
+        updateSolidArea();
         //game.getCollisionChecker().check(this);
         moving = false;
         boolean horizontal = left ^ right;
         boolean vertical = up ^ down;
         double moveSpeed = (horizontal && vertical) ? (speed / Math.sqrt(2.0)) * delta : speed * delta;
+        
+        double nextX = x;
+        double nextY = y;
 
-        // Vertical
-        if (up && !down && !collisionUp) {
-            y -= moveSpeed;
-            moving = true;
-        } else if (down && !up && !collisionDown) {
-            y += moveSpeed;
+        if (up && !down) {
+            nextY -= moveSpeed; 
             moving = true;
         }
+        if (down && !up){
+            nextY += moveSpeed;
+            moving = true;
+        } 
+        if (left && !right){
+            nextX -= moveSpeed;
+            moving = true;
+        }
+        if (right && !left){
+            nextX += moveSpeed;
+            moving = true;
+        } 
 
-        // Horizontal
-        if (left && !right && !collisionLeft) {
-            x -= moveSpeed;
-            moving = true;
-        } else if (right && !left && !collisionRight) {
-            x += moveSpeed;
-            moving = true;
+            // Predictive solid collision check
+        if (!game.getCollision().willCollideWithSolid(game.getTiledMap(), this,
+            nextX - x, nextY - y, (int)game.getTileSize(), world.getEntities())) {
+            x = nextX;
+            y = nextY;
         }
 
         // Clamp player inside world bounds (in pixels)
@@ -124,6 +152,15 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
         if (right) playerAction = runRight;
     }
 
+    @Override
+    public double getBottomY() {
+        if (solidArea != null) {
+            return solidArea.getMaxY(); // already equals y + height
+        }
+        return y + height; // fallback
+    }
+
+
     private void loadAnimations() {
         animations = new Image[3][4];
         for (int i = 0; i < animations.length; i++) {
@@ -144,6 +181,29 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     public boolean isDead() {
         return health <= 0;
     }
+
+    @Override
+    public Rectangle2D getHitbox() {
+        return solidArea; // or a slightly larger area if you want pickup overlap
+    }
+
+    @Override
+    public Rectangle2D getSolidArea() {
+        return solidArea;
+    }
+
+    @Override
+    public boolean isSolid() {
+        return true; // blocks movement for other entities
+    }
+
+    @Override
+    public void onCollide(Collidable other) {
+        // Example reactions:
+        // if (other instanceof Enemy) takeDamage(1);
+        // if (other instanceof ItemDrop) pickup((ItemDrop) other);
+    }
+
 
 
 

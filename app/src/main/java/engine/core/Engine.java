@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Engine extends Application {
+    public int fps;
 
     @Override
     public void start(Stage stage) {
@@ -29,7 +30,7 @@ public class Engine extends Application {
         stage.setScene(scene);
 
         System.out.println("Game starting...");
-        Game game = new Game(stage, screenWidth, screenHeight);
+        Game game = new Game(this, stage, screenWidth, screenHeight);
         game.changeState(new MenuState(game)); // <-- create state first
         startGameThread(game);    // <-- then start loop  
     }
@@ -43,7 +44,6 @@ public class Engine extends Application {
             long lastTime = System.nanoTime();
             long fpsTimer = System.currentTimeMillis();
             int frames = 0;
-            int fps = 0;
 
             while (game.isRunning()) {
                 long now = System.nanoTime();
@@ -54,16 +54,14 @@ public class Engine extends Application {
                 game.update(delta); // UPDATE
 
                 if (renderPending.compareAndSet(false, true)) {
-                    final int currentFps = fps;
                     Platform.runLater(() -> {
-                        GraphicsContext gc = game.getGraphicsContext();
-                        game.render(gc); // RENDER
-                        gc.setFill(javafx.scene.paint.Color.WHITE);
-                        gc.fillText("FPS: " + currentFps, 20, 30);
+                        GraphicsContext g = game.getGraphicsContext();
+                        game.render(g);  // RENDER
                         renderPending.set(false);
                     });
                     frames++;
                 }
+
 
                 if (System.currentTimeMillis() - fpsTimer >= 1000) {
                     fps = frames;
@@ -81,8 +79,16 @@ public class Engine extends Application {
         gameThread.start();
     }
 
+    public int getFps() {
+        return fps;
+    }
+
 
     public static void main(String[] args) {
         launch(args);
     }
+
+
+
+ 
 }

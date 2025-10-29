@@ -1,6 +1,7 @@
 package game.states.play;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import engine.core.Game;
@@ -9,6 +10,7 @@ import engine.map.TiledMapLoader;
 import engine.render.Camera;
 import game.entities.Entity;
 import game.entities.actors.Player;
+import game.entities.behavior.Collidable;
 import game.states.PlayState;
 import game.tiles.Tile;
 import javafx.scene.canvas.GraphicsContext;
@@ -31,7 +33,7 @@ public class World extends PlayState {
 
 
         // Camera and player
-        player = new Player(game, game.getOriginalTileSize(), game.getOriginalTileSize());
+        player = new Player(game, this, game.getOriginalTileSize(), game.getOriginalTileSize());
         camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
 
         // Load entities from map
@@ -43,21 +45,15 @@ public class World extends PlayState {
 
     @Override
     public void load() {
-        // Reserved for extra asset loading if needed later
+    
     }
 
     @Override
     public void update(double delta) {
-
-        
         for (Entity e : entities) {
             e.update(delta);
         }
-        camera.update(
-            player.getX(),
-            player.getY(),
-            game.getTileSize(),map.getMapWidth(),(map.getMapHeight())
-        );
+        camera.update(player.getX(),player.getY(),game.getTileSize(),map.getMapWidth(),(map.getMapHeight()));
     }
 
     @Override
@@ -65,7 +61,6 @@ public class World extends PlayState {
         g.save();
         camera.apply(g); // enable if camera scrolling is implemented
         
-
         // Draw tiles
         for (int y = 0; y < map.getMapHeight(); y++) {
             for (int x = 0; x < map.getMapWidth(); x++) {
@@ -75,12 +70,29 @@ public class World extends PlayState {
             }
         }
 
-        // Draw entities
+        // Sort and draaw entities
+        entities.sort(Comparator.comparingDouble(Entity::getBottomY)); 
         for (Entity e : entities) {
             e.render(g);
         }
 
+        // Debug 
+        if (game.getKeyboardInput().isKeyPressed(javafx.scene.input.KeyCode.SPACE)) {
+            // Draw debug shapes (world space)
+            g.setLineWidth(1.5);
+            for (Entity e : entities) {
+                if (e instanceof Collidable c && c.getSolidArea() != null) {
+                    var s = c.getSolidArea();
+                    g.setStroke(javafx.scene.paint.Color.GREEN);
+                    g.strokeRect(s.getMinX(), s.getMinY(), s.getWidth(), s.getHeight());
+                }
+            }
+        }
         g.restore();
+
+        // Draw FPS in screen space (HUD)
+        g.setFill(javafx.scene.paint.Color.WHITE);
+        g.fillText("FPS: " + game.getEngine().getFps(), 20, 30);
     }
 
     public void addEntity(Entity entity) {
@@ -95,5 +107,11 @@ public class World extends PlayState {
     public Camera getCamera() {
         return camera;
     }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    
 
 }

@@ -2,6 +2,7 @@ package engine.map;
 
 import game.entities.*;
 import game.entities.decorations.trees.TreeWide;
+import game.entities.decorations.trees.TreeTall;
 import game.tiles.*;
 import javafx.scene.image.Image;
 
@@ -92,20 +93,20 @@ public class TiledMap {
                 durs   = List.of(Integer.MAX_VALUE);
             }
 
-            return new TreeWide(game, frames, durs, worldX, worldY, width, height);
+            return new TreeTall(game, frames, durs, worldX, worldY, width, height);
         }
-        if (isRock(mo.gid)) {
-            List<Image> frames = data.animatedTiles.get(mo.gid);
-            List<Integer> durs  = data.animatedDurations.get(mo.gid);
+        // if (isRock(mo.gid)) {
+        //     List<Image> frames = data.animatedTiles.get(mo.gid);
+        //     List<Integer> durs  = data.animatedDurations.get(mo.gid);
 
-            // fallback for static tiles
-            if (frames == null || frames.isEmpty()) {
-                frames = List.of(img);
-                durs   = List.of(Integer.MAX_VALUE);
-            }
+        //     // fallback for static tiles
+        //     if (frames == null || frames.isEmpty()) {
+        //         frames = List.of(img);
+        //         durs   = List.of(Integer.MAX_VALUE);
+        //     }
 
-            return new TreeWide(game, frames, durs, worldX, worldY, width, height);
-        }
+        //     return new TreeWide(game, frames, durs, worldX, worldY, width, height);
+        // }
         return null;
     }
 

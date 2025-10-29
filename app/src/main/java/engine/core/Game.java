@@ -4,6 +4,7 @@ import engine.input.KeyboardInput;
 import engine.input.MouseInput;
 import engine.map.TiledMap;
 import engine.map.TiledMapLoader;
+import engine.physics.Collision;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -11,11 +12,13 @@ import javafx.stage.Stage;
 
 public class Game {
     // Core systems
+    private final Engine engine;
     private MouseInput mouseInput;
     private KeyboardInput keyboardInput;
     private TiledMap tiledMap;
     private TiledMapLoader tiledLoader;
     private GraphicsContext g;
+    private Collision collision;
 
     // World + display settings
     private final double originalTileSize = 32;
@@ -32,7 +35,8 @@ public class Game {
     private GameState currentState;
     private boolean running = true;
 
-    public Game(Stage stage, double width, double height) {
+    public Game(Engine engine, Stage stage, double width, double height) {
+        this.engine = engine;
         this.stage = stage;
         this.screenWidth = width;
         this.screenHeight = height;
@@ -43,6 +47,7 @@ public class Game {
         this.canvas = new Canvas(screenWidth, screenHeight);
         this.scene = new Scene(new javafx.scene.layout.Pane(canvas));
         this.g = canvas.getGraphicsContext2D();
+        g.setImageSmoothing(false);
         stage.setScene(scene);
         stage.show();
 
@@ -67,6 +72,7 @@ public class Game {
     private void initSystems() {
         initInputs();
         tiledLoader = new TiledMapLoader();
+        collision = new Collision();
     }
 
     private void initInputs() {
@@ -84,11 +90,11 @@ public class Game {
 
     // --- loop interaction ---
     public void update(double delta) {
-        if (currentState != null) currentState.update(delta);
+        if (currentState != null) currentState.safeUpdate(delta);
     }
 
     public void render(GraphicsContext gc) {
-        if (currentState != null) currentState.render(gc);
+        if (currentState != null) currentState.safeRender(gc);
     }
 
     public void changeState(GameState newState) {
@@ -119,8 +125,15 @@ public class Game {
     public boolean isRunning() { return running; }
     public void stopRunning() { running = false; }
 
+
+    
+    public Engine getEngine() {return engine;}
     public MouseInput getMouseInput() { return mouseInput; }
     public KeyboardInput getKeyboardInput() { return keyboardInput; }
     public TiledMapLoader getTiledLoader() { return tiledLoader; }
     public TiledMap getTiledMap() { return tiledMap; }
+
+    public Collision getCollision() {
+        return collision;
+    }
 }

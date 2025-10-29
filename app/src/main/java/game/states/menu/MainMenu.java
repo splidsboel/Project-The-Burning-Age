@@ -46,8 +46,7 @@ public class MainMenu extends MenuState{
     // Called from MenuState.render(gc)
     @Override
     public void render(GraphicsContext g) {
-        g.setImageSmoothing(false);
-        g.clearRect(0, 0, canvasWidth, canvasHeight);
+        
         drawUI(g);
     }
 
