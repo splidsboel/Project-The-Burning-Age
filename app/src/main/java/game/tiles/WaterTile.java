@@ -10,7 +10,7 @@ public class WaterTile extends Tile implements Swimmable {
 
     @Override
     public double getSubmergeOffset(double tileSize) {
-        return tileSize * 3;
+        return tileSize * 0.3;
     }
 
     public boolean isWater() {
