@@ -75,37 +75,31 @@ public class TiledMap {
         if (isTreeWide(mo.gid)) {
             List<Image> frames = data.animatedTiles.get(mo.gid);
             List<Integer> durs  = data.animatedDurations.get(mo.gid);
-
             // fallback for static tiles
             if (frames == null || frames.isEmpty()) {
                 frames = List.of(img);
                 durs   = List.of(Integer.MAX_VALUE);
             }
-
             return new TreeWide(game, frames, durs, worldX, worldY, width, height);
         }
         if (isTreeTall(mo.gid)) {
             List<Image> frames = data.animatedTiles.get(mo.gid);
             List<Integer> durs  = data.animatedDurations.get(mo.gid);
-
             // fallback for static tiles
             if (frames == null || frames.isEmpty()) {
                 frames = List.of(img);
                 durs   = List.of(Integer.MAX_VALUE);
             }
-
             return new TreeTall(game, frames, durs, worldX, worldY, width, height);
         }
         if (isRock(mo.gid)) {
              List<Image> frames = data.animatedTiles.get(mo.gid);
              List<Integer> durs  = data.animatedDurations.get(mo.gid);
-
               //fallback for static tiles
             if (frames == null || frames.isEmpty()) {
                  frames = List.of(img);
                  durs   = List.of(Integer.MAX_VALUE);
             }
-
             return new RockMedium(game, frames, durs, worldX, worldY, width, height);
         }
         return null;
