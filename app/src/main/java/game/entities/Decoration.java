@@ -1,6 +1,7 @@
 package game.entities;
 
 import java.util.List;
+
 import engine.core.Game;
 import game.entities.behavior.Collidable;
 import javafx.geometry.Rectangle2D;
@@ -64,6 +65,7 @@ public abstract class Decoration extends Entity implements Collidable {
             (int)(solidBaseHeight * scale)
         );
     }
+
 
     @Override
     public Rectangle2D getSolidArea() {

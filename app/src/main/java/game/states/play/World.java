@@ -11,6 +11,7 @@ import engine.render.Camera;
 import game.entities.Entity;
 import game.entities.actors.Player;
 import game.entities.behavior.Collidable;
+import game.entities.behavior.Hittable;
 import game.states.PlayState;
 import game.tiles.Tile;
 import javafx.scene.canvas.GraphicsContext;
@@ -114,12 +115,17 @@ public class World extends PlayState {
     public void debug(GraphicsContext g) {
         // --- debug solid areas ---
         if (game.getKeyboardInput().isKeyPressed(javafx.scene.input.KeyCode.SPACE)) {
-            g.setLineWidth(1.5);
-            g.setStroke(javafx.scene.paint.Color.GREEN);
             for (Entity e : entities) {
+                g.setLineWidth(0.4);
                 if (e instanceof Collidable c && c.getSolidArea() != null) {
                     var s = c.getSolidArea();
+                    g.setStroke(javafx.scene.paint.Color.GREEN);
                     g.strokeRect(s.getMinX(), s.getMinY(), s.getWidth(), s.getHeight());
+                }
+                if(e instanceof Hittable hit && hit.getHitbox() != null) {
+                    var h = hit.getHitbox();
+                    g.setStroke(javafx.scene.paint.Color.RED);
+                    g.strokeRect(h.getMinX(), h.getMinY(), h.getWidth(), h.getHeight());
                 }
             }
         }

@@ -13,8 +13,16 @@ public abstract class Actor extends Entity {
 
     // Solid area
     protected Rectangle2D solidArea;
-    private int solidOffsetX, solidOffsetY;
-    private int solidBaseWidth, solidBaseHeight;
+    protected double solidOffsetX, solidOffsetY;
+    protected double solidBaseWidth, solidBaseHeight;
+
+    // Solid area
+    protected Rectangle2D hitbox;
+    protected double hitOffsetX, hitOffsetY;
+    protected double hitBaseWidth, hitBaseHeight;
+
+    //Collision
+    protected boolean collisionUp, collisionDown, collisionLeft, collisionRight;
 
 
     public Actor(Game game, double x, double y, double width, double height, double speed) {
@@ -33,7 +41,7 @@ public abstract class Actor extends Entity {
         
     }
 
-        public void setSolidArea(int offsetX, int offsetY, int width, int height) {
+    public void setSolidArea(double offsetX, double offsetY, double width, double height) {
         solidOffsetX = offsetX;
         solidOffsetY = offsetY;
         solidBaseWidth = width;
@@ -44,12 +52,31 @@ public abstract class Actor extends Entity {
     public void updateSolidArea() {
         double scale = game.getTileSize() / game.getOriginalTileSize();
         solidArea = new Rectangle2D(
-            (int)(x + solidOffsetX * scale),
-            (int)(y + solidOffsetY * scale),
-            (int)(solidBaseWidth * scale),
-            (int)(solidBaseHeight * scale)
+            x + solidOffsetX * scale,
+            y + solidOffsetY * scale,
+            solidBaseWidth * scale,
+            solidBaseHeight * scale
         );
     }
+
+    public void setHitbox(double hitWidth, double hitHeight) {
+        hitBaseWidth  = (int) (width * hitWidth);
+        hitBaseHeight = (int) (height * hitHeight);
+        hitOffsetX = (width - hitBaseWidth) / 2;
+        hitOffsetY = (height - hitBaseHeight) / 2;
+        updateHitbox();
+    }
+
+    public void updateHitbox() {
+        double scale = game.getTileSize() / game.getOriginalTileSize();
+        hitbox = new Rectangle2D(
+            x + hitOffsetX * scale,
+            y + hitOffsetY * scale,
+            hitBaseWidth * scale,
+            hitBaseHeight * scale
+        );
+    }
+
 
     public Rectangle2D getSolidArea() {
         return solidArea;

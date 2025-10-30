@@ -12,5 +12,9 @@ public abstract class Tile {
     public void render(GraphicsContext gc, double x, double y, double size) {
         gc.drawImage(image, x, y, size, size);
     }
-    
+
+    public boolean isSolid() {
+        return false;
+    }
+ 
 }

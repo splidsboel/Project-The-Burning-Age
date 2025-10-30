@@ -16,4 +16,9 @@ public class WaterTile extends Tile implements Swimmable {
     public boolean isWater() {
         return true;
     }
+
+    @Override
+    public boolean isSolid() {
+        return true;
+    }
 }

@@ -12,6 +12,7 @@ public abstract class Entity implements Renderable, Updateable {
     protected double x, y;
     protected double width, height;
 
+
     public Entity (Game game, double x, double y, double width, double height) {
         this.game = game;
         this.x = x;
@@ -27,13 +28,10 @@ public abstract class Entity implements Renderable, Updateable {
     @Override
     public void render(GraphicsContext g) {
         
-     }
-
-    public void setPosition(double x, double y) {
-        this.x = x;
-        this.y = y;
     }
 
+
+    public void setPosition(double x, double y) {this.x = x;this.y = y;}
     public double getX() { return x; }
     public double getY() { return y; }
     public double getWidth() { return width; }

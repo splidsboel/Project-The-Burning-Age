@@ -1,24 +1,26 @@
 package game.entities.actors;
 
-import javafx.geometry.Rectangle2D;
-
 import engine.core.Game;
 import engine.input.KeyboardInput;
+import engine.map.TiledMap;
+import engine.physics.Collision;
 import game.entities.Actor;
 import game.entities.behavior.Collidable;
 import game.entities.behavior.Controllable;
 import game.entities.behavior.Damageable;
+import game.entities.behavior.Hittable;
 import game.entities.behavior.Moveable;
 import game.entities.behavior.Swimmer;
 import game.states.play.World;
 import game.tiles.Tile;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 
-public class Player extends Actor implements Collidable, Controllable, Moveable, Damageable, Swimmer {
+public class Player extends Actor implements Collidable, Hittable, Controllable, Moveable, Damageable, Swimmer {
     private World world;
     private final Image spriteSheet;
     private Image[][] animations;
@@ -29,8 +31,8 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
     private double aniTimer;
     private int aniIndex;
     private final double aniSpeed = 0.2; // seconds per frame 
-    private final int runDown = 0, runUp = 1, runLeft = 2, runRight = 3;
-    private int playerAction = runLeft;
+    private final int moveDown = 0, moveUp = 1, moveLeft = 2, moveRight = 3;
+    private int playerAction = moveLeft;
 
 
     public Player(Game game, World world, double x, double y) {
@@ -39,14 +41,8 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
         this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
         this.pixels = 32;
         loadAnimations();
-        
-        setSolidArea(
-            (int)(pixels * 0.45),
-            (int)(pixels * 0.85),
-            (int)(pixels * 0.15),
-            (int)(pixels * 0.08)
-        );
-        
+        setSolidArea(pixels * 0.45,pixels * 0.85,pixels * 0.15,pixels * 0.08);
+        setHitbox(0.3,0.5);
     }
 
     @Override
@@ -81,7 +77,7 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
         g.save();
 
         // Draw invisible "water surface" rectangle that hides sprite height
-        double visibleHeight = height * 0.65;
+        double visibleHeight = height * 0.48;
         double clipY = y + offsetY;  // top of visible portion
         g.beginPath();
         g.rect(x, clipY, width, visibleHeight);
@@ -93,8 +89,6 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
 
         g.restore();
     }
-
-
 
     @Override
     public void handleInput() {
@@ -117,46 +111,59 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
     @Override
     public void move(double delta) {
         updateSolidArea();
-        //game.getCollisionChecker().check(this);
+        updateHitbox();
         moving = false;
+
         boolean horizontal = left ^ right;
         boolean vertical = up ^ down;
         double moveSpeed = (horizontal && vertical) ? (speed / Math.sqrt(2.0)) * delta : speed * delta;
-        
-        double nextX = x;
-        double nextY = y;
 
-        if (up && !down) {
-            nextY -= moveSpeed; 
-            moving = true;
+        double dx = 0;
+        double dy = 0;
+
+        Collision collision = game.getCollision();
+        TiledMap map = game.getTiledMap();
+        int tileSize = (int) game.getTileSize();
+
+        // Try each direction only if not colliding
+        if (up && !down && !collisionUp) {
+            if (!collision.willCollideWithSolid(map, this, 0, -moveSpeed, tileSize, world.getEntities())) {
+                dy -= moveSpeed;
+                moving = true;
+            }
         }
-        if (down && !up){
-            nextY += moveSpeed;
-            moving = true;
-        } 
-        if (left && !right){
-            nextX -= moveSpeed;
-            moving = true;
+        if (down && !up && !collisionDown) {
+            if (!collision.willCollideWithSolid(map, this, 0, moveSpeed, tileSize, world.getEntities())) {
+                dy += moveSpeed;
+                moving = true;
+            }
         }
-        if (right && !left){
-            nextX += moveSpeed;
-            moving = true;
-        } 
-
-        // Predictive solid collision check
-        if (!game.getCollision().willCollideWithSolid(game.getTiledMap(), this,
-            nextX - x, nextY - y, (int)game.getTileSize(), world.getEntities())) {
-            x = nextX;
-            y = nextY;
+        if (left && !right && !collisionLeft) {
+            if (!collision.willCollideWithSolid(map, this, -moveSpeed, 0, tileSize, world.getEntities())) {
+                dx -= moveSpeed;
+                moving = true;
+            }
+        }
+        if (right && !left && !collisionRight) {
+            if (!collision.willCollideWithSolid(map, this, moveSpeed, 0, tileSize, world.getEntities())) {
+                dx += moveSpeed;
+                moving = true;
+            }
         }
 
-        // Clamp player inside world bounds (in pixels)
-        double maxX = (game.getTiledMap().getMapWidth()  * game.getTileSize()) - width;
-        double maxY = (game.getTiledMap().getMapHeight() * game.getTileSize()) - height;
+        // Apply if no solid collision on the combined move
+        if (!collision.willCollideWithSolid(map, this, dx, dy, tileSize, world.getEntities())) {
+            x += dx;
+            y += dy;
+        }
 
+        // Clamp inside world bounds
+        double maxX = (map.getMapWidth()  * game.getTileSize()) - width;
+        double maxY = (map.getMapHeight() * game.getTileSize()) - height;
         x = Math.max(0, Math.min(x, maxX));
         y = Math.max(0, Math.min(y, maxY));
     }
+
 
     private void updateAnimation(double delta) {
         if (moving) {
@@ -174,10 +181,10 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
     }
 
     private void setAnimationDirection() {
-        if (up)    playerAction = runUp;
-        if (down)  playerAction = runDown;
-        if (left)  playerAction = runLeft;
-        if (right) playerAction = runRight;
+        if (up)    playerAction = moveUp;
+        if (down)  playerAction = moveDown;
+        if (left)  playerAction = moveLeft;
+        if (right) playerAction = moveRight;
     }
 
     @Override
@@ -212,7 +219,7 @@ public class Player extends Actor implements Collidable, Controllable, Moveable,
 
     @Override
     public Rectangle2D getHitbox() {
-        return solidArea; // or a slightly larger area if you want pickup overlap
+        return hitbox; // or a slightly larger area if you want pickup overlap
     }
 
     @Override
