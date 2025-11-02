@@ -10,6 +10,7 @@ import engine.map.TiledMapLoader;
 import engine.render.Camera;
 import game.entities.Entity;
 import game.entities.actors.Player;
+import game.entities.actors.npc.Orc;
 import game.entities.behavior.Collidable;
 import game.entities.behavior.Hittable;
 import game.states.PlayState;
@@ -19,6 +20,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class World extends PlayState {
     private final List<Entity> entities = new ArrayList<>();
     private final Player player;
+    private final Orc orc;
     private final Camera camera;
     private final TiledMap map;
 
@@ -36,10 +38,12 @@ public class World extends PlayState {
         // Camera and player
         player = new Player(game, this, game.getOriginalTileSize(), game.getOriginalTileSize());
         camera = new Camera(game.getCanvas().getWidth(), game.getCanvas().getHeight());
+        orc = new Orc(game, this, game.getOriginalTileSize(), game.getOriginalTileSize());
 
         // Load entities from map
         entities.addAll(map.getEntities());
         entities.add(player);
+        entities.add(orc);
         camera.setZoom(3);
         System.out.println("World initialized with " + entities.size() + " entities.");
     }

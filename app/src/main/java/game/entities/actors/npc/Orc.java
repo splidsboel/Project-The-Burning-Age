@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import utilities.Utility;
 
 public class Orc extends Actor implements Collidable, Damageable, Moveable, Hittable {
     private World world;
@@ -19,23 +20,29 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
     private Image[][] animations;
     private int pixels; 
 
-    private boolean up, down, left, right = false;
+    private boolean up = false, down = false, left = false, right = false;
     private boolean moving;
     private double aniTimer;
     private int aniIndex;
     private final double aniSpeed = 0.2; // seconds per frame 
+
+
+    // Animation states
+    private int moveTimer;
+    private final java.util.Random rand = new java.util.Random();
     private final int moveDown = 0, moveUp = 1, moveLeft = 2, moveRight = 3;
-    private int playerAction = moveLeft;
+    private int orcAction = moveLeft;
 
     public Orc(Game game, World world, double x, double y) {
-        super(game, game.getTileSize()*247, game.getTileSize()*250, game.getTileSize()*2, game.getTileSize(), 50);
+        super(game, game.getTileSize()*250, game.getTileSize()*250, game.getTileSize(), game.getTileSize(), 100);
         this.world = world;
-        this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
+        this.spriteSheet = new Image(getClass().getResource("/assets/actors/npc/orc.png").toExternalForm());
         this.pixels = 32;
 
         loadAnimations();
         setSolidArea(pixels * 0.42,pixels * 0.85,pixels * 0.15,pixels * 0.08);
         setHitbox(0.3,0.5);
+        System.out.println("Orc: Work work.");
     }
 
     @Override
@@ -47,11 +54,10 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
 
     @Override
     public void render(GraphicsContext g) {
-        Image frame = animations[aniIndex][playerAction];
+        
+        Image frame = animations[aniIndex][orcAction];
         // Draw the player
         g.drawImage(frame, x, y, width, height);
-
-        g.restore();
     }
 
     @Override
@@ -59,7 +65,34 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
         updateSolidArea();
         updateHitbox();
         moving = false;
+        boolean horizontal = left ^ right;
+        boolean vertical = up ^ down;
+        double moveSpeed = (horizontal && vertical) ? (speed / Math.sqrt(2.0)) * delta : speed * delta;
 
+        moveTimer++;
+        if (moveTimer >= Utility.randomNumberInterval(200, 200)) {
+            moveTimer = 0;
+            int dir = rand.nextInt(10);
+            up = down = left = right = false;
+            switch (dir) {
+                case 0 -> up = true;
+                case 1 -> { up = true; left = true; }
+                case 2 -> { up = true; right = true; }
+                case 3 -> down = true;
+                case 4 -> { down = true; left = true; }
+                case 5 -> { down = true; right = true; }
+                case 6 -> moving = false;
+                case 7 -> moving = false;
+                case 8 -> moving = false;
+                case 9 -> moving = false;
+            }
+        }
+
+        moving = up || down || left || right;
+        if (up && !collisionUp) y -= moveSpeed; 
+        if (down && !collisionDown) y += moveSpeed; 
+        if (left && !collisionLeft) x -= moveSpeed;
+        if (right && !collisionRight) x += moveSpeed;
        
     }
 
@@ -80,10 +113,10 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
     }
 
     private void setAnimationDirection() {
-        if (up)    playerAction = moveUp;
-        if (down)  playerAction = moveDown;
-        if (left)  playerAction = moveLeft;
-        if (right) playerAction = moveRight;
+        if (up)    orcAction = moveUp;
+        if (down)  orcAction = moveDown;
+        if (left)  orcAction = moveLeft;
+        if (right) orcAction = moveRight;
     }
 
     @Override
