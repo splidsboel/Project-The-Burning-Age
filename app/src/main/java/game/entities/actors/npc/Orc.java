@@ -1,6 +1,8 @@
 package game.entities.actors.npc;
 
 import engine.core.Game;
+import engine.map.TiledMap;
+import engine.physics.Collision;
 import game.entities.Actor;
 import game.entities.behavior.Collidable;
 import game.entities.behavior.Damageable;
@@ -70,7 +72,7 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
         double moveSpeed = (horizontal && vertical) ? (speed / Math.sqrt(2.0)) * delta : speed * delta;
 
         moveTimer++;
-        if (moveTimer >= Utility.randomNumberInterval(200, 200)) {
+        if (moveTimer >= Utility.randomNumberInterval(500, 1500)) {
             moveTimer = 0;
             int dir = rand.nextInt(10);
             up = down = left = right = false;
@@ -88,12 +90,36 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
             }
         }
 
+        Collision collision = game.getCollision();
+        TiledMap map = game.getTiledMap();
+        int tileSize = (int) game.getTileSize();
+
         moving = up || down || left || right;
-        if (up && !collisionUp) y -= moveSpeed; 
-        if (down && !collisionDown) y += moveSpeed; 
-        if (left && !collisionLeft) x -= moveSpeed;
-        if (right && !collisionRight) x += moveSpeed;
-       
+        // Try each direction only if not colliding
+        if (up && !down && !collisionUp) {
+            if (!collision.willCollideWithSolid(map, this, 0, -moveSpeed, tileSize, world.getEntities())) {
+                y -= moveSpeed;
+                moving = true;
+            }
+        }
+        if (down && !up && !collisionDown) {
+            if (!collision.willCollideWithSolid(map, this, 0, moveSpeed, tileSize, world.getEntities())) {
+                y += moveSpeed;
+                moving = true;
+            }
+        }
+        if (left && !right && !collisionLeft) {
+            if (!collision.willCollideWithSolid(map, this, -moveSpeed, 0, tileSize, world.getEntities())) {
+                x -= moveSpeed;
+                moving = true;
+            }
+        }
+        if (right && !left && !collisionRight) {
+            if (!collision.willCollideWithSolid(map, this, moveSpeed, 0, tileSize, world.getEntities())) {
+                x += moveSpeed;
+                moving = true;
+            }
+        }    
     }
 
 
