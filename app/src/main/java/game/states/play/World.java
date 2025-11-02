@@ -7,18 +7,24 @@ import java.util.List;
 import engine.core.Game;
 import engine.map.TiledMap;
 import engine.map.TiledMapLoader;
+import engine.physics.Collision;
 import engine.render.Camera;
 import game.entities.Entity;
 import game.entities.actors.Player;
 import game.entities.actors.npc.Orc;
 import game.entities.behavior.Collidable;
 import game.entities.behavior.Hittable;
+import game.entities.behavior.Interactable;
 import game.states.PlayState;
+import game.states.play.ui.InteractButton;
 import game.tiles.Tile;
 import javafx.scene.canvas.GraphicsContext;
 
 public class World extends PlayState {
     private final List<Entity> entities = new ArrayList<>();
+    private final List<Collidable> collidables = new ArrayList<>();
+    private final List<Hittable> hittables = new ArrayList<>();
+    private final List<Interactable> interactables = new ArrayList<>();
     private final Player player;
     private final Orc orc;
     private final Camera camera;
@@ -34,6 +40,9 @@ public class World extends PlayState {
         map = new TiledMap(game, data);
         game.setTiledMap(map); // <-- make map accessible to other systems (Player)
 
+        // Load buttons
+        InteractButton interactButton = new InteractButton(game.getScreenWidth() / 2,game.getScreenHeight()/2);
+
 
         // Camera and player
         player = new Player(game, this, game.getOriginalTileSize(), game.getOriginalTileSize());
@@ -44,21 +53,42 @@ public class World extends PlayState {
         entities.addAll(map.getEntities());
         entities.add(player);
         entities.add(orc);
+
         camera.setZoom(3);
         System.out.println("World initialized with " + entities.size() + " entities.");
     }
 
     @Override
     public void load() {
+
     
     }
 
     @Override
     public void update(double delta) {
+        collidables.clear();
+        hittables.clear();
+        interactables.clear();
         for (Entity e : entities) {
             e.update(delta);
+            if (e instanceof Collidable c) {
+                collidables.add(c);
+            }
+            if (e instanceof Hittable h) {
+                hittables.add(h);
+            }
+            if (e instanceof Interactable i) {
+                interactables.add(i);
+            }
         }
+        Collision.handleSolidCollisions(collidables);
+        Collision.handleHitCollisions(hittables);
+        Collision.handleInteractions(interactables, player);
+
+        //Camera update
         camera.update(player.getX(),player.getY(),game.getTileSize(),map.getMapWidth(),(map.getMapHeight()));
+
+        
     }
 
     @Override
@@ -122,14 +152,19 @@ public class World extends PlayState {
             for (Entity e : entities) {
                 g.setLineWidth(0.4);
                 if (e instanceof Collidable c && c.getSolidArea() != null) {
-                    var s = c.getSolidArea();
+                    var sa = c.getSolidArea();
                     g.setStroke(javafx.scene.paint.Color.GREEN);
-                    g.strokeRect(s.getMinX(), s.getMinY(), s.getWidth(), s.getHeight());
+                    g.strokeRect(sa.getMinX(), sa.getMinY(), sa.getWidth(), sa.getHeight());
                 }
-                if(e instanceof Hittable hit && hit.getHitbox() != null) {
-                    var h = hit.getHitbox();
+                if(e instanceof Hittable h && h.getHitbox() != null) {
+                    var ha = h.getHitbox();
                     g.setStroke(javafx.scene.paint.Color.RED);
-                    g.strokeRect(h.getMinX(), h.getMinY(), h.getWidth(), h.getHeight());
+                    g.strokeRect(ha.getMinX(), ha.getMinY(), ha.getWidth(), ha.getHeight());
+                }
+                if(e instanceof Interactable i && i.getInteractArea() != null) {
+                    var ia = i.getInteractArea();
+                    g.setStroke(javafx.scene.paint.Color.BLUE);
+                    g.strokeRect(ia.getMinX(), ia.getMinY(), ia.getWidth(), ia.getHeight());
                 }
             }
         }

@@ -5,9 +5,9 @@ import engine.input.KeyboardInput;
 import engine.map.TiledMap;
 import engine.physics.Collision;
 import game.entities.Actor;
+import game.entities.Entity;
 import game.entities.behavior.Collidable;
 import game.entities.behavior.Controllable;
-import game.entities.behavior.Damageable;
 import game.entities.behavior.Hittable;
 import game.entities.behavior.Moveable;
 import game.entities.behavior.Swimmer;
@@ -20,7 +20,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 
-public class Player extends Actor implements Collidable, Hittable, Controllable, Moveable, Damageable, Swimmer {
+public class Player extends Actor implements Collidable, Hittable, Controllable, Moveable, Swimmer {
     private World world;
     private final Image spriteSheet;
     private Image[][] animations;
@@ -43,6 +43,7 @@ public class Player extends Actor implements Collidable, Hittable, Controllable,
         loadAnimations();
         setSolidArea(pixels * 0.42,pixels * 0.85,pixels * 0.15,pixels * 0.08);
         setHitbox(0.3,0.5);
+        setInteractArea(2, 2);
     }
 
     @Override
@@ -112,6 +113,7 @@ public class Player extends Actor implements Collidable, Hittable, Controllable,
     public void move(double delta) {
         updateSolidArea();
         updateHitbox();
+        updateInteractArea();
         moving = false;
 
         boolean horizontal = left ^ right;
@@ -206,22 +208,19 @@ public class Player extends Actor implements Collidable, Hittable, Controllable,
         }
     }
 
-    @Override
-    public void takeDamage(int amount) {
-        health -= amount;
-        if (health < 0) health = 0;
-    }
-
-    @Override
-    public boolean isDead() {
-        return health <= 0;
-    }
-
+    // --Hittable--
     @Override
     public Rectangle2D getHitbox() {
         return hitbox; // or a slightly larger area if you want pickup overlap
     }
 
+    @Override
+    public void onHit(Hittable other) {
+        System.out.println("Hitted!");
+    }
+
+
+    // --Collidable--
     @Override
     public Rectangle2D getSolidArea() {
         return solidArea;
@@ -237,9 +236,23 @@ public class Player extends Actor implements Collidable, Hittable, Controllable,
         // Example reactions:
         // if (other instanceof Enemy) takeDamage(1);
         // if (other instanceof ItemDrop) pickup((ItemDrop) other);
+    }   
+
+    // --Interactable--
+    @Override
+    public Rectangle2D getInteractArea() {
+        return interactArea;
     }
 
+    @Override
+    public void onInteract(Entity other) {
+        
+    }
 
+    @Override
+    public boolean canInteract() {
+        return true;
+    }
 
 
 }

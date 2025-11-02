@@ -4,6 +4,7 @@ import engine.core.Game;
 import engine.map.TiledMap;
 import engine.physics.Collision;
 import game.entities.Actor;
+import game.entities.Entity;
 import game.entities.behavior.Collidable;
 import game.entities.behavior.Damageable;
 import game.entities.behavior.Hittable;
@@ -14,6 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import utilities.Utility;
 
 public class Orc extends Actor implements Collidable, Damageable, Moveable, Hittable {
@@ -35,6 +37,9 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
     private final int moveDown = 0, moveUp = 1, moveLeft = 2, moveRight = 3;
     private int orcAction = moveLeft;
 
+    //Interaction
+    private boolean interaction = false;
+
     public Orc(Game game, World world, double x, double y) {
         super(game, game.getTileSize()*250, game.getTileSize()*250, game.getTileSize(), game.getTileSize(), 100);
         this.world = world;
@@ -44,14 +49,17 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
         loadAnimations();
         setSolidArea(pixels * 0.42,pixels * 0.85,pixels * 0.15,pixels * 0.08);
         setHitbox(0.3,0.5);
-        System.out.println("Orc: Work work.");
+        setInteractArea(1, 1);
+
     }
 
     @Override
     public void update(double delta) {
-        move(delta);
-        updateAnimation(delta);
-        setAnimationDirection();
+        if (!interaction) {
+            move(delta);
+            updateAnimation(delta);
+            setAnimationDirection();
+        }
     }
 
     @Override
@@ -66,6 +74,7 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
     public void move(double delta) {
         updateSolidArea();
         updateHitbox();
+        updateInteractArea();
         moving = false;
         boolean horizontal = left ^ right;
         boolean vertical = up ^ down;
@@ -164,6 +173,7 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
         }
     }
 
+
     @Override
     public void takeDamage(int amount) {
         health -= amount;
@@ -175,11 +185,17 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
         return health <= 0;
     }
 
+    // --Hittable--
     @Override
     public Rectangle2D getHitbox() {
         return hitbox; // or a slightly larger area if you want pickup overlap
     }
+    @Override
+    public void onHit(Hittable other) {
+       System.out.println("Orc hit!");
+    }
 
+    // --Collidable--
     @Override
     public Rectangle2D getSolidArea() {
         return solidArea;
@@ -195,5 +211,26 @@ public class Orc extends Actor implements Collidable, Damageable, Moveable, Hitt
         // Example reactions:
         // if (other instanceof Enemy) takeDamage(1);
         // if (other instanceof ItemDrop) pickup((ItemDrop) other);
+       
     }
+
+    // --Interactable--
+    @Override
+    public Rectangle2D getInteractArea() {
+        return interactArea;
+    }
+
+    @Override
+    public void onInteract(Entity other) {
+        if (game.getKeyboardInput().isKeyPressed(KeyCode.E)) {
+            interaction = true;
+            System.out.println(interaction);
+        }
+    }
+
+    @Override
+    public boolean canInteract() {
+        return true;
+    }
+
 }

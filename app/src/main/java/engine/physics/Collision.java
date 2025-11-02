@@ -5,25 +5,51 @@ import java.util.List;
 import engine.map.TiledMap;
 import game.entities.Entity;
 import game.entities.behavior.Collidable;
+import game.entities.behavior.Hittable;
+import game.entities.behavior.Interactable;
 import game.entities.behavior.Swimmer;
 import game.tiles.Tile;
 import game.tiles.behaviors.Swimmable;
 import javafx.geometry.Rectangle2D;
 
 public class Collision {
-    public static boolean checkCollision(Collidable a, Collidable b) {
-        return a.getSolidArea().intersects(b.getSolidArea());
-    }
 
-    public static void handleCollisions(List<? extends Collidable> objects) {
+    // --- Solid collisions ---
+    public static void handleSolidCollisions(List<? extends Collidable> objects) {
         for (int i = 0; i < objects.size(); i++) {
             for (int j = i + 1; j < objects.size(); j++) {
                 var a = objects.get(i);
                 var b = objects.get(j);
-                if (checkCollision(a, b)) {
+                if (a.getSolidArea().intersects(b.getSolidArea())) {
                     a.onCollide(b);
                     b.onCollide(a);
                 }
+            }
+        }
+    }
+
+    // --- Hit collisions (combat) ---
+    public static void handleHitCollisions(List<? extends Hittable> objects) {
+        for (int i = 0; i < objects.size(); i++) {
+            for (int j = i + 1; j < objects.size(); j++) {
+                var a = objects.get(i);
+                var b = objects.get(j);
+                if (a.getHitbox().intersects(b.getHitbox())) {
+                    // damage or combat logic here
+                    a.onHit(b);
+                    b.onHit(a);
+                }
+            }
+        }
+    }
+
+    // --- Interaction collisions ---
+    public static void handleInteractions(List<? extends Interactable> interactables, Entity other) {
+        for (Interactable i : interactables) {
+            if (!i.canInteract()) continue;
+            if (i.getInteractArea().intersects(other.getInteractArea())) {
+                i.onInteract(other);
+
             }
         }
     }

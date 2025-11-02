@@ -4,6 +4,8 @@ import java.util.List;
 
 import engine.core.Game;
 import game.entities.Decoration;
+import game.entities.Entity;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 
 public class Tree extends Decoration {
