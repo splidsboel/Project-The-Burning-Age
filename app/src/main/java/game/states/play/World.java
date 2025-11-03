@@ -110,7 +110,7 @@ public class World extends PlayState {
         endX   = Math.min(map.getMapWidth(),  endX);
         endY   = Math.min(map.getMapHeight(), endY);
 
-        // --- draw only visible tiles ---
+        // --- render only visible tiles ---
         for (int y = startY; y < endY; y++) {
             for (int x = startX; x < endX; x++) {
                 Tile tile = map.getTile(x, y);
@@ -123,7 +123,7 @@ public class World extends PlayState {
             }
         }
 
-        // --- draw only visible entities ---
+        // --- render only visible entities ---
         entities.sort(Comparator.comparingDouble(Entity::getBottomY));
         for (Entity e : entities) {
             // skip off-screen entities
@@ -186,7 +186,4 @@ public class World extends PlayState {
     public List<Entity> getEntities() {
         return entities;
     }
-
-    
-
 }

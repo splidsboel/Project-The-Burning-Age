@@ -9,8 +9,8 @@ import javafx.scene.image.WritableImage;
 public class InteractButton {
     public static final int pixelWidth = 16;
     public static final int pixelHeight = 16;
-    private static final int buttonWidth = 33 * 3;
-    private static final int buttonHeight = 16 * 3;
+    private static final int buttonWidth = 16 * 2;
+    private static final int buttonHeight = 16 * 2;
 
     private Image spriteSheet;
     private Image[] frames;
@@ -23,9 +23,7 @@ public class InteractButton {
         this.x = x;
         this.y = y;
         this.spriteSheet = new Image(getClass().getResource("/assets/ui/e_button.png").toExternalForm());
-
-        
-
+        loadAnimations();
     }
 
     public void render(GraphicsContext g) {
