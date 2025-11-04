@@ -46,17 +46,16 @@ public class MainMenu extends MenuState{
     // Called from MenuState.render(gc)
     @Override
     public void render(GraphicsContext g) {
-        g.setImageSmoothing(false);
-        g.clearRect(0, 0, canvasWidth, canvasHeight);
+        
         drawUI(g);
     }
 
     @Override
     public void load() {
-        play = new Button(buttonSpriteSheet, 0, 3, (int)(canvasWidth / 2), 700);     // x, y example positions
-        options = new Button(buttonSpriteSheet, 1, 3, (int)(canvasWidth / 2), 800);
-        quit = new Button(buttonSpriteSheet, 2, 3,(int)(canvasWidth / 2), 900);
-        logo = new Logo(logoSpriteSheet, 0, 3, (int)(canvasWidth / 2), 100);
+        play = new Button(buttonSpriteSheet, 0, 3, (int)(canvasWidth / 2), canvasHeight / 2 + 100);     // x, y example positions
+        options = new Button(buttonSpriteSheet, 1, 3, (int)(canvasWidth / 2), canvasHeight / 2 + 300);
+        quit = new Button(buttonSpriteSheet, 2, 3,(int)(canvasWidth / 2), canvasHeight / 2 + 400);
+        logo = new Logo(logoSpriteSheet, 0, 3, (int)(canvasWidth / 2), canvasHeight / 2 - 500);
     }
 
     private void handleMouse() {
@@ -102,8 +101,6 @@ public class MainMenu extends MenuState{
             quit.setFrame(0);
         }
     }
-
-
 
     private void drawUI(GraphicsContext g) {
         play.draw(g);

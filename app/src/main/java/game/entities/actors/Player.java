@@ -2,38 +2,48 @@ package game.entities.actors;
 
 import engine.core.Game;
 import engine.input.KeyboardInput;
+import engine.map.TiledMap;
+import engine.physics.Collision;
 import game.entities.Actor;
+import game.entities.Entity;
+import game.entities.behavior.Collidable;
 import game.entities.behavior.Controllable;
-import game.entities.behavior.Damageable;
+import game.entities.behavior.Hittable;
 import game.entities.behavior.Moveable;
+import game.entities.behavior.Swimmer;
+import game.states.play.World;
+import game.tiles.Tile;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 
-public class Player extends Actor implements Controllable, Moveable, Damageable {
+public class Player extends Actor implements Collidable, Hittable, Controllable, Moveable, Swimmer {
+    private World world;
     private final Image spriteSheet;
     private Image[][] animations;
     private int pixels; 
-    private int playerWidth;
-    private int playerHeight;
 
     private boolean up, down, left, right = false;
-    private boolean collisionUp, collisionDown, collisionLeft, collisionRight;
     private boolean moving;
     private double aniTimer;
     private int aniIndex;
     private final double aniSpeed = 0.2; // seconds per frame 
-    private final int runDown = 0, runUp = 1, runLeft = 2, runRight = 3;
-    private int playerAction = runLeft;
+    private final int moveDown = 0, moveUp = 1, moveLeft = 2, moveRight = 3;
+    private int playerAction = moveLeft;
 
 
-    public Player(Game game, double x, double y) {
-        super(game, game.getTileSize()*15, game.getTileSize()*15, game.getTileSize(), game.getTileSize(), 500);
+    public Player(Game game, World world, double x, double y) {
+        super(game, game.getTileSize()*247, game.getTileSize()*250, game.getTileSize(), game.getTileSize(), 100);
+        this.world = world;
         this.spriteSheet = new Image(getClass().getResource("/assets/actors/player/orc.png").toExternalForm());
         this.pixels = 32;
         loadAnimations();
+        setSolidArea(pixels * 0.42,pixels * 0.85,pixels * 0.15,pixels * 0.08);
+        setHitbox(0.3,0.5);
+        setInteractArea(2, 2);
     }
 
     @Override
@@ -44,10 +54,41 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
         setAnimationDirection();
     }
 
+
     @Override
     public void render(GraphicsContext g) {
         Image frame = animations[aniIndex][playerAction];
-        g.drawImage(frame, x, y, width, height);
+
+        int tileSize = (int) game.getTileSize();
+        int tileX = (int) ((x + tileSize / 2) / tileSize);
+        int tileY = (int) ((y + tileSize) / tileSize);
+
+        Tile t = game.getTiledMap().getTile(tileX, tileY);
+
+        // Swimming Y-offset from the Swimmer interface
+        double offsetY = computeSwimOffsetY(game.getTiledMap(), x, y, tileSize);
+
+        // --- normal draw if not in swimmable tile ---
+        if (!(t instanceof game.tiles.behaviors.Swimmable)) {
+            g.drawImage(frame, x, y + offsetY, width, height);
+            return;
+        }
+
+        // --- if swimmable: clip bottom 70% of player sprite ---
+        g.save();
+
+        // Draw invisible "water surface" rectangle that hides sprite height
+        double visibleHeight = height * 0.48;
+        double clipY = y + offsetY;  // top of visible portion
+        g.beginPath();
+        g.rect(x, clipY, width, visibleHeight);
+        g.closePath();
+        g.clip();
+
+        // Draw the player
+        g.drawImage(frame, x, y + offsetY, width, height);
+
+        g.restore();
     }
 
     @Override
@@ -70,37 +111,61 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
 
     @Override
     public void move(double delta) {
-        //game.getCollisionChecker().check(this);
+        updateSolidArea();
+        updateHitbox();
+        updateInteractArea();
         moving = false;
+
         boolean horizontal = left ^ right;
         boolean vertical = up ^ down;
         double moveSpeed = (horizontal && vertical) ? (speed / Math.sqrt(2.0)) * delta : speed * delta;
 
-        // Vertical
+        double dx = 0;
+        double dy = 0;
+
+        Collision collision = game.getCollision();
+        TiledMap map = game.getTiledMap();
+        int tileSize = (int) game.getTileSize();
+
+        // Try each direction only if not colliding
         if (up && !down && !collisionUp) {
-            y -= moveSpeed;
-            moving = true;
-        } else if (down && !up && !collisionDown) {
-            y += moveSpeed;
-            moving = true;
+            if (!collision.willCollideWithSolid(map, this, 0, -moveSpeed, tileSize, world.getEntities())) {
+                dy -= moveSpeed;
+                moving = true;
+            }
         }
-
-        // Horizontal
+        if (down && !up && !collisionDown) {
+            if (!collision.willCollideWithSolid(map, this, 0, moveSpeed, tileSize, world.getEntities())) {
+                dy += moveSpeed;
+                moving = true;
+            }
+        }
         if (left && !right && !collisionLeft) {
-            x -= moveSpeed;
-            moving = true;
-        } else if (right && !left && !collisionRight) {
-            x += moveSpeed;
-            moving = true;
+            if (!collision.willCollideWithSolid(map, this, -moveSpeed, 0, tileSize, world.getEntities())) {
+                dx -= moveSpeed;
+                moving = true;
+            }
+        }
+        if (right && !left && !collisionRight) {
+            if (!collision.willCollideWithSolid(map, this, moveSpeed, 0, tileSize, world.getEntities())) {
+                dx += moveSpeed;
+                moving = true;
+            }
         }
 
-        // Clamp player inside world bounds (in pixels)
-        double maxX = (game.getTiledMap().getMapWidth()  * game.getTileSize()) - width;
-        double maxY = (game.getTiledMap().getMapHeight() * game.getTileSize()) - height;
+        // Apply if no solid collision on the combined move
+        if (!collision.willCollideWithSolid(map, this, dx, dy, tileSize, world.getEntities())) {
+            x += dx;
+            y += dy;
+        }
 
+        // Clamp inside world bounds
+        double maxX = (map.getMapWidth()  * game.getTileSize()) - width;
+        double maxY = (map.getMapHeight() * game.getTileSize()) - height;
         x = Math.max(0, Math.min(x, maxX));
         y = Math.max(0, Math.min(y, maxY));
     }
+
 
     private void updateAnimation(double delta) {
         if (moving) {
@@ -118,11 +183,20 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
     }
 
     private void setAnimationDirection() {
-        if (up)    playerAction = runUp;
-        if (down)  playerAction = runDown;
-        if (left)  playerAction = runLeft;
-        if (right) playerAction = runRight;
+        if (up)    playerAction = moveUp;
+        if (down)  playerAction = moveDown;
+        if (left)  playerAction = moveLeft;
+        if (right) playerAction = moveRight;
     }
+
+    @Override
+    public double getBottomY() {
+        if (solidArea != null) {
+            return solidArea.getMaxY(); // already equals y + height
+        }
+        return y + height; // fallback
+    }
+
 
     private void loadAnimations() {
         animations = new Image[3][4];
@@ -134,17 +208,51 @@ public class Player extends Actor implements Controllable, Moveable, Damageable 
         }
     }
 
+    // --Hittable--
     @Override
-    public void takeDamage(int amount) {
-        health -= amount;
-        if (health < 0) health = 0;
+    public Rectangle2D getHitbox() {
+        return hitbox; // or a slightly larger area if you want pickup overlap
     }
 
     @Override
-    public boolean isDead() {
-        return health <= 0;
+    public void onHit(Hittable other) {
+        System.out.println("Hitted!");
     }
 
+
+    // --Collidable--
+    @Override
+    public Rectangle2D getSolidArea() {
+        return solidArea;
+    }
+
+    @Override
+    public boolean isSolid() {
+        return true; // blocks movement for other entities
+    }
+
+    @Override
+    public void onCollide(Collidable other) {
+        // Example reactions:
+        // if (other instanceof Enemy) takeDamage(1);
+        // if (other instanceof ItemDrop) pickup((ItemDrop) other);
+    }   
+
+    // --Interactable--
+    @Override
+    public Rectangle2D getInteractArea() {
+        return interactArea;
+    }
+
+    @Override
+    public void onInteract(Entity other) {
+        
+    }
+
+    @Override
+    public boolean canInteract() {
+        return true;
+    }
 
 
 }

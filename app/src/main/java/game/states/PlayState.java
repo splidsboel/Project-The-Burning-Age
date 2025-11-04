@@ -29,12 +29,14 @@ public class PlayState extends GameState {
     }
 
     @Override
-    public void render(GraphicsContext gc) {
-        gc.clearRect(0, 0, game.getCanvas().getWidth(), game.getCanvas().getHeight());
+    public void render(GraphicsContext g) {
         if (world != null) {
-            world.render(gc);
+            world.render(g);
         }
+        drawFpsAndUps(g);
     }
+
+        
 
     @Override
     public void unload() {
@@ -50,5 +52,12 @@ public class PlayState extends GameState {
             if (scroll > 0) world.getCamera().zoomIn(0.1);
             else world.getCamera().zoomOut(0.1);
         }
+    }
+
+    public void drawFpsAndUps(GraphicsContext g) {
+        // --- HUD (screen space) ---
+        g.setFill(javafx.scene.paint.Color.WHITE);
+        g.fillText("FPS: " + game.getEngine().getFps(), 20, 40);
+        g.fillText("UPS: " + game.getEngine().getUps(), 20, 20);
     }
 }
